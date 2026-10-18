@@ -1,0 +1,1745 @@
+
+R version 4.6.1 (2026-06-24 ucrt) -- "Happy Hop"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # ==============================================================================
+> # ENFORCEMENT INTENSITY INDEX (EII)
+> # Bayesian Zero-Inflated Negative Binomial Estimation
+> # of Enforcement Intensity in Strategically Produced Data
+> #
+> # Sean Rogers | University of South Carolina | 2026
+> # R implementation (pscl and brms). The Python implementation was retired on
+> # 2026-10-17 because it was not run on the corrected panel; see LAB.md.
+> #
+> # INPUT:   EII_Panel_Definitive.csv (942 country-years, 43 states, 1945-2025)
+> # OUTPUT:  Results tables (console + CSV), figures (PNG), posterior draws
+> # FITS:    5 Bayesian fits (4 chains each) plus the frequentist fits
+> #
+> # ------------------------------------------------------------------------------
+> # WHY BOTH FRAMEWORKS?
+> # The model is estimated by maximum likelihood (pscl) and by Bayesian MCMC
+> # (brms), and the two are compared on every run. The Bayesian fit adds full
+> # posterior distributions, direct probability-of-direction statements, a
+> # four-specification prior sensitivity test, and regularization of the
+> # zero-inflation equation, whose MLE shows quasi-separation on this panel.
+> #
+> # WHY ZINB?
+> # The DV has two sources of zeros:
+> #   Sampling zeros:   the count process generates zero (low intensity)
+> #   Structural zeros: the state is shielded from enforcement (sanctuary)
+> # These are qualitatively different. The ZINB separates them: the count
+> # equation models intensity; the zero-inflation (zi) equation models
+> # the probability of a structural zero.
+> #
+> # CONVENTION NOTE (critical):
+> # In both pscl::zeroinfl() and brms::zero_inflated_negbinomial(), the
+> # zero-inflation component models P(structural zero). A POSITIVE coefficient
+> # in the zi equation means MORE sanctuary. This matches the theoretical
+> # interpretation directly.
+> # ==============================================================================
+> 
+> 
+> # ==============================================================================
+> # SECTION 1: PACKAGES
+> # ==============================================================================
+> # Install once (run in the R Console if you haven't already):
+> #   install.packages(c("pscl", "brms", "loo", "bayesplot", "posterior"))
+> # brms needs a Stan backend. On Windows, install RTools first, then:
+> #   install.packages("rstan")
+> # or (faster, recommended):
+> #   install.packages("cmdstanr", repos = c("https://stan-dev.r-universe.dev"))
+> #   cmdstanr::install_cmdstan()
+> 
+> # Point R at the local library (OneDrive blocks DLL loads)
+> .libPaths(c("C:/R/library", .libPaths()))
+> 
+> library(tidyverse)      # data manipulation and plotting
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+> library(pscl)           # frequentist zero-inflated models (zeroinfl)
+Classes and Methods for R originally developed in the
+Political Science Computational Laboratory
+Department of Political Science
+Stanford University (2002-2015),
+by and under the direction of Simon Jackman.
+hurdle and zeroinfl functions by Achim Zeileis.
+> library(brms)           # Bayesian regression via Stan
+Loading required package: Rcpp
+Loading 'brms' package (version 2.23.0). Useful instructions
+can be found by typing help('brms'). A more detailed introduction
+to the package is available through vignette('brms_overview').
+
+Attaching package: 'brms'
+
+The following object is masked from 'package:stats':
+
+    ar
+
+> library(loo)            # leave-one-out cross-validation for model comparison
+This is loo version 2.10.1
+- Online documentation and vignettes at mc-stan.org/loo
+- As of v2.0.0 loo defaults to 1 core but we recommend using as many as possible. Use the 'cores' argument or set options(mc.cores = NUM_CORES) for an entire session. 
+- Windows 10 users: loo may be very slow if 'mc.cores' is set in your .Rprofile file (see https://github.com/stan-dev/loo/issues/94).
+> library(bayesplot)      # MCMC diagnostic plots
+This is bayesplot version 1.16.0
+- Online documentation and vignettes at mc-stan.org/bayesplot
+- bayesplot theme set to bayesplot::theme_default()
+   * Does _not_ affect other ggplot2 plots
+   * See ?bayesplot_theme_set for details on theme setting
+
+Attaching package: 'bayesplot'
+
+The following object is masked from 'package:brms':
+
+    rhat
+
+> library(posterior)      # working with posterior draws
+This is posterior version 1.7.0
+
+Attaching package: 'posterior'
+
+The following object is masked from 'package:bayesplot':
+
+    rhat
+
+The following object is masked from 'package:loo':
+
+    gpdfit
+
+The following objects are masked from 'package:stats':
+
+    mad, sd, var
+
+The following objects are masked from 'package:base':
+
+    %in%, match
+
+> library(here)           # project-relative file paths
+here() starts at C:/Users/seanb/source/repos/Enforcement-Intensity-Index-EII
+> 
+> set.seed(42)
+> SEED <- 42
+> 
+> # Set brms backend. Use "cmdstanr" if installed (faster), otherwise "rstan".
+> options(brms.backend = "cmdstanr")
+> # options(brms.backend = "rstan")  # uncomment if cmdstanr isn't installed
+> 
+> # ---- Highest density interval ----
+> # The shortest interval containing prob% of the posterior mass.
+> # Unlike a quantile interval (equal tails), the HDI can be asymmetric.
+> hdi <- function(x, prob = 0.95) {
++   x <- sort(x)
++   n <- length(x)
++   k <- floor(prob * n)
++   widths <- x[(k + 1):n] - x[1:(n - k)]
++   i <- which.min(widths)
++   c(x[i], x[i + k])
++ }
+> 
+> cat("==================================================================\n")
+==================================================================
+> cat("EII REPLICATION PIPELINE — R PORT\n")
+EII REPLICATION PIPELINE — R PORT
+> cat("brms", as.character(packageVersion("brms")), "|",
++     "pscl", as.character(packageVersion("pscl")), "\n")
+brms 2.23.0 | pscl 1.5.9 
+> cat("==================================================================\n")
+==================================================================
+> 
+> 
+> # ==============================================================================
+> # SECTION 2: DATA PREPARATION
+> # ==============================================================================
+> # The panel is pre-built from institutional primary sources across four
+> # layers. This script takes the panel as given and estimates the model.
+> # See CODEBOOK.md for construction details.
+> 
+> df <- read_csv(here("EII_Panel_Definitive.csv"), show_col_types = FALSE)
+> 
+> # ---- Type enforcement ----
+> df <- df |>
++   mutate(
++     eii_score    = as.integer(eii_score),
++     degradation   = as.integer(degradation),
++     across(c(polity, friction, resource_density, fiscal_pressure,
++              gdp_pc_log, trend, vdem_electoral, vdem_elections),
++            as.numeric)
++   )
+> 
+> # ---- Z-scoring function ----
+> # Every continuous IV is standardized: (x - mean) / sd.
+> # This puts all coefficients on the same scale (one-SD change) so
+> # magnitudes are comparable across variables and priors are meaningful.
+> z_score <- function(x) (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+> 
+> # ---- Build estimation samples ----
+> # PRIMARY: V-Dem Electoral Democracy Index
+> # ADDITIONAL: V-Dem Clean Elections Index (v2xel_frefair)
+> # ROBUSTNESS: Polity5
+> # Each sample drops observations missing any IV, then z-scores within the
+> # sample so coefficients reflect the data actually used.
+> 
+> build_sample <- function(data, regime_var) {
++   data |>
++     drop_na(all_of(c("eii_score", "degradation", regime_var, "friction", "resource_density",
++                      "gdp_pc_log", "fiscal_pressure"))) |>
++     mutate(
++       friction_z         = z_score(friction),
++       resource_density_z = z_score(resource_density),
++       fiscal_pressure_z  = z_score(fiscal_pressure),
++       gdp_pc_log_z       = z_score(gdp_pc_log),
++       trend_z            = z_score(trend),
++       regime_z           = z_score(.data[[regime_var]]),
++       fric_x_fiscal      = friction_z * fiscal_pressure_z
++     )
++ }
+> 
+> df_v <- build_sample(df, "vdem_electoral")
+> df_e <- build_sample(df, "vdem_elections")
+> df_p <- build_sample(df, "polity")
+> 
+> N <- nrow(df_v)
+> zero_pct <- 100 * mean(df_v$eii_score == 0)
+> od <- var(df_v$eii_score) / max(mean(df_v$eii_score), 1e-10)
+> 
+> cat("\nPanel:", nrow(df), "total |",
++     "Estimation sample:", N, "complete cases,",
++     n_distinct(df_v$country), "states\n")
+
+Panel: 942 total | Estimation sample: 538 complete cases, 33 states
+> cat("DV:", round(zero_pct, 1), "% zeros | Var/mean:", round(od, 1), "\n")
+DV: 49.6 % zeros | Var/mean: 1124.9 
+> 
+> 
+> # ==============================================================================
+> # SECTION 3: MODEL FORMULAS
+> # ==============================================================================
+> # Count equation: what drives enforcement intensity given engagement?
+> # Zero-inflation equation: what predicts structural zeros (sanctuary)?
+> #
+> # The interaction (friction × fiscal) is the Path of Least Resistance test.
+> # fiscal_pressure_z appears in the count equation only — the theory says
+> # fiscal strain affects intensity, not whether a state is shielded.
+> 
+> f_count <- eii_score ~ resource_density_z + friction_z + degradation +
++                         fiscal_pressure_z + trend_z + regime_z +
++                         gdp_pc_log_z + fric_x_fiscal
+> 
+> f_zi <- ~ regime_z + friction_z + resource_density_z + degradation + trend_z
+> 
+> # Variable names for output tables (count equation, in formula order)
+> count_names <- c("resource", "friction", "degradation", "fiscal",
++                  "trend", "regime", "gdp_pc", "friction_x_fiscal")
+> inflate_names <- c("regime", "friction", "resource", "degradation", "trend")
+> 
+> 
+> # ==============================================================================
+> # SECTION 4: FREQUENTIST ZINB — BASELINE
+> # ==============================================================================
+> # Why run frequentist first? Three reasons:
+> # 1. Establishes that the data support ZINB over simpler alternatives.
+> # 2. Provides a convergence benchmark.
+> # 3. Bayesian posteriors should bracket the MLE point estimates. Disagreement
+> #    flags prior-data conflict or likelihood multimodality.
+> 
+> run_freq_zinb <- function(data, label) {
++   cat("\n==================================================================\n")
++   cat("FREQUENTIST ZINB:", label, "\n")
++   cat("==================================================================\n")
++ 
++   # pscl::zeroinfl uses formula syntax: count_formula | zi_formula
++   # dist = "negbin" selects the negative binomial for the count component
++   fit <- tryCatch(
++     zeroinfl(
++       eii_score ~ resource_density_z + friction_z + degradation +
++                    fiscal_pressure_z + trend_z + regime_z +
++                    gdp_pc_log_z + fric_x_fiscal |
++                    regime_z + friction_z + resource_density_z +
++                    degradation + trend_z,
++       data = data,
++       dist = "negbin"
++     ),
++     error = function(e) {
++       cat("  FAILED:", conditionMessage(e), "\n")
++       NULL
++     }
++   )
++ 
++   if (is.null(fit)) return(NULL)
++ 
++   s <- summary(fit)
++   cat("Converged:", fit$converged, "\n")
++   cat("Log-likelihood:", round(fit$loglik, 2),
++       "| AIC:", round(AIC(fit), 2), "\n")
++ 
++   cat("\nCOUNT EQUATION:\n")
++   print(round(s$coefficients$count, 4))
++ 
++   cat("\nZERO-INFLATION EQUATION (positive = more sanctuary):\n")
++   print(round(s$coefficients$zero, 4))
++ 
++   fit
++ }
+> 
+> freq_vdem <- run_freq_zinb(df_v, "V-DEM ELECTORAL (PRIMARY)")
+
+==================================================================
+FREQUENTIST ZINB: V-DEM ELECTORAL (PRIMARY) 
+==================================================================
+Converged: TRUE 
+Log-likelihood: -1545.31 | AIC: 3122.62 
+
+COUNT EQUATION:
+                   Estimate Std. Error  z value Pr(>|z|)
+(Intercept)          2.9902     0.2032  14.7156   0.0000
+resource_density_z  -0.1480     0.1170  -1.2654   0.2057
+friction_z          -0.2393     0.2079  -1.1510   0.2497
+degradation          0.6565     0.3159   2.0777   0.0377
+fiscal_pressure_z   -1.4847     0.2410  -6.1609   0.0000
+trend_z             -0.8786     0.2626  -3.3456   0.0008
+regime_z             0.6006     0.1903   3.1552   0.0016
+gdp_pc_log_z        -0.5573     0.1544  -3.6107   0.0003
+fric_x_fiscal        0.2030     0.1811   1.1213   0.2622
+Log(theta)          -1.7917     0.0714 -25.0943   0.0000
+
+ZERO-INFLATION EQUATION (positive = more sanctuary):
+                   Estimate Std. Error z value Pr(>|z|)
+(Intercept)        -19.7140    10.2070 -1.9314   0.0534
+regime_z             1.3322     1.0626  1.2537   0.2100
+friction_z           4.3288     2.5147  1.7214   0.0852
+resource_density_z   0.4582     0.7750  0.5912   0.5544
+degradation         -4.6252     3.2223 -1.4354   0.1512
+trend_z            -16.4188     8.2746 -1.9842   0.0472
+> freq_pol  <- run_freq_zinb(df_p, "POLITY5 (ROBUSTNESS)")
+
+==================================================================
+FREQUENTIST ZINB: POLITY5 (ROBUSTNESS) 
+==================================================================
+Converged: TRUE 
+Log-likelihood: -1153.66 | AIC: 2339.33 
+
+COUNT EQUATION:
+                   Estimate Std. Error  z value Pr(>|z|)
+(Intercept)          3.3327     0.2670  12.4820   0.0000
+resource_density_z  -0.0860     0.1604  -0.5364   0.5917
+friction_z          -0.1166     0.3155  -0.3696   0.7117
+degradation          0.2345     0.3127   0.7500   0.4533
+fiscal_pressure_z   -2.0559     0.4087  -5.0304   0.0000
+trend_z             -1.6675     0.4849  -3.4390   0.0006
+regime_z             0.5409     0.2224   2.4323   0.0150
+gdp_pc_log_z        -0.6783     0.1842  -3.6820   0.0002
+fric_x_fiscal        0.2118     0.2146   0.9865   0.3239
+Log(theta)          -1.6126     0.1474 -10.9402   0.0000
+
+ZERO-INFLATION EQUATION (positive = more sanctuary):
+                   Estimate Std. Error z value Pr(>|z|)
+(Intercept)         -1.4196     0.8787 -1.6156   0.1062
+regime_z             0.3011     0.3881  0.7757   0.4380
+friction_z           0.5933     0.2607  2.2761   0.0228
+resource_density_z   0.2289     0.2865  0.7986   0.4245
+degradation         -0.4081     0.5611 -0.7272   0.4671
+trend_z             -2.2697     0.6064 -3.7431   0.0002
+> 
+> if (!is.null(freq_vdem)) {
++   fx <- coef(freq_vdem)["count_fric_x_fiscal"]
++   fx_p <- summary(freq_vdem)$coefficients$count["fric_x_fiscal", "Pr(>|z|)"]
++   cat("\n>>> Frequentist PLR: b =", round(fx, 4),
++       "(p =", round(fx_p, 6), ")\n")
++ }
+
+>>> Frequentist PLR: b = 0.203 (p = 0.262154 )
+> 
+> 
+> # ==============================================================================
+> # SECTION 5: BAYESIAN ZINB — PRIOR SPECIFICATIONS
+> # ==============================================================================
+> # Four specifications test whether substantive conclusions depend on prior
+> # choice. All share the same model structure; they differ only in prior
+> # width and interaction prior center.
+> 
+> # ZI intercept: logit of observed zero rate as an upper-bound anchor.
+> # The data will pull it toward the true structural zero rate.
+> ZI_BASE <- qlogis(zero_pct / 100)
+> cat("\nZI intercept prior mean: logit(", round(zero_pct, 1), "%) =",
++     round(ZI_BASE, 3), "\n")
+
+ZI intercept prior mean: logit( 49.6 %) = -0.015 
+> 
+> # Prior specification builder
+> # brms prior syntax: prior(distribution, class, coef, dpar)
+> #   class = "b"         → regression coefficients (count equation by default)
+> #   dpar = "zi"         → the zero-inflation distributional parameter
+> #   class = "Intercept" → the intercept
+> #   class = "shape"     → NegBin overdispersion (brms calls alpha "shape")
+> build_priors <- function(beta_sigma, gamma_sigma, gamma0_sigma,
++                          interaction_mu, interaction_sigma) {
++   c(
++     # Count equation intercept
++     prior(normal(0, 2.5), class = "Intercept"),
++     # Count equation main effects
++     set_prior(paste0("normal(0, ", beta_sigma, ")"), class = "b"),
++     # Count equation interaction — gets its own prior
++     set_prior(paste0("normal(", interaction_mu, ", ", interaction_sigma, ")"),
++               class = "b", coef = "fric_x_fiscal"),
++     # Zero-inflation intercept — anchored at logit(zero rate)
++     set_prior(paste0("normal(", ZI_BASE, ", ", gamma0_sigma, ")"),
++               class = "Intercept", dpar = "zi"),
++     # Zero-inflation coefficients
++     set_prior(paste0("normal(0, ", gamma_sigma, ")"),
++               class = "b", dpar = "zi"),
++     # Overdispersion: Exponential(1) — mean 1, heavy right tail
++     prior(exponential(1), class = "shape")
++   )
++ }
+> 
+> specs <- list(
++   Spec1_Diffuse = list(
++     description = "Weakly informative (Gelman 2008)",
++     priors = build_priors(2.5, 2.5, 2.5, 0, 2.5)
++   ),
++   Spec2_Sequential = list(
++     description = "Sequential — interaction prior N(-0.1, 1.0); the proxy run it was named for cannot be reproduced (LAB.md)",
++     priors = build_priors(2.5, 2.5, 2.5, -0.1, 1.0)
++   ),
++   Spec3_Skeptical = list(
++     description = "Skeptical — shrinks interaction toward zero",
++     priors = build_priors(1.5, 1.5, 2.5, 0, 0.5)
++   ),
++   Spec4_Restrictive = list(
++     description = "Restrictive — N(0,1) throughout",
++     priors = build_priors(1.0, 1.0, 2.0, 0, 1.0)
++   )
++ )
+> 
+> 
+> # ==============================================================================
+> # SECTION 6: BAYESIAN ESTIMATION FUNCTION
+> # ==============================================================================
+> run_bayesian_zinb <- function(data, label, priors, description = "") {
++   cat("\n---", label, ":", description, "---\n")
++ 
++   fit <- brm(
++     bf(f_count, zi = f_zi),
++     data = data,
++     family = zero_inflated_negbinomial(),
++     prior = priors,
++     chains = 4, iter = 2000, warmup = 1000,
++     cores = 1,
++     seed = SEED,
++     control = list(adapt_delta = 0.90)
++   )
++ 
++   # ---- Convergence diagnostics ----
++   rhats <- rhat(fit)
++   ess_b <- neff_ratio(fit) * (4 * 1000)
++   nd <- nuts_params(fit) |>
++     filter(Parameter == "divergent__") |>
++     pull(Value) |>
++     sum()
++ 
++   rhat_max <- max(rhats, na.rm = TRUE)
++   ess_min  <- min(ess_b, na.rm = TRUE)
++ 
++   cat("  R-hat max:", round(rhat_max, 4),
++       "| ESS min:", round(ess_min, 0),
++       "| Divergences:", nd, "\n")
++   if (rhat_max > 1.01) cat("  *** WARNING: R-hat > 1.01 ***\n")
++ 
++   # ---- PLR interaction ----
++   draws <- as_draws_df(fit)
++   plr <- draws$b_fric_x_fiscal
++   cat("  PLR: mean =", round(mean(plr), 4),
++       ", P(<0) =", round(mean(plr < 0), 4), "\n")
++ 
++   list(fit = fit, draws = draws, plr = plr,
++        rhat = rhat_max, ess = ess_min, div = nd)
++ }
+> 
+> 
+> # ==============================================================================
+> # SECTION 7: RUN ALL SPECIFICATIONS
+> # ==============================================================================
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("BAYESIAN ZINB — V-DEM PRIMARY — FOUR PRIOR SPECIFICATIONS\n")
+BAYESIAN ZINB — V-DEM PRIMARY — FOUR PRIOR SPECIFICATIONS
+> cat("4 chains × 2000 iterations (1000 warmup) | seed =", SEED, "\n")
+4 chains × 2000 iterations (1000 warmup) | seed = 42 
+> cat("==================================================================\n")
+==================================================================
+> 
+> results <- list()
+> for (nm in names(specs)) {
++   results[[nm]] <- run_bayesian_zinb(df_v, nm, specs[[nm]]$priors,
++                                      specs[[nm]]$description)
++ }
+
+--- Spec1_Diffuse : Weakly informative (Gelman 2008) ---
+Start sampling
+Running MCMC with 4 sequential chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 27.0 seconds.
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 25.5 seconds.
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 21.8 seconds.
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 25.1 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 24.8 seconds.
+Total execution time: 99.8 seconds.
+
+Loading required namespace: rstan
+  R-hat max: 1.0055 | ESS min: 1290 | Divergences: 0 
+  PLR: mean = 0.1535 , P(<0) = 0.218 
+
+--- Spec2_Sequential : Sequential — interaction prior N(-0.1, 1.0); the proxy run it was named for cannot be reproduced (LAB.md) ---
+Start sampling
+Running MCMC with 4 sequential chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 25.4 seconds.
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 24.6 seconds.
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 24.3 seconds.
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 25.7 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 25.0 seconds.
+Total execution time: 100.4 seconds.
+
+  R-hat max: 1.0028 | ESS min: 1507 | Divergences: 0 
+  PLR: mean = 0.1502 , P(<0) = 0.2222 
+
+--- Spec3_Skeptical : Skeptical — shrinks interaction toward zero ---
+Start sampling
+Running MCMC with 4 sequential chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 18.8 seconds.
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 20.0 seconds.
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 20.0 seconds.
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 21.6 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 20.1 seconds.
+Total execution time: 80.7 seconds.
+
+  R-hat max: 1.0042 | ESS min: 1448 | Divergences: 0 
+  PLR: mean = 0.1237 , P(<0) = 0.2492 
+
+--- Spec4_Restrictive : Restrictive — N(0,1) throughout ---
+Start sampling
+Running MCMC with 4 sequential chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 18.0 seconds.
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 15.4 seconds.
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 16.4 seconds.
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 15.5 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 16.3 seconds.
+Total execution time: 65.6 seconds.
+
+  R-hat max: 1.0026 | ESS min: 1540 | Divergences: 0 
+  PLR: mean = 0.1223 , P(<0) = 0.2615 
+> 
+> r1 <- results$Spec1_Diffuse
+> 
+> # V-Dem Clean Elections Index (v2xel_frefair)
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("ADDITIONAL: V-DEM CLEAN ELECTIONS INDEX\n")
+ADDITIONAL: V-DEM CLEAN ELECTIONS INDEX
+> cat("==================================================================\n")
+==================================================================
+> r_elec <- run_bayesian_zinb(df_e, "VDem_Elections",
++                             specs$Spec1_Diffuse$priors,
++                             "V-Dem elections — weakly informative")
+
+--- VDem_Elections : V-Dem elections — weakly informative ---
+Start sampling
+Running MCMC with 4 sequential chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 21.8 seconds.
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 23.2 seconds.
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 23.5 seconds.
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 23.6 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 23.0 seconds.
+Total execution time: 92.4 seconds.
+
+  R-hat max: 1.0025 | ESS min: 1228 | Divergences: 0 
+  PLR: mean = 0.1319 , P(<0) = 0.24 
+> 
+> # Save fits now — before any results printing — so a downstream error
+> # never costs the 10 minutes of sampling
+> saveRDS(results, here("brms_fits_main.rds"))
+> saveRDS(r_elec, here("brms_fit_elections.rds"))
+> cat("\nFits saved to brms_fits_main.rds and brms_fit_elections.rds\n")
+
+Fits saved to brms_fits_main.rds and brms_fit_elections.rds
+> 
+> 
+> # ==============================================================================
+> # SECTION 8: RESULTS TABLES
+> # ==============================================================================
+> # Posterior summary: mean, SD, 95% HDI, probability of direction.
+> # P(dir.) = max(P(β > 0), P(β < 0)) — the posterior probability that the
+> # coefficient has the sign of its mean. Stars mark P(dir.) > 0.95/0.99/0.999.
+> 
+> post_table <- function(draws, var_names, prefix, title) {
++   cat("\n", title, "\n")
++   cat(sprintf("%-20s %8s %8s %8s %8s %8s\n",
++               "Variable", "Mean", "SD", "HDI Lo", "HDI Hi", "P(dir.)"))
++   cat(strrep("-", 70), "\n")
++ 
++   rows <- list()
++   for (v in var_names) {
++     col <- paste0(prefix, v)
++     if (!col %in% names(draws)) next
++     s <- draws[[col]]
++     h <- hdi(s, prob = 0.95)
++     pd <- max(mean(s > 0), mean(s < 0))
++     stars <- if (pd > 0.999) "***" else if (pd > 0.99) "**" else if (pd > 0.95) "*" else ""
++     cat(sprintf("%-20s %8.3f %8.3f %8.3f %8.3f %8.3f %s\n",
++                 v, mean(s), sd(s), h[1], h[2], pd, stars))
++     rows[[v]] <- tibble(variable = v, mean = mean(s), sd = sd(s),
++                         hdi_lo = h[1], hdi_hi = h[2], p_dir = pd,
++                         p_positive = mean(s > 0), p_negative = mean(s < 0))
++   }
++   bind_rows(rows)
++ }
+> 
+> # Map formula variable names to the column names brms produces
+> # brms names coefficients b_<varname> for count, b_zi_<varname> for zi
+> count_cols <- c("resource_density_z", "friction_z", "degradation",
++                 "fiscal_pressure_z", "trend_z", "regime_z",
++                 "gdp_pc_log_z", "fric_x_fiscal")
+> zi_cols <- c("regime_z", "friction_z", "resource_density_z",
++              "degradation", "trend_z")
+> 
+> print_results <- function(r, label) {
++   cat("\n==================================================================\n")
++   cat(label, "\n")
++   cat("==================================================================\n")
++ 
++   ct <- post_table(r$draws, count_cols, "b_",
++                    "COUNT EQUATION (Enforcement Intensity):")
++   ct$variable <- count_names[match(ct$variable, count_cols)]
++   ct$equation <- "count"
++ 
++   zt <- post_table(r$draws, zi_cols, "b_zi_",
++                    "ZERO-INFLATION EQUATION (Sanctuary — positive = more sanctuary):")
++   zt$variable <- inflate_names[match(zt$variable, zi_cols)]
++   zt$equation <- "inflate"
++ 
++   # Overdispersion
++   shape <- r$draws$shape
++   hs <- hdi(shape, prob = 0.95)
++   cat("\nOverdispersion (shape):", round(mean(shape), 3),
++       "[", round(hs[1], 3), ",", round(hs[2], 3), "]\n")
++ 
++   bind_rows(ct, zt)
++ }
+> 
+> tab_primary <- print_results(r1, "PRIMARY RESULTS — V-DEM ELECTORAL (DIFFUSE PRIORS)")
+
+==================================================================
+PRIMARY RESULTS — V-DEM ELECTORAL (DIFFUSE PRIORS) 
+==================================================================
+
+ COUNT EQUATION (Enforcement Intensity): 
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+resource_density_z     -0.106    0.123   -0.344    0.138    0.811 
+friction_z             -0.286    0.211   -0.705    0.111    0.908 
+degradation             0.617    0.322   -0.027    1.223    0.970 *
+fiscal_pressure_z      -1.305    0.258   -1.794   -0.785    1.000 ***
+trend_z                -0.887    0.266   -1.410   -0.373    1.000 ***
+regime_z                0.583    0.189    0.203    0.943    0.999 **
+gdp_pc_log_z           -0.544    0.161   -0.846   -0.218    1.000 ***
+fric_x_fiscal           0.154    0.200   -0.227    0.545    0.782 
+
+ ZERO-INFLATION EQUATION (Sanctuary — positive = more sanctuary): 
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+regime_z               -0.053    0.679   -1.500    1.191    0.500 
+friction_z              0.757    0.395   -0.020    1.497    0.978 *
+resource_density_z      0.177    0.398   -0.578    0.989    0.705 
+degradation            -0.495    0.819   -2.200    0.990    0.720 
+trend_z                -3.266    0.945   -5.222   -1.690    1.000 ***
+
+Overdispersion (shape): 0.177 [ 0.147 , 0.206 ]
+> tab_elec    <- print_results(r_elec, "ADDITIONAL — V-DEM CLEAN ELECTIONS INDEX")
+
+==================================================================
+ADDITIONAL — V-DEM CLEAN ELECTIONS INDEX 
+==================================================================
+
+ COUNT EQUATION (Enforcement Intensity): 
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+resource_density_z     -0.045    0.110   -0.260    0.163    0.675 
+friction_z             -0.406    0.173   -0.728   -0.058    0.992 **
+degradation             1.355    0.335    0.737    2.051    1.000 ***
+fiscal_pressure_z      -1.136    0.254   -1.622   -0.622    1.000 ***
+trend_z                -0.775    0.254   -1.251   -0.253    0.999 **
+regime_z                1.034    0.183    0.704    1.426    1.000 ***
+gdp_pc_log_z           -0.719    0.150   -1.002   -0.406    1.000 ***
+fric_x_fiscal           0.132    0.192   -0.231    0.513    0.760 
+
+ ZERO-INFLATION EQUATION (Sanctuary — positive = more sanctuary): 
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+regime_z                0.161    0.390   -0.570    0.961    0.650 
+friction_z              0.797    0.357    0.154    1.529    0.990 *
+resource_density_z      0.183    0.366   -0.548    0.887    0.722 
+degradation            -0.143    0.743   -1.616    1.259    0.568 
+trend_z                -3.336    0.815   -5.010   -1.966    1.000 ***
+
+Overdispersion (shape): 0.187 [ 0.157 , 0.217 ]
+> 
+> 
+> # ==============================================================================
+> # SECTION 9: PRIOR SENSITIVITY
+> # ==============================================================================
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("PRIOR SENSITIVITY — FRICTION × FISCAL INTERACTION\n")
+PRIOR SENSITIVITY — FRICTION × FISCAL INTERACTION
+> cat("==================================================================\n")
+==================================================================
+> cat(sprintf("\n%-22s %8s %7s %7s %7s %7s\n",
++             "Spec", "Mean", "SD", "HDI Lo", "HDI Hi", "P(<0)"))
+
+Spec                       Mean      SD  HDI Lo  HDI Hi   P(<0)
+> cat(strrep("-", 62), "\n")
+-------------------------------------------------------------- 
+> for (nm in names(results)) {
++   plr <- results[[nm]]$plr
++   h <- hdi(plr, prob = 0.95)
++   short <- sub("^Spec[0-9]_", "", nm)
++   cat(sprintf("%-22s %8.4f %7.4f %7.3f %7.3f %7.4f\n",
++               short, mean(plr), sd(plr), h[1], h[2], mean(plr < 0)))
++ }
+Diffuse                  0.1535  0.1997  -0.227   0.545  0.2180
+Sequential               0.1502  0.1959  -0.240   0.528  0.2223
+Skeptical                0.1237  0.1819  -0.233   0.473  0.2492
+Restrictive              0.1223  0.1918  -0.278   0.479  0.2615
+> 
+> cat(sprintf("\n%-22s %9s %9s %9s %9s\n",
++             "Spec", "Friction", "Fiscal", "Trend", "Regime"))
+
+Spec                    Friction    Fiscal     Trend    Regime
+> cat(strrep("-", 60), "\n")
+------------------------------------------------------------ 
+> for (nm in names(results)) {
++   d <- results[[nm]]$draws
++   pd <- function(x) max(mean(x > 0), mean(x < 0))
++   short <- sub("^Spec[0-9]_", "", nm)
++   cat(sprintf("%-22s %9.3f %9.3f %9.3f %9.3f\n", short,
++               pd(d$b_friction_z), pd(d$b_fiscal_pressure_z),
++               pd(d$b_trend_z), pd(d$b_regime_z)))
++ }
+Diffuse                    0.908     1.000     1.000     0.999
+Sequential                 0.903     1.000     1.000     0.999
+Skeptical                  0.924     1.000     0.999     0.999
+Restrictive                0.935     1.000     0.998     0.999
+> 
+> 
+> # ==============================================================================
+> # SECTION 10: CONVERGENT VALIDATION — BAYESIAN vs. FREQUENTIST
+> # ==============================================================================
+> # Both equations are on the same convention in R (P(structural zero)),
+> # so the inflate-side comparison is valid.
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("CONVERGENT VALIDATION: BAYESIAN vs. FREQUENTIST (V-DEM)\n")
+CONVERGENT VALIDATION: BAYESIAN vs. FREQUENTIST (V-DEM)
+> cat("==================================================================\n")
+==================================================================
+> 
+> if (!is.null(freq_vdem)) {
++   fc <- coef(freq_vdem)
++   fs <- summary(freq_vdem)$coefficients
++ 
++   cat("\nCOUNT EQUATION:\n")
++   cat(sprintf("%-20s %9s %9s %9s %8s %6s\n",
++               "Variable", "Freq b", "Freq p", "Bayes", "P(dir.)", "Sign"))
++   cat(strrep("-", 65), "\n")
++   for (i in seq_along(count_cols)) {
++     v <- count_cols[i]
++     f_b <- fc[paste0("count_", v)]
++     f_p <- fs$count[v, "Pr(>|z|)"]
++     b_s <- r1$draws[[paste0("b_", v)]]
++     b_m <- mean(b_s)
++     b_pd <- max(mean(b_s > 0), mean(b_s < 0))
++     ag <- if (sign(f_b) == sign(b_m)) "Y" else "N"
++     cat(sprintf("%-20s %9.4f %9.5f %9.4f %8.4f %6s\n",
++                 count_names[i], f_b, f_p, b_m, b_pd, ag))
++   }
++ 
++   cat("\nZERO-INFLATION EQUATION (same convention both sides):\n")
++   cat(sprintf("%-20s %9s %9s %9s %8s %6s\n",
++               "Variable", "Freq b", "Freq p", "Bayes", "P(dir.)", "Sign"))
++   cat(strrep("-", 65), "\n")
++   for (i in seq_along(zi_cols)) {
++     v <- zi_cols[i]
++     f_b <- fc[paste0("zero_", v)]
++     f_p <- fs$zero[v, "Pr(>|z|)"]
++     b_s <- r1$draws[[paste0("b_zi_", v)]]
++     b_m <- mean(b_s)
++     b_pd <- max(mean(b_s > 0), mean(b_s < 0))
++     ag <- if (sign(f_b) == sign(b_m)) "Y" else "N"
++     cat(sprintf("%-20s %9.4f %9.5f %9.4f %8.4f %6s\n",
++                 inflate_names[i], f_b, f_p, b_m, b_pd, ag))
++   }
++ }
+
+COUNT EQUATION:
+Variable                Freq b    Freq p     Bayes  P(dir.)   Sign
+----------------------------------------------------------------- 
+resource               -0.1480   0.20573   -0.1061   0.8110      Y
+friction               -0.2393   0.24971   -0.2857   0.9077      Y
+degradation             0.6565   0.03773    0.6169   0.9695      Y
+fiscal                 -1.4847   0.00000   -1.3052   1.0000      Y
+trend                  -0.8786   0.00082   -0.8873   0.9998      Y
+regime                  0.6006   0.00160    0.5830   0.9985      Y
+gdp_pc                 -0.5573   0.00031   -0.5436   0.9998      Y
+friction_x_fiscal       0.2030   0.26215    0.1535   0.7820      Y
+
+ZERO-INFLATION EQUATION (same convention both sides):
+Variable                Freq b    Freq p     Bayes  P(dir.)   Sign
+----------------------------------------------------------------- 
+regime                  1.3322   0.20995   -0.0526   0.5005      N
+friction                4.3288   0.08518    0.7574   0.9780      Y
+resource                0.4582   0.55439    0.1769   0.7053      Y
+degradation            -4.6252   0.15117   -0.4947   0.7202      Y
+trend                 -16.4188   0.04723   -3.2664   1.0000      Y
+> 
+> 
+> # ==============================================================================
+> # SECTION 11: REGIME VARIABLE COMPARISON
+> # ==============================================================================
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("REGIME VARIABLE COMPARISON\n")
+REGIME VARIABLE COMPARISON
+> cat("==================================================================\n")
+==================================================================
+> cat(sprintf("\n%-20s %12s %12s %12s\n",
++             "Variable", "V-Dem Elect.", "V-Dem Elec.", "Polity5"))
+
+Variable             V-Dem Elect.  V-Dem Elec.      Polity5
+> cat(strrep("-", 60), "\n")
+------------------------------------------------------------ 
+> for (i in seq_along(count_cols)) {
++   v <- count_cols[i]
++   vm <- mean(r1$draws[[paste0("b_", v)]])
++   em <- mean(r_elec$draws[[paste0("b_", v)]])
++   pm <- if (!is.null(freq_pol)) coef(freq_pol)[paste0("count_", v)] else NA
++   cat(sprintf("%-20s %12.3f %12.3f %12.3f\n", count_names[i], vm, em, pm))
++ }
+resource                   -0.106       -0.045       -0.086
+friction                   -0.286       -0.406       -0.117
+degradation                 0.617        1.355        0.235
+fiscal                     -1.305       -1.136       -2.056
+trend                      -0.887       -0.775       -1.668
+regime                      0.583        1.034        0.541
+gdp_pc                     -0.544       -0.719       -0.678
+friction_x_fiscal           0.154        0.132        0.212
+> 
+> 
+> # ==============================================================================
+> # SECTION 12: MODEL COMPARISON — LOO-CV
+> # ==============================================================================
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("MODEL COMPARISON — LOO-CV\n")
+MODEL COMPARISON — LOO-CV
+> cat("==================================================================\n")
+==================================================================
+> 
+> loo_list <- lapply(results, function(r) loo(r$fit))
+Warning messages:
+1: Found 4 observations with a pareto_k > 0.7 in model 'r$fit'. We recommend to set 'moment_match = TRUE' in order to perform moment matching for problematic observations.  
+2: Found 3 observations with a pareto_k > 0.7 in model 'r$fit'. We recommend to set 'moment_match = TRUE' in order to perform moment matching for problematic observations.  
+3: Found 4 observations with a pareto_k > 0.7 in model 'r$fit'. We recommend to set 'moment_match = TRUE' in order to perform moment matching for problematic observations.  
+4: Found 4 observations with a pareto_k > 0.7 in model 'r$fit'. We recommend to set 'moment_match = TRUE' in order to perform moment matching for problematic observations.  
+> names(loo_list) <- names(results)
+> print(loo_compare(loo_list))
+             model elpd_diff se_diff p_worse       diag_diff      diag_elpd
+ Spec4_Restrictive       0.0     0.0      NA                 4 k_psis > 0.7
+     Spec1_Diffuse      -1.1     1.8    0.73 |elpd_diff| < 4 4 k_psis > 0.7
+  Spec2_Sequential      -1.1     1.6    0.76 |elpd_diff| < 4 3 k_psis > 0.7
+   Spec3_Skeptical      -1.3     1.1    0.88 |elpd_diff| < 4 4 k_psis > 0.7
+
+Diagnostic flags present.
+See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
+or https://mc-stan.org/loo/reference/loo-glossary.html.
+> 
+> 
+> # ==============================================================================
+> # SECTION 13: MCMC DIAGNOSTICS
+> # ==============================================================================
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("MCMC DIAGNOSTICS — ALL SPECIFICATIONS\n")
+MCMC DIAGNOSTICS — ALL SPECIFICATIONS
+> cat("==================================================================\n")
+==================================================================
+> cat(sprintf("\n%-22s %8s %8s %8s\n", "Spec", "R-hat", "ESS", "Diverg."))
+
+Spec                      R-hat      ESS  Diverg.
+> cat(strrep("-", 48), "\n")
+------------------------------------------------ 
+> all_r <- c(results, list(VDem_Elections = r_elec))
+> for (nm in names(all_r)) {
++   r <- all_r[[nm]]
++   short <- sub("^Spec[0-9]_", "", nm)
++   cat(sprintf("%-22s %8.4f %8.0f %8d\n", short, r$rhat, r$ess, r$div))
++ }
+Diffuse                  1.0055     1290        0
+Sequential               1.0028     1507        0
+Skeptical                1.0042     1448        0
+Restrictive              1.0026     1540        0
+VDem_Elections           1.0025     1228        0
+> 
+> 
+> # ==============================================================================
+> # SECTION 14: POSTERIOR PREDICTIVE CHECK
+> # ==============================================================================
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("POSTERIOR PREDICTIVE CHECK — PRIMARY SPECIFICATION\n")
+POSTERIOR PREDICTIVE CHECK — PRIMARY SPECIFICATION
+> cat("==================================================================\n")
+==================================================================
+> 
+> ppc_draws <- posterior_predict(r1$fit, ndraws = 500)
+> ppc_zero <- 100 * rowMeans(ppc_draws == 0)
+> ppc_mean <- rowMeans(ppc_draws)
+> ppc_var  <- apply(ppc_draws, 1, var)
+> ppc_od   <- ppc_var / pmax(ppc_mean, 1e-10)
+> 
+> cat(sprintf("%-20s %10s %10s %20s\n",
++             "Statistic", "Observed", "PPC Mean", "PPC 95% CI"))
+Statistic              Observed   PPC Mean           PPC 95% CI
+> cat(strrep("-", 65), "\n")
+----------------------------------------------------------------- 
+> cat(sprintf("%-20s %10.1f %10.1f [%.1f, %.1f]\n",
++             "Zero rate (%)", zero_pct, mean(ppc_zero),
++             quantile(ppc_zero, 0.025), quantile(ppc_zero, 0.975)))
+Zero rate (%)              49.6       51.9 [46.7, 56.9]
+> cat(sprintf("%-20s %10.2f %10.2f [%.2f, %.2f]\n",
++             "Mean", mean(df_v$eii_score), mean(ppc_mean),
++             quantile(ppc_mean, 0.025), quantile(ppc_mean, 0.975)))
+Mean                      56.37      74.80 [40.74, 134.11]
+> cat(sprintf("%-20s %10.1f %10.1f [%.1f, %.1f]\n",
++             "Var/Mean", od, mean(ppc_od),
++             quantile(ppc_od, 0.025), quantile(ppc_od, 0.975)))
+Var/Mean                 1124.9     2143.5 [474.4, 8570.0]
+> 
+> 
+> # ==============================================================================
+> # SECTION 15: DV WEIGHTING SENSITIVITY (FREQUENTIST)
+> # ==============================================================================
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("DV WEIGHTING SENSITIVITY — FREQUENTIST\n")
+DV WEIGHTING SENSITIVITY — FREQUENTIST
+> cat("==================================================================\n")
+==================================================================
+> 
+> dv_specs <- c(
++   "EII score (primary)" = "eii_score",
++   "Equal weight"       = "eii_equal",
++   "Raw count (capped)" = "eii_rawcount",
++   "Financial only"     = "eii_financial"
++ )
+> 
+> cat(sprintf("\n%-25s %9s %9s %9s %9s %10s\n",
++             "DV", "Friction", "Fiscal", "Trend", "FxF", "FxF p"))
+
+DV                         Friction    Fiscal     Trend       FxF      FxF p
+> cat(strrep("-", 75), "\n")
+--------------------------------------------------------------------------- 
+> 
+> wt_rows <- list()
+> for (nm in names(dv_specs)) {
++   dv <- dv_specs[nm]
++   d_wt <- df_v |> mutate(y_wt = as.integer(.data[[dv]]))
++   fit_wt <- tryCatch(
++     zeroinfl(
++       y_wt ~ resource_density_z + friction_z + degradation +
++              fiscal_pressure_z + trend_z + regime_z +
++              gdp_pc_log_z + fric_x_fiscal |
++              regime_z + friction_z + resource_density_z +
++              degradation + trend_z,
++       data = d_wt, dist = "negbin"
++     ),
++     error = function(e) NULL
++   )
++   if (is.null(fit_wt) || !fit_wt$converged) {
++     cat(sprintf("%-25s DID NOT CONVERGE\n", nm))
++     next
++   }
++   cc <- coef(fit_wt)
++   cs <- summary(fit_wt)$coefficients$count
++   # A DV with no overdispersion (eii_equal is a 0-4 count) drives the NB
++   # dispersion to its boundary (theta -> Inf); the ZINB is then not identified
++   # and its coefficients depend on where the optimizer stops. Report, don't estimate.
++   se_ok <- all(is.finite(sqrt(diag(vcov(fit_wt)))))
++   if (!se_ok || fit_wt$theta > 1e6) {
++     cat(sprintf("%-25s NOT IDENTIFIED (theta = %.3g; NB dispersion at boundary)\n", nm, fit_wt$theta))
++     wt_rows[[nm]] <- tibble(dv_spec = nm, friction = NA_real_, fiscal = NA_real_,
++                             trend = NA_real_, fxf = NA_real_, fxf_p = NA_real_,
++                             identified = FALSE)
++     next
++   }
++   cat(sprintf("%-25s %9.3f %9.3f %9.3f %9.3f %10.5f\n", nm,
++               cc["count_friction_z"], cc["count_fiscal_pressure_z"],
++               cc["count_trend_z"], cc["count_fric_x_fiscal"],
++               cs["fric_x_fiscal", "Pr(>|z|)"]))
++   wt_rows[[nm]] <- tibble(
++     dv_spec = nm,
++     friction = cc["count_friction_z"], fiscal = cc["count_fiscal_pressure_z"],
++     trend = cc["count_trend_z"], fxf = cc["count_fric_x_fiscal"],
++     fxf_p = cs["fric_x_fiscal", "Pr(>|z|)"],
++     identified = TRUE
++   )
++ }
+EII score (primary)          -0.239    -1.485    -0.879     0.203    0.26215
+Equal weight              NOT IDENTIFIED (theta = 1.03e+11; NB dispersion at boundary)
+Raw count (capped)            0.238    -0.424    -0.484     0.088    0.46179
+Financial only               -0.148    -1.316    -1.007     0.290    0.26563
+Warning message:
+In sqrt(diag(vc)[np]) : NaNs produced
+> if (length(wt_rows) > 0) {
++   write_csv(bind_rows(wt_rows), here("weighting_sensitivity_R.csv"))
++ }
+> 
+> 
+> # ==============================================================================
+> # SECTION 16: FIGURES
+> # ==============================================================================
+> cat("\n--- Generating figures ---\n")
+
+--- Generating figures ---
+> color_scheme_set("gray")
+> 
+> # Fig 1: Count equation posteriors
+> p1 <- mcmc_areas(r1$fit, pars = paste0("b_", count_cols), prob = 0.95) +
++   scale_y_discrete(limits = rev(paste0("b_", count_cols)),
++                    labels = setNames(count_names, paste0("b_", count_cols))) +
++   labs(title = "Count Equation Posteriors — V-Dem Electoral (Diffuse Priors)",
++        subtitle = "Shaded: central 95% posterior interval. Line: posterior median. Dashed line: zero.") +
++   geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
++   theme_minimal(base_family = "serif")
+Scale for y is already present.
+Adding another scale for y, which will replace the existing scale.
+> ggsave(here("fig1_count_posteriors_R.png"), p1, width = 10, height = 6, dpi = 300)
+> 
+> # Fig 2: Zero-inflation posteriors
+> p2 <- mcmc_areas(r1$fit, pars = paste0("b_zi_", zi_cols), prob = 0.95) +
++   scale_y_discrete(limits = rev(paste0("b_zi_", zi_cols)),
++                    labels = setNames(inflate_names, paste0("b_zi_", zi_cols))) +
++   labs(title = "Zero-Inflation (Sanctuary) Posteriors — V-Dem Electoral",
++        subtitle = "Positive = more sanctuary. Shaded: central 95% posterior interval. Line: posterior median.") +
++   geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
++   theme_minimal(base_family = "serif")
+Scale for y is already present.
+Adding another scale for y, which will replace the existing scale.
+> ggsave(here("fig2_sanctuary_posteriors_R.png"), p2, width = 10, height = 5, dpi = 300)
+> 
+> # Fig 3: PLR interaction
+> plr_df <- tibble(plr = r1$plr)
+> h_plr <- hdi(r1$plr, prob = 0.95)
+> p3 <- ggplot(plr_df, aes(x = plr)) +
++   geom_histogram(bins = 60, fill = "#c0392b", alpha = 0.85, color = "white") +
++   geom_vline(xintercept = 0, linetype = "dashed", linewidth = 1) +
++   annotate("rect", xmin = h_plr[1], xmax = h_plr[2], ymin = -Inf, ymax = Inf,
++            alpha = 0.15, fill = "blue") +
++   labs(title = "Friction × Fiscal Pressure Interaction",
++        subtitle = sprintf("Mean = %.4f | P(<0) = %.4f | 95%% HDI [%.3f, %.3f]",
++                           mean(r1$plr), mean(r1$plr < 0), h_plr[1], h_plr[2]),
++        x = "Coefficient (standardized)", y = "Posterior density") +
++   theme_minimal(base_family = "serif")
+> ggsave(here("fig3_interaction_R.png"), p3, width = 8, height = 5, dpi = 300)
+> 
+> # Fig 4: Prior sensitivity
+> plr_all <- bind_rows(lapply(names(results), function(nm) {
++   tibble(spec = sub("^Spec[0-9]_", "", nm), plr = results[[nm]]$plr)
++ }))
+> plr_all$spec <- factor(plr_all$spec, levels = c("Diffuse", "Sequential",
++                                                  "Skeptical", "Restrictive"))
+> p4 <- ggplot(plr_all, aes(x = plr, fill = spec)) +
++   geom_density(alpha = 0.5) +
++   geom_vline(xintercept = 0, linetype = "dashed") +
++   facet_wrap(~spec, ncol = 4) +
++   labs(title = "Prior Sensitivity — Friction × Fiscal Interaction",
++        x = "Coefficient", y = "Density") +
++   theme_minimal(base_family = "serif") +
++   theme(legend.position = "none")
+> ggsave(here("fig4_prior_sensitivity_R.png"), p4, width = 14, height = 4, dpi = 300)
+> 
+> # Fig 5: Trace plots — full model
+> p5 <- mcmc_trace(r1$fit,
++                  pars = c(paste0("b_", count_cols), paste0("b_zi_", zi_cols),
++                           "b_Intercept", "b_zi_Intercept", "shape"),
++                  facet_args = list(ncol = 3)) +
++   theme_minimal(base_family = "serif")
+> ggsave(here("fig5_traces_R.png"), p5, width = 14, height = 14, dpi = 300)
+> 
+> # Fig 6: PPC — zero rate
+> ppc_df <- tibble(zero_rate = ppc_zero)
+> p6 <- ggplot(ppc_df, aes(x = zero_rate)) +
++   geom_histogram(bins = 50, fill = "#2c3e50", alpha = 0.8, color = "white") +
++   geom_vline(xintercept = zero_pct, color = "red", linetype = "dashed", linewidth = 1) +
++   labs(title = "Posterior Predictive Check — Zero-Inflation Recovery",
++        subtitle = sprintf("Observed: %.1f%%", zero_pct),
++        x = "Zero rate (%)", y = "Count") +
++   theme_minimal(base_family = "serif")
+> ggsave(here("fig6_ppc_zeros_R.png"), p6, width = 8, height = 5, dpi = 300)
+> 
+> # Fig 7: PPC — distribution overlay
+> p7 <- pp_check(r1$fit, ndraws = 100, type = "hist") +
++   labs(title = "Posterior Predictive Check — Count Distribution") +
++   theme_minimal(base_family = "serif")
+> ggsave(here("fig7_ppc_distribution_R.png"), p7, width = 8, height = 5, dpi = 300)
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+> 
+> cat("  Saved: fig1–fig7 (R versions)\n")
+  Saved: fig1–fig7 (R versions)
+> 
+> 
+> # ==============================================================================
+> # SECTION 17: SAVE RESULTS
+> # ==============================================================================
+> cat("\n--- Saving results ---\n")
+
+--- Saving results ---
+> 
+> # All posterior summaries
+> all_tabs <- bind_rows(lapply(names(all_r), function(nm) {
++   r <- all_r[[nm]]
++   ct <- post_table(r$draws, count_cols, "b_", "")
++   ct$variable <- count_names[match(ct$variable, count_cols)]
++   ct$equation <- "count"
++   zt <- post_table(r$draws, zi_cols, "b_zi_", "")
++   zt$variable <- inflate_names[match(zt$variable, zi_cols)]
++   zt$equation <- "inflate"
++   bind_rows(ct, zt) |> mutate(spec = nm, .before = 1)
++ }))
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+resource_density_z     -0.106    0.123   -0.344    0.138    0.811 
+friction_z             -0.286    0.211   -0.705    0.111    0.908 
+degradation             0.617    0.322   -0.027    1.223    0.970 *
+fiscal_pressure_z      -1.305    0.258   -1.794   -0.785    1.000 ***
+trend_z                -0.887    0.266   -1.410   -0.373    1.000 ***
+regime_z                0.583    0.189    0.203    0.943    0.999 **
+gdp_pc_log_z           -0.544    0.161   -0.846   -0.218    1.000 ***
+fric_x_fiscal           0.154    0.200   -0.227    0.545    0.782 
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+regime_z               -0.053    0.679   -1.500    1.191    0.500 
+friction_z              0.757    0.395   -0.020    1.497    0.978 *
+resource_density_z      0.177    0.398   -0.578    0.989    0.705 
+degradation            -0.495    0.819   -2.200    0.990    0.720 
+trend_z                -3.266    0.945   -5.222   -1.690    1.000 ***
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+resource_density_z     -0.112    0.120   -0.349    0.116    0.826 
+friction_z             -0.285    0.222   -0.712    0.151    0.903 
+degradation             0.629    0.321    0.023    1.277    0.975 *
+fiscal_pressure_z      -1.308    0.259   -1.798   -0.772    1.000 ***
+trend_z                -0.894    0.272   -1.412   -0.351    1.000 ***
+regime_z                0.588    0.191    0.226    0.960    0.999 ***
+gdp_pc_log_z           -0.538    0.162   -0.858   -0.228    1.000 ***
+fric_x_fiscal           0.150    0.196   -0.240    0.528    0.778 
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+regime_z               -0.020    0.656   -1.440    1.182    0.518 
+friction_z              0.763    0.397   -0.031    1.552    0.972 *
+resource_density_z      0.188    0.391   -0.575    0.963    0.715 
+degradation            -0.531    0.798   -2.057    1.063    0.743 
+trend_z                -3.294    0.925   -5.156   -1.696    1.000 ***
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+resource_density_z     -0.091    0.119   -0.333    0.134    0.780 
+friction_z             -0.304    0.213   -0.719    0.103    0.924 
+degradation             0.571    0.318   -0.042    1.181    0.967 *
+fiscal_pressure_z      -1.258    0.249   -1.761   -0.793    1.000 ***
+trend_z                -0.857    0.267   -1.381   -0.341    0.999 ***
+regime_z                0.566    0.191    0.198    0.945    0.999 **
+gdp_pc_log_z           -0.548    0.158   -0.864   -0.249    1.000 ***
+fric_x_fiscal           0.124    0.182   -0.233    0.473    0.751 
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+regime_z               -0.249    0.612   -1.492    0.863    0.642 
+friction_z              0.609    0.356   -0.077    1.305    0.957 *
+resource_density_z      0.141    0.309   -0.468    0.752    0.692 
+degradation            -0.320    0.650   -1.591    0.918    0.679 
+trend_z                -2.667    0.663   -4.011   -1.535    1.000 ***
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+resource_density_z     -0.086    0.117   -0.304    0.149    0.774 
+friction_z             -0.312    0.210   -0.713    0.095    0.935 
+degradation             0.549    0.308   -0.034    1.161    0.962 *
+fiscal_pressure_z      -1.216    0.255   -1.729   -0.728    1.000 ***
+trend_z                -0.821    0.260   -1.331   -0.328    0.998 **
+regime_z                0.550    0.189    0.167    0.900    0.999 **
+gdp_pc_log_z           -0.545    0.158   -0.858   -0.238    1.000 ***
+fric_x_fiscal           0.122    0.192   -0.278    0.479    0.739 
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+regime_z               -0.371    0.493   -1.361    0.521    0.772 
+friction_z              0.492    0.307   -0.095    1.114    0.942 
+resource_density_z      0.088    0.251   -0.394    0.598    0.653 
+degradation            -0.199    0.525   -1.218    0.824    0.645 
+trend_z                -2.197    0.447   -3.076   -1.359    1.000 ***
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+resource_density_z     -0.045    0.110   -0.260    0.163    0.675 
+friction_z             -0.406    0.173   -0.728   -0.058    0.992 **
+degradation             1.355    0.335    0.737    2.051    1.000 ***
+fiscal_pressure_z      -1.136    0.254   -1.622   -0.622    1.000 ***
+trend_z                -0.775    0.254   -1.251   -0.253    0.999 **
+regime_z                1.034    0.183    0.704    1.426    1.000 ***
+gdp_pc_log_z           -0.719    0.150   -1.002   -0.406    1.000 ***
+fric_x_fiscal           0.132    0.192   -0.231    0.513    0.760 
+
+  
+Variable                 Mean       SD   HDI Lo   HDI Hi  P(dir.)
+---------------------------------------------------------------------- 
+regime_z                0.161    0.390   -0.570    0.961    0.650 
+friction_z              0.797    0.357    0.154    1.529    0.990 *
+resource_density_z      0.183    0.366   -0.548    0.887    0.722 
+degradation            -0.143    0.743   -1.616    1.259    0.568 
+trend_z                -3.336    0.815   -5.010   -1.966    1.000 ***
+> write_csv(all_tabs, here("bayesian_results_all_specs_R.csv"))
+> 
+> # Estimation sample
+> write_csv(df_v, here("panel_estimation_sample_R.csv"))
+> 
+> # Save fitted models (large — .gitignore these)
+> saveRDS(results, here("brms_fits_main.rds"))
+> saveRDS(r_elec, here("brms_fit_elections.rds"))
+> 
+> cat("Saved: bayesian_results_all_specs_R.csv\n")
+Saved: bayesian_results_all_specs_R.csv
+> cat("Saved: panel_estimation_sample_R.csv\n")
+Saved: panel_estimation_sample_R.csv
+> cat("Saved: brms_fits_main.rds, brms_fit_elections.rds\n")
+Saved: brms_fits_main.rds, brms_fit_elections.rds
+> 
+> cat("\n==================================================================\n")
+
+==================================================================
+> cat("PIPELINE COMPLETE\n")
+PIPELINE COMPLETE
+> cat("==================================================================\n")
+==================================================================
+> cat("  Panel:", nrow(df), "total,", N, "estimation,",
++     n_distinct(df_v$country), "states\n")
+  Panel: 942 total, 538 estimation, 33 states
+> cat("  Primary: V-Dem Electoral | Robustness: V-Dem Elections, Polity5\n")
+  Primary: V-Dem Electoral | Robustness: V-Dem Elections, Polity5
+> cat("  Bayesian: 4 prior specs + elections spec | Frequentist baseline\n")
+  Bayesian: 4 prior specs + elections spec | Frequentist baseline
+> cat("  DV sensitivity: 4 weighting schemes\n")
+  DV sensitivity: 4 weighting schemes
+> cat("  Seed:", SEED, "\n")
+  Seed: 42 
+> 
+> proc.time()
+   user  system elapsed 
+  36.54    2.89  549.37 

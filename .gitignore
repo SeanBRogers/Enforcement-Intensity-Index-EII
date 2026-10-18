@@ -1,0 +1,24 @@
+# Fitted models -- large; reproducible from the scripts with seed 42
+*.rds
+
+# Local tool and session files: never commit
+.claude.json
+.python_history
+.Rhistory
+.RData
+.Rproj.user/
+
+# Temporary files
+*.tmp
+*.bak
+*.lock
+
+# OS and editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+__pycache__/
