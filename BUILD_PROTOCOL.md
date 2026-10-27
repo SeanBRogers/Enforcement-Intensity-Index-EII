@@ -17,7 +17,8 @@ source's own site on 2026-10-27.
 The v1 panel (`EII_Panel_Definitive.csv`, commit `686d009`, 2026-10-17) is
 retired as an object of estimation. Its only remaining use is as the
 benchmark v2 is compared against (Rule 7). It is frozen as git tag
-`v1-2026-10-17`, pushed with this commit.
+`v1-2026-10-17` on commit `686d009`, pushed by Sean (the build session
+cannot push tags).
 
 ---
 
@@ -254,7 +255,8 @@ party); the Global Terrorism Database (public release appears to end about
 
 ## 7. Build order
 
-1. Commit this file and push tag `v1-2026-10-17` (done with this commit).
+1. Commit this file (done 2026-10-27, commit `5d13375`) and push tag
+   `v1-2026-10-17` on `686d009` (Sean).
 2. Frame: country list and sanctioned flag (D1, D2).
 3. Penalties, kinetic and posture channels: first pulls, manifest,
    checksums.
@@ -274,4 +276,7 @@ the repository.
 
 ## 8. Change log
 
-- 2026-10-27: protocol committed.
+- 2026-10-27: protocol committed (`5d13375`).
+- 2026-10-27: corrected section 1 and section 7, step 1. The first commit
+  said the v1 tag was pushed with it; the build session is not permitted to
+  push tags, so Sean pushes it.
