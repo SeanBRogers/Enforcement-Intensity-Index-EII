@@ -369,3 +369,8 @@ the repository.
     independent count of 2012 entries under "added" headings (990) matches
     the parser's 997 before alias removal, so the gap is not a parsing loss.
     OPEN: reconcile 2012 against OFAC's 2012 recent-actions notices.
+- 2026-10-27, v1 files removed from `main` (Sean, 18:04). Every v1 file
+  (panel, code, results, figures, codebook and notes) was unchanged since
+  commit `686d009` and remains there at tag `v1-2026-10-17`. References in
+  this protocol to v1 files (`EII_Panel_Definitive.csv`,
+  `fiscal_indicators.csv`, `validate.R`) mean those files at that tag.
