@@ -171,11 +171,22 @@ fr$posture_troops_ad[war] <- NA
 fr$posture_note[war] <- "war-zone deployment not reported (2018+)"
 lg("Posture: country-years with no troopdata row (missing): ", sum(fr$posture_note == "no source row"))
 
-# ------------------------------------------------------------------ 5. Write
+# ------------------------------------------------------- 5. Penalties (build_penalties.R)
+pen <- read.csv(file.path(out, "penalties_country_year.csv"), stringsAsFactors = FALSE)
+fr <- merge(fr, pen[, c("ccode", "year", "pen_program_count", "pen_program_count_firms")], by = c("ccode", "year"), all.x = TRUE)
+for (v in c("pen_program_count", "pen_program_count_firms")) {
+  fr[[v]][is.na(fr[[v]]) & fr$year >= 2003] <- 0L                              # OFAC's record covers 2003-2025
+  fr[[v]][fr$year < 2003] <- NA                                                 # no source before 2003 (Rule 3)
+}
+offp <- setdiff(paste(pen$ccode[!is.na(pen$pen_program_count)], pen$year[!is.na(pen$pen_program_count)]), paste(fr$ccode, fr$year))
+lg("Penalties: ", sum(fr$pen_program_count, na.rm = TRUE), " program-attributed penalty-country counts merged; ",
+   "program country-years outside the frame: ", length(offp), if (length(offp)) paste0(" (", paste(offp, collapse = "; "), ")") else "")
+
+# ------------------------------------------------------------------ 6. Write
 fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "under_sanctions_us", "us_sanction_cases",
         "kin_vs_state", "kin_vs_state_intensity", "kin_in_state", "kin_in_state_intensity",
-        "posture_troops_ad", "posture_note")]
+        "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms")]
 write.csv(fr, file.path(out, "EII_v2_partial.csv"), row.names = FALSE, na = "")
 lg("Wrote EII_v2_partial.csv: ", nrow(fr), " rows, ", ncol(fr), " columns")
-lg("Not yet built: financial (SDN) channel, penalties channel, multilateral block, burden blocks, covariates")
+lg("Not yet built: financial (SDN) channel, multilateral block, burden blocks, covariates")

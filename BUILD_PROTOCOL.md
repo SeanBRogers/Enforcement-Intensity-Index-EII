@@ -310,3 +310,18 @@ the repository.
   Non-country programs (narcotics, terrorism, nonproliferation, cyber,
   human rights) have no program country; their location country is still
   recorded. GSDB release 5 requested by Sean the same day.
+- 2026-10-27, penalties channel built (`v2/build/build_penalties.R`):
+  - Unit as Q8: OFAC's own count per entry; a blank count is one action and a
+    blank amount a finding of violation ($0), which reconciles the count to
+    OFAC's year totals in all 23 years. In 2004 OFAC's listed amounts exceed
+    its stated total by $55,000; recorded, not altered.
+  - Program attribution from fixed tables (`ofac_program_map.csv`,
+    `ofac_cfr_parts.csv`), not case-by-case judgment. Ukraine-/Russia-related
+    programs, including Crimea, are attributed to Russia.
+  - A second count excluding individuals (`pen_program_count_firms`) is added:
+    59% of penalties are against individuals, mostly Cuba travel cases in
+    2003–2005, which is enforcement against US travelers rather than exertion
+    against a state.
+  - Location attribution is found for 423 of 1,054 entries and is kept in the
+    entry file only; it does not enter the panel until it is built to a
+    standard where "not found" can be distinguished from zero.

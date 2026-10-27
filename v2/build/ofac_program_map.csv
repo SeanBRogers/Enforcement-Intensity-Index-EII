@@ -1,0 +1,54 @@
+pattern,program,program_country_ccode,note
+Cuban Assets Control Regulations,Cuba (CACR),40,
+\bCACR\b,Cuba (CACR),40,
+Iranian Transactions and Sanctions Regulations,Iran (ITSR),630,
+Iranian Transactions Regulations,Iran (ITR),630,
+\bITSR\b,Iran (ITSR),630,
+\bITR\b,Iran (ITR),630,
+Iranian Assets Control Regulations,Iran (IACR),630,
+Iranian Financial Sanctions Regulations,Iran (IFSR),630,
+Iranian Human Rights Abuses Sanctions Regulations,Iran (IHRSR),630,
+Iran Sanctions Regulations,Iran,630,
+Sudanese Sanctions Regulations,Sudan (SSR),625,
+\bSSR\b,Sudan (SSR),625,
+South Sudan Sanctions Regulations,South Sudan,626,
+Syrian Sanctions Regulations,Syria (SySR),652,
+Syria-Related Sanctions Regulations,Syria,652,
+North Korea Sanctions Regulations,North Korea (NKSR),731,
+Foreign Assets Control Regulations,North Korea (FACR),731,FACR (31 CFR 500) covered North Korea in this period; Vietnam and Cambodia provisions had been lifted
+Iraqi Sanctions Regulations,Iraq (ISR),645,
+Iraq Stabilization and Insurgency Sanctions Regulations,Iraq,645,
+Libyan Sanctions Regulations,Libya (LSR),620,
+Burmese Sanctions Regulations,Burma (BSR),775,
+Zimbabwe Sanctions Regulations,Zimbabwe,552,
+Belarus Sanctions Regulations,Belarus,370,
+Cote d'Ivoire Sanctions Regulations,Cote d'Ivoire,437,
+Democratic Republic of the Congo Sanctions Regulations,DRC,490,
+Somalia Sanctions Regulations,Somalia,520,
+Yemen Sanctions Regulations,Yemen,679,
+Venezuelan? Sanctions Regulations,Venezuela,101,
+Venezuela-Related,Venezuela,101,
+Ukraine-/Russia-Related Sanctions Regulations,Russia (Ukraine-related),365,EO 13660-series programs target Russia and occupied Crimea
+Ukraine-Related Sanctions Regulations,Russia (Ukraine-related),365,
+Russian Harmful Foreign Activities Sanctions Regulations,Russia (RuHSR),365,
+Western Balkans Stabilization Regulations,Western Balkans,,multi-country; not assigned
+Federal Republic of Yugoslavia,Yugoslavia/Serbia,345,
+Kosovo Sanctions Regulations,Yugoslavia/Serbia,345,
+Taliban \(Afghanistan\) Sanctions Regulations,Afghanistan (Taliban),700,
+Taliban Sanctions Regulations,Afghanistan (Taliban),700,
+UNITA \(Angola\) Sanctions Regulations,Angola (UNITA),540,
+Global Terrorism Sanctions Regulations,Global terrorism (GTSR),,non-country
+Terrorism Sanctions Regulations,Terrorism (TSR),,non-country
+Terrorism List Governments Sanctions Regulations,Terrorism list governments (TLGSR),,non-country unless a country is named
+Foreign Narcotics Kingpin Sanctions Regulations,Narcotics (Kingpin),,non-country
+Narcotics Trafficking Sanctions Regulations,Narcotics (SDNT),,non-country
+Weapons of Mass Destruction Proliferators Sanctions Regulations,Nonproliferation (WMD),,non-country
+Transnational Criminal Organizations Sanctions Regulations,Transnational crime,,non-country
+Cyber-Related Sanctions Regulations,Cyber,,non-country
+Global Magnitsky Sanctions Regulations,Global Magnitsky,,non-country
+Rough Diamond,Rough diamonds,,non-country
+North Korea(?: and [A-Za-z ]+?)? Sanctions Regulations,North Korea (NKSR),731,also matches the combined title used for the 2023 BAT settlement
+Democratic People.s Republic of Korea|\bDPRK\b,North Korea,731,
+Ukraine-?\s*/\s*Russia-?\s*[Rr]elated,Russia (Ukraine-related),365,spelling variants of the Ukraine-/Russia-related program
+Crimea region of Ukraine,Russia (Ukraine-related; Crimea),365,EO 13685 targets the Russian-occupied Crimea region; attributed to Russia as with the other Ukraine-related programs
+Former Liberian Regime of Charles Taylor Sanctions Regulations,Liberia (former regime),450,

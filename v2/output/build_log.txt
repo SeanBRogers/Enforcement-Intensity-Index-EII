@@ -1,5 +1,5 @@
 EII v2 partial build
-Run: 2026-10-27 15:28:52 EDT | R version 4.3.3 (2024-02-29) | countrycode 1.9.0 
+Run: 2026-10-27 16:15:57 EDT | R version 4.3.3 (2024-02-29) | countrycode 1.9.0 
 Frame: 11916 country-years, 201 states, 1950-2025 (2025 = 2024 membership carried forward; US excluded) 
 GSDB v4: 1547 cases; 589 name the United States among senders; begin 1950-2023, end max 2023 (ongoing cases coded end = 2023) 
 GSDB targets: 138 names mapped to COW codes (crosswalk_gsdb_targets.csv); 9 case-targets unassigned (not COW states): Balkans; Hong Kong; ICC Rome Statute Signatories; League of Arab States; Palestine 
@@ -28,5 +28,6 @@ Kinetic: 156 US-party conflict-target-years from 33 conflicts; GW codes without 
 Kinetic target-years outside the frame: 0 
 Posture set missing in 45 US-party conflict country-years from 2018 (official reports omit war-zone deployments; zeros there are not observed zeros) 
 Posture: country-years with no troopdata row (missing): 134 
-Wrote EII_v2_partial.csv: 11916 rows, 12 columns 
-Not yet built: financial (SDN) channel, penalties channel, multilateral block, burden blocks, covariates 
+Penalties: 2157 program-attributed penalty-country counts merged; program country-years outside the frame: 0 
+Wrote EII_v2_partial.csv: 11916 rows, 14 columns 
+Not yet built: financial (SDN) channel, multilateral block, burden blocks, covariates 

@@ -1,0 +1,15 @@
+EII v2 penalties build
+Run: 2026-10-27 16:15:50 EDT | R version 4.3.3 (2024-02-29) | pdftotext version 24.02.0 
+OFAC index: 1058 entries, 345 documents, 2003-2025; 23 year-total rows set aside 
+Check against OFAC's own year totals: count matches in 23/23 years; dollars in 22/23 
+  2004: entries n=514 vs OFAC 514; $3,442,156 vs OFAC $3,387,156 
+Blank count cells set to 1: 1; blank amount cells (findings of violation, $0): 7 
+Entries whose date year differs from their page year: 0 
+Multi-entry narrative reports: 267 entries placed in their own block; 5 could not be placed 
+Entries for individuals: 228 (1219 penalties); for firms and organizations: 826 (833 penalties) 
+Entries: 1058 (2052 penalties), of which 4 are 'None' placeholders for months without penalties 
+Program found: 1051; no program found: 3 entries (13 penalties) 
+Entries with a country program: 995; non-country program only: 56 
+Location found: 423 entries (US: 383); not found: 635 
+Document formats: narrative 514, table 544 
+Country-years with program-attributed penalties: 144; with location-attributed penalties: 53 (of which US-located: 20 years) 

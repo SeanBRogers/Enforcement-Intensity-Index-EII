@@ -1,0 +1,57 @@
+part,from_year,to_year,program,program_country_ccode,note
+500,2003,2025,North Korea (FACR),731,Foreign Assets Control Regulations; Vietnam and Cambodia provisions lifted before 2003
+501,2003,2025,Reporting procedures,,procedural; no program country
+505,2003,2025,Transaction control,,no program country
+510,2003,2025,North Korea (NKSR),731,
+515,2003,2025,Cuba (CACR),40,
+535,2003,2025,Iran (IACR),630,
+536,2003,2025,Narcotics (SDNT),,non-country
+537,2003,2025,Burma,775,
+538,2003,2025,Sudan,625,
+539,2003,2025,Nonproliferation (WMD trade control),,non-country
+541,2003,2025,Zimbabwe,552,
+542,2003,2025,Syria,652,
+543,2003,2025,Cote d'Ivoire,437,
+544,2003,2025,Nonproliferation (WMD),,non-country
+545,2003,2025,Afghanistan (Taliban),700,
+546,2003,2025,Sudan (Darfur),625,
+547,2003,2025,DRC,490,
+548,2003,2025,Belarus,370,
+549,2003,2025,Lebanon,660,
+550,2003,2025,Libya,620,
+551,2003,2025,Somalia,520,
+552,2003,2025,Yemen,679,
+553,2003,2025,Central African Republic,482,
+554,2003,2025,Burundi,516,
+558,2003,2025,South Sudan,626,
+560,2003,2025,Iran (ITR/ITSR),630,
+561,2003,2025,Iran (IFSR),630,
+562,2003,2025,Iran (IHRSR),630,
+566,2003,2025,Hizballah financial,,non-country
+569,2003,2025,Syria-related,652,
+570,2003,2025,Libya,620,
+575,2003,2025,Iraq,645,
+576,2003,2025,Iraq stabilization,645,
+578,2003,2025,Cyber,,non-country
+579,2003,2025,Election interference,,non-country
+583,2003,2025,Global Magnitsky,,non-country
+584,2003,2025,Magnitsky Act,365,statute targets Russian officials
+585,2003,2025,Yugoslavia/Serbia (FRY),345,
+586,2003,2025,Yugoslavia/Serbia (Kosovo),345,
+587,2003,2015,Yugoslavia/Serbia (Milosevic),345,part number reused
+587,2016,2025,Russia (RuHSR),365,part number reused
+588,2003,2025,Western Balkans,,multi-country; not assigned
+589,2003,2025,Russia (Ukraine-related),365,
+590,2003,2011,Angola (UNITA),540,part number reused
+590,2012,2025,Transnational crime,,non-country; part number reused
+591,2003,2025,Venezuela,101,
+592,2003,2025,Rough diamonds,,non-country
+593,2003,2025,Liberia (former regime),450,
+594,2003,2025,Global terrorism (GTSR),,non-country
+595,2003,2025,Terrorism (TSR),,non-country
+596,2003,2025,Terrorism list governments (TLGSR),,non-country
+597,2003,2025,Foreign terrorist organizations,,non-country
+598,2003,2025,Narcotics (Kingpin),,non-country
+13067,2003,2025,Sudan (EO 13067),625,executive order cited in 2003 tables
+13088,2003,2025,Yugoslavia/Serbia (EO 13088),345,executive order cited in 2003 tables
+13121,2003,2025,Yugoslavia/Serbia (EO 13121),345,executive order cited in 2003 tables (FRY and Kosovo)
