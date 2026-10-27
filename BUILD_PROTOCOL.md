@@ -385,3 +385,14 @@ the repository.
   The financial program count is the primary outcome; penalties secondary;
   kinetic modelled separately. OPEN: whether the financial count is read as
   attention or as expenditure (Q1); the dollar-integration measure (Q6).
+- 2026-10-27, Q1 amended (Sean, 19:18): "Trade coercion is central to the
+  theory." A trade channel is added to the exertion index, kept separate like
+  the others, and built before any model is fit. Reason: tariffs and trade
+  threats are the main US instrument against allies, through which the
+  Handshake's price is extracted (Sean, 19:16: allies "carrying water for the
+  US ... a handshake but penance"). The test that separates penance from
+  Lake's (2009) hierarchy-as-contract: payments to the US (arms purchases,
+  Treasury holdings, concessions) rise with US pressure regardless of the
+  ally's security needs. Sources, event unit and coverage are OPEN and are
+  settled here before the first pull. Recorded at the same time, out of scope
+  for v2: coercion by non-government US actors (markets, banks), Q2.
