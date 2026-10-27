@@ -396,3 +396,9 @@ the repository.
   ally's security needs. Sources, event unit and coverage are OPEN and are
   settled here before the first pull. Recorded at the same time, out of scope
   for v2: coercion by non-government US actors (markets, banks), Q2.
+- 2026-10-27, trade channel (Sean, 19:22): antidumping and countervailing
+  duties go in an outside block, not the index (petition-driven by US firms
+  and decided quasi-judicially; Q2). Threats: Sean, 19:22: "really
+  problematic, especially recently. But it is consistent with the [storm] I
+  theorize." Rule for threats OPEN (proposal in the session: formal steps
+  only, recorded separately from impositions).
