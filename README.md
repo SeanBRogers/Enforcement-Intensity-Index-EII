@@ -4,6 +4,15 @@ Zero-inflated negative binomial estimation of enforcement intensity in strategic
 
 **Sean Rogers** | University of South Carolina | Department of Political Science
 
+> **Status (2026-10-27): v1 is retired; v2 is being rebuilt from raw sources.**
+> Everything below this box describes v1 (tag `v1-2026-10-17`, commit `686d009`),
+> kept as the benchmark v2 is compared against. Its results should not be cited
+> as current. The v2 build is governed by [`BUILD_PROTOCOL.md`](BUILD_PROTOCOL.md),
+> committed before any v2 source was downloaded. A **partial** v2 release (all
+> states, 1950–2025: US sanctions flag, kinetic and posture channels) is in
+> [`v2/`](v2/), documented in [`v2/CODEBOOK_v2.md`](v2/CODEBOOK_v2.md). It is not
+> for estimation until every channel is built and validated.
+
 ## Overview
 
 The EII measures enforcement intensity across sanctioned states by triangulating institutional primary sources across four layers (listed below). This approach addresses a core measurement problem: the institutions producing enforcement data have survival incentives to misreport. No single source can be treated as ground truth. The EII builds a composite from sources that misreport in different directions for different institutional reasons. Whether the composite recovers signal that a single source obscures is something the project tests, not an established result; Layer 2 alone contributes 92.8% of all index points (`codebook_checks_R.Rout`).

@@ -1,0 +1,157 @@
+"conflict_id","year","gwno","kind","type","intensity","location","ccode"
+"230",2009,678,"in_state",4,2,"Yemen (North Yemen)",679
+"230",2010,678,"in_state",4,1,"Yemen (North Yemen)",679
+"230",2011,678,"in_state",4,2,"Yemen (North Yemen)",679
+"230",2012,678,"in_state",4,2,"Yemen (North Yemen)",679
+"230",2013,678,"in_state",4,1,"Yemen (North Yemen)",679
+"230",2014,678,"in_state",4,2,"Yemen (North Yemen)",679
+"232",1954,710,"vs_state",2,2,"China, Taiwan",710
+"232",1958,710,"vs_state",2,2,"China, Taiwan",710
+"235",1950,731,"vs_state",2,2,"North Korea, South Korea",731
+"235",1951,731,"vs_state",2,2,"North Korea, South Korea",731
+"235",1952,731,"vs_state",2,2,"North Korea, South Korea",731
+"235",1953,731,"vs_state",2,2,"North Korea, South Korea",731
+"242",1961,40,"vs_state",4,1,"Cuba",40
+"249",1962,817,"in_state",4,2,"South Vietnam",817
+"249",1963,817,"in_state",4,2,"South Vietnam",817
+"249",1964,817,"in_state",4,2,"South Vietnam",817
+"259",2004,645,"in_state",4,2,"Iraq",645
+"259",2009,645,"in_state",4,2,"Iraq",645
+"259",2010,645,"in_state",4,1,"Iraq",645
+"259",2011,645,"in_state",4,1,"Iraq",645
+"259",2014,645,"in_state",4,2,"Iraq",645
+"259",2005,645,"in_state",4,2,"Iraq",645
+"259",2006,645,"in_state",4,2,"Iraq",645
+"259",2007,645,"in_state",4,2,"Iraq",645
+"259",2015,645,"in_state",4,2,"Iraq",645
+"259",2016,645,"in_state",4,2,"Iraq",645
+"260",1984,660,"in_state",4,2,"Lebanon",660
+"259",2008,645,"in_state",4,2,"Iraq",645
+"259",2017,645,"in_state",4,2,"Iraq",645
+"259",2018,645,"in_state",4,1,"Iraq",645
+"259",2019,645,"in_state",4,1,"Iraq",645
+"259",2020,645,"in_state",4,1,"Iraq",645
+"259",2021,645,"in_state",4,1,"Iraq",645
+"259",2022,645,"in_state",4,1,"Iraq",645
+"259",2023,645,"in_state",4,1,"Iraq",645
+"259",2024,645,"in_state",4,1,"Iraq",645
+"259",2025,645,"in_state",4,1,"Iraq",645
+"260",1983,660,"in_state",4,1,"Lebanon",660
+"262",1963,812,"in_state",4,2,"Laos",812
+"262",1964,812,"in_state",4,2,"Laos",812
+"262",1965,812,"in_state",4,2,"Laos",812
+"262",1966,812,"in_state",4,2,"Laos",812
+"262",1967,812,"in_state",4,2,"Laos",812
+"262",1968,812,"in_state",4,2,"Laos",812
+"262",1969,812,"in_state",4,2,"Laos",812
+"262",1970,812,"in_state",4,2,"Laos",812
+"262",1971,812,"in_state",4,2,"Laos",812
+"262",1972,812,"in_state",4,2,"Laos",812
+"262",1973,812,"in_state",4,2,"Laos",812
+"293",1965,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"293",1966,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"293",1967,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"293",1968,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"293",1969,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"293",1970,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"293",1971,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"293",1972,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"293",1973,816,"vs_state",2,2,"South Vietnam, Vietnam (North Vietnam)",816
+"300",1970,811,"in_state",4,2,"Cambodia (Kampuchea)",811
+"300",1971,811,"in_state",4,2,"Cambodia (Kampuchea)",811
+"300",1972,811,"in_state",4,2,"Cambodia (Kampuchea)",811
+"300",1973,811,"in_state",4,2,"Cambodia (Kampuchea)",811
+"333",2003,700,"in_state",4,1,"Afghanistan",700
+"333",2004,700,"in_state",4,1,"Afghanistan",700
+"333",2005,700,"in_state",4,2,"Afghanistan",700
+"333",2006,700,"in_state",4,2,"Afghanistan",700
+"333",2015,700,"in_state",4,2,"Afghanistan",700
+"333",2016,700,"in_state",4,2,"Afghanistan",700
+"333",2017,700,"in_state",4,2,"Afghanistan",700
+"333",2018,700,"in_state",4,2,"Afghanistan",700
+"333",2019,700,"in_state",4,2,"Afghanistan",700
+"333",2021,700,"in_state",4,2,"Afghanistan",700
+"333",2007,700,"in_state",4,2,"Afghanistan",700
+"333",2008,700,"in_state",4,2,"Afghanistan",700
+"333",2020,700,"in_state",4,2,"Afghanistan",700
+"333",2009,700,"in_state",4,2,"Afghanistan",700
+"333",2010,700,"in_state",4,2,"Afghanistan",700
+"333",2011,700,"in_state",4,2,"Afghanistan",700
+"333",2012,700,"in_state",4,2,"Afghanistan",700
+"333",2013,700,"in_state",4,2,"Afghanistan",700
+"333",2014,700,"in_state",4,2,"Afghanistan",700
+"337",2015,520,"in_state",4,2,"Somalia",520
+"337",2016,520,"in_state",4,2,"Somalia",520
+"337",2017,520,"in_state",4,2,"Somalia",520
+"337",2018,520,"in_state",4,2,"Somalia",520
+"337",2019,520,"in_state",4,2,"Somalia",520
+"337",2020,520,"in_state",4,2,"Somalia",520
+"337",2021,520,"in_state",4,2,"Somalia",520
+"337",2022,520,"in_state",4,2,"Somalia",520
+"337",2023,520,"in_state",4,2,"Somalia",520
+"337",2024,520,"in_state",4,2,"Somalia",520
+"337",2025,520,"in_state",4,2,"Somalia",520
+"350",1983,55,"vs_state",2,1,"Grenada, United States of America",55
+"368",1989,95,"vs_state",2,1,"Panama, United States of America",95
+"371",1991,645,"vs_state",2,2,"Iraq, Kuwait",645
+"372",2015,432,"in_state",4,1,"Mali",432
+"412",1999,345,"vs_state",4,2,"Serbia (Yugoslavia)",345
+"416",2014,482,"in_state",4,1,"Central African Republic",482
+"416",2022,482,"in_state",4,1,"Central African Republic",482
+"420",2003,645,"vs_state",2,2,"Australia, Iraq, United Kingdom, United States of America",645
+"430",2021,436,"in_state",4,1,"Niger",436
+"430",2022,436,"in_state",4,1,"Niger",436
+"11347",2013,432,"in_state",4,1,"Mali",432
+"11347",2014,432,"in_state",4,1,"Mali",432
+"11347",2015,432,"in_state",4,1,"Mali",432
+"11347",2016,432,"in_state",4,1,"Mali",432
+"11347",2017,432,"in_state",4,1,"Mali",432
+"11347",2018,432,"in_state",4,1,"Mali",432
+"11347",2019,432,"in_state",4,1,"Mali",432
+"11347",2020,432,"in_state",4,1,"Mali",432
+"11347",2021,432,"in_state",4,1,"Mali",432
+"11347",2022,432,"in_state",4,2,"Mali",432
+"11347",2023,432,"in_state",4,1,"Mali",432
+"13604",2025,652,"in_state",4,1,"Syria",652
+"13637",2017,700,"in_state",4,2,"Afghanistan",700
+"13637",2018,700,"in_state",4,2,"Afghanistan",700
+"13637",2015,700,"in_state",4,1,"Afghanistan",700
+"13637",2016,700,"in_state",4,2,"Afghanistan",700
+"13637",2019,700,"in_state",4,2,"Afghanistan",700
+"13637",2020,700,"in_state",4,1,"Afghanistan",700
+"13637",2021,700,"in_state",4,1,"Afghanistan",700
+"13639",2017,436,"in_state",4,1,"Niger",436
+"13639",2018,436,"in_state",4,1,"Niger",436
+"13639",2019,436,"in_state",4,1,"Niger",436
+"13639",2020,436,"in_state",4,1,"Niger",436
+"13639",2021,436,"in_state",4,1,"Niger",436
+"13639",2022,436,"in_state",4,1,"Niger",436
+"13641",2025,475,"in_state",4,2,"Nigeria",475
+"13646",2019,501,"in_state",4,1,"Kenya",501
+"13646",2020,501,"in_state",4,1,"Kenya",501
+"13646",2021,501,"in_state",4,1,"Kenya",501
+"13692",2001,700,"vs_state",2,2,"Afghanistan, United Kingdom, United States of America",700
+"13694",2016,620,"in_state",4,2,"Libya",620
+"13694",2017,620,"in_state",4,1,"Libya",620
+"13694",2018,620,"in_state",4,1,"Libya",620
+"13694",2019,620,"in_state",4,1,"Libya",620
+"14113",2017,432,"in_state",4,1,"Mali",432
+"14113",2018,432,"in_state",4,1,"Mali",432
+"14113",2019,432,"in_state",4,1,"Mali",432
+"14113",2020,432,"in_state",4,1,"Mali",432
+"14113",2021,432,"in_state",4,1,"Mali",432
+"14113",2022,432,"in_state",4,1,"Mali",432
+"14113",2023,432,"in_state",4,1,"Mali",432
+"14197",2019,520,"in_state",4,1,"Somalia",520
+"14197",2020,520,"in_state",4,1,"Somalia",520
+"14197",2021,520,"in_state",4,1,"Somalia",520
+"14197",2025,520,"in_state",4,1,"Somalia",520
+"14609",2020,630,"vs_state",2,1,"Iran, Israel",630
+"14609",2021,630,"vs_state",2,1,"Iran, Israel",630
+"14609",2022,630,"vs_state",2,1,"Iran, Israel",630
+"14609",2023,630,"vs_state",2,1,"Iran, Israel",630
+"14609",2024,630,"vs_state",2,1,"Iran, Israel",630
+"14609",2025,630,"vs_state",2,2,"Iran, Israel",630
+"15283",2015,482,"in_state",4,1,"Central African Republic",482
+"16099",2024,678,"vs_state",2,1,"United Kingdom, United States of America, Yemen (North Yemen)",679
+"16099",2025,678,"vs_state",2,1,"United Kingdom, United States of America, Yemen (North Yemen)",679

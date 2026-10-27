@@ -1,0 +1,32 @@
+EII v2 partial build
+Run: 2026-10-27 15:28:52 EDT | R version 4.3.3 (2024-02-29) | countrycode 1.9.0 
+Frame: 11916 country-years, 201 states, 1950-2025 (2025 = 2024 membership carried forward; US excluded) 
+GSDB v4: 1547 cases; 589 name the United States among senders; begin 1950-2023, end max 2023 (ongoing cases coded end = 2023) 
+GSDB targets: 138 names mapped to COW codes (crosswalk_gsdb_targets.csv); 9 case-targets unassigned (not COW states): Balkans; Hong Kong; ICC Rome Statute Signatories; League of Arab States; Palestine 
+Case-target-years outside the frame (state not a system member that year), dropped: 18 — by code: 531 x16, 541 x2 
+Kinetic unassigned (no foreign target): conflict 238 1950 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2001 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2002 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2003 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2004 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2005 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2006 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2007 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2008 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2009 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2010 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2011 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2012 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2013 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2014 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2015 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2016 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2017 United States of America 
+Kinetic unassigned (no foreign target): conflict 418 2019 United States of America 
+Kinetic GW codes with no countrycode match, taken as the identical COW code (valid COW member that year): 816 (South Vietnam, Vietnam (North Vietnam)); 55 (Grenada, United States of America) 
+Kinetic: 156 US-party conflict-target-years from 33 conflicts; GW codes without a COW code: 0 
+Kinetic target-years outside the frame: 0 
+Posture set missing in 45 US-party conflict country-years from 2018 (official reports omit war-zone deployments; zeros there are not observed zeros) 
+Posture: country-years with no troopdata row (missing): 134 
+Wrote EII_v2_partial.csv: 11916 rows, 12 columns 
+Not yet built: financial (SDN) channel, penalties channel, multilateral block, burden blocks, covariates 

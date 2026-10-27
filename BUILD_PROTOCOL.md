@@ -49,7 +49,7 @@ cannot push tags).
 | Source | Version / coverage | Use and consequence |
 |---|---|---|
 | COW State System Membership | v2024, 1816–Dec 2024 | Country list (D1). 2025 carried forward from 2024 membership, documented |
-| Global Sanctions Database (GSDB) | Release 5, 1950–2025, 1,794 cases | Sanctioned flag (D2). Begin/end years and sender/target fields to be confirmed from the R5 codebook before use; if absent, D2 is revisited and logged |
+| Global Sanctions Database (GSDB) | Release 5, 1950–2025, 1,794 cases (by request form); v4 in hand, 1950–2023, 1,547 cases | Sanctioned flag (D2). v4 has sender, target, begin and end per case; used until R5 is received (section 8) |
 | OFAC archive of SDN list changes | Text 1994–2023; PDF 2001–present | Financial channel (D3). 2024–2025 only as PDF. Pre-1994 needs the Federal Register |
 | OFAC civil penalties and enforcement information | By-year pages 2003–2026. 2025: 14 actions, $265,746,819 | Penalties channel. Missing, not zero, before 2003. The 2025 figures are a hand-check |
 | UCDP/PRIO Armed Conflict Dataset | v26.1, 1946–2025 | Kinetic channel (D5), the one source spanning 1950–2025 |
@@ -280,3 +280,24 @@ the repository.
 - 2026-10-27: corrected section 1 and section 7, step 1. The first commit
   said the v1 tag was pushed with it; the build session is not permitted to
   push tags, so Sean pushes it.
+- 2026-10-27, first pulls (partial release). Changes found necessary once the
+  sources were in hand, each applied to every year by the same code:
+  - D2: GSDB release 5 is distributed only by request form and had not been
+    received; the sanctioned flag uses GSDB v4 (the author's copy, file dated
+    2024-06-13), which codes ongoing cases as ending in 2023. The flag is
+    missing for 2024–2025 until release 5 replaces v4.
+  - D5 and Q8: the kinetic weight is UCDP's intensity level, not troops.
+    `troopdata` 1.1.0 has no missing values but records 0 or near-0 US troops
+    where US forces were publicly reported (Syria 2022 and 2025, Iraq 2022 and
+    2025): official reports omit war-zone deployments from about 2018 and the
+    source fills them with 0. Posture is set missing in US-party conflict
+    country-years from 2018.
+  - Q8: the kinetic channel is two indicators, never summed: force against a
+    state's government (`kin_vs_state`) and force spent inside a state
+    alongside its government (`kin_in_state`).
+  - GSDB label quirks mapped by case year: "South Vietnam" after 1975 is
+    unified Vietnam; "Yemen, North" after 1990 is unified Yemen.
+  - The penalties channel is deferred: OFAC's yearly enforcement tables carry
+    no sanctions-program column, so country attribution needs each of 346
+    linked documents (1,081 entries, 2003–2025; 23 entries have no document
+    link).
