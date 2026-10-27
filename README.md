@@ -9,9 +9,10 @@ Zero-inflated negative binomial estimation of enforcement intensity in strategic
 > kept as the benchmark v2 is compared against. Its results should not be cited
 > as current. The v2 build is governed by [`BUILD_PROTOCOL.md`](BUILD_PROTOCOL.md),
 > committed before any v2 source was downloaded. A **partial** v2 release (all
-> states, 1950–2025: US sanctions flag, kinetic and posture channels) is in
-> [`v2/`](v2/), documented in [`v2/CODEBOOK_v2.md`](v2/CODEBOOK_v2.md). It is not
-> for estimation until every channel is built and validated.
+> states, 1950–2025: US sanctions flag and the financial, penalties, kinetic and
+> posture channels) is in [`v2/`](v2/), documented in
+> [`v2/CODEBOOK_v2.md`](v2/CODEBOOK_v2.md). It is not for estimation until the
+> multilateral and burden blocks are built and every channel is validated.
 
 ## Overview
 

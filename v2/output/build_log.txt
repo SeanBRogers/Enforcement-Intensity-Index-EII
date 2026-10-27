@@ -1,5 +1,5 @@
 EII v2 partial build
-Run: 2026-10-27 17:48:26 EDT | R version 4.3.3 (2024-02-29) | countrycode 1.9.0 
+Run: 2026-10-27 18:00:50 EDT | R version 4.3.3 (2024-02-29) | countrycode 1.9.0 
 Frame: 11916 country-years, 201 states, 1950-2025 (2025 = 2024 membership carried forward; US excluded) 
 GSDB-R5 case list: 1794 cases; 686 name the United States among senders (49 with several targets) 
 GSDB-R5 file check: cases with a blank end_year: 0; ending 2025: 828 (the codebook says ongoing cases have a blank end_year; this file codes them 2025, which leaves the flag unchanged) 
