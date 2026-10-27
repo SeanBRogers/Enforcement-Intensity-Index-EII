@@ -380,3 +380,8 @@ the repository.
   files (panel, penalties, financial, kinetic, crosswalk) matched commit
   `0535c90` byte for byte. Two consecutive runs of the financial build were
   also identical.
+- 2026-10-27, estimation order (Sean, 18:43): covariates are built before
+  any model is fit; section 7 stands (no estimation on the partial release).
+  The financial program count is the primary outcome; penalties secondary;
+  kinetic modelled separately. OPEN: whether the financial count is read as
+  attention or as expenditure (Q1); the dollar-integration measure (Q6).
