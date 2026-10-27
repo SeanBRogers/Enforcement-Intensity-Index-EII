@@ -301,3 +301,12 @@ the repository.
     no sanctions-program column, so country attribution needs each of 346
     linked documents (1,081 entries, 2003–2025; 23 entries have no document
     link).
+- 2026-10-27, Q8 attribution (Sean, 15:53): financial and penalty events are
+  attributed twice. `program_country` is the target of the sanctions program
+  named (e.g., Iran for the Iranian Transactions and Sanctions Regulations)
+  and feeds the index. `location_country` is where the listed or penalized
+  party is located (e.g., a UAE company under the Iran program), kept as a
+  second attribution to test the soft-target shift (Q3, proposition 3).
+  Non-country programs (narcotics, terrorism, nonproliferation, cyber,
+  human rights) have no program country; their location country is still
+  recorded. GSDB release 5 requested by Sean the same day.
