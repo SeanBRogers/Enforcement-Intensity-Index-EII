@@ -28,8 +28,9 @@ in COW.
 
 | Variable | Definition | Source | Coverage | Misreporting direction |
 |---|---|---|---|---|
-| `under_sanctions_us` | 1 if any GSDB case naming the United States among its senders is active in the year (case begin to end year, inclusive), else 0 | GSDB v4 | 1950–2023; blank 2024–2025 (v4 codes ongoing cases as ending in 2023) | Researcher-coded from public sources; covert measures absent. Recent human-rights and anti-corruption programs raise counts after about 2020 (66 states in 2020, 99 in 2023); treat that rise as a possible recording surge |
-| `us_sanction_cases` | Number of such active cases | GSDB v4 | as above | as above |
+| `under_sanctions_us` | 1 if a GSDB case naming the United States among its senders (alone or with named partners) is in force against the state in the year, else 0. UN- or coalition-only cases are excluded | GSDB release 5: US-named cases from the case list; targets and years from the dyadic file | 1950–2025 | Researcher-coded from public sources; covert measures absent. Multi-target cases (e.g., designations of individuals in many countries at once; the 2002–2009 case against International Criminal Court signatories) flag every named state. States flagged: 47 in 1990, 90 in 2020, 123 in 2025 |
+| `under_sanctions_us_single` | As `under_sanctions_us`, counting only cases with a single target (GSDB `target_mult` = 0) | as above | 1950–2025 | Separates sanctions aimed at a state from multi-country designation cases. States flagged: 31 in 1990, 69 in 2020, 95 in 2025 |
+| `us_sanction_cases` | Number of US-named GSDB cases in force against the state in the year | as above | 1950–2025 | The GSDB codebook warns that case counts are not intensity measures: an escalating regime can generate several cases and an equally severe embargo one |
 | `kin_vs_state` | 1 if the US is a party to an armed conflict against this state's government in the year: an interstate conflict with this state on the other side, or a conflict in which the US backs the side opposing this government | UCDP/PRIO ACD v26.1 | 1950–2025 | 25-battle-death threshold: misses low-intensity, covert and stand-off US action (e.g., Iraq no-fly-zone strikes 1992–2002) |
 | `kin_vs_state_intensity` | Highest UCDP intensity among those conflicts: 0 none, 1 = 25–999 battle deaths, 2 = 1,000 or more | UCDP/PRIO ACD v26.1 | 1950–2025 | as above |
 | `kin_in_state` | 1 if the US fights alongside this state's government, inside its territory, against non-state actors | UCDP/PRIO ACD v26.1 | 1950–2025 | as above; UCDP's episode coding starts the US-backed Afghanistan episode in 2003, so 2002 reads 0 |
@@ -45,20 +46,26 @@ government (`BUILD_PROTOCOL.md`, Q8). Posture is never summed with either.
 
 ## Mapping rules (all logged in `build_log.txt`)
 
-- GSDB lists several targets in one field. Names containing commas ("Korea,
-  North", "Yemen, North", "Congo, Democratic Republic of the", "Gambia, The",
-  "Egypt, Arab Rep.") are protected before splitting.
-- GSDB names are mapped to COW codes with `countrycode` 1.9.0 plus an explicit
-  table for historical and ambiguous names (`crosswalk_gsdb_targets.csv`).
-  Germany is 260 through 1990 and 255 after; Yemen is 678 before 1990 and 679
-  after.
-- GSDB label quirks: "South Vietnam" in cases after 1975 is unified Vietnam
-  (816; cases 195, 200, 201, 519, 809); "Yemen, North" after 1990 is unified
-  Yemen (679; cases 962, 1093, 1204).
-- Not COW states, so not assigned: Balkans, Hong Kong, ICC Rome Statute
-  Signatories, League of Arab States, Palestine.
-- Case-years before a target became a state are dropped: Eritrea before 1993
-  (16 case-years), Mozambique 1970–1971 (2).
+- Sanctions flag: cases are selected from the GSDB-R5 case list (the United
+  States named among the senders); target countries and years come from the
+  dyadic file's United States sender rows that draw on those cases, as the
+  GSDB codebook advises for dyad-year indicators (its section 8.1). Dyadic rows
+  that draw only on UN or coalition cases (450 of 4,534) are excluded under Q2.
+- Target ISO3 codes (USITC Dynamic Gravity) are mapped to COW with
+  `countrycode`, plus CSK 315, DDR 265, KSV 347, VDR 816, RHO 552, SRB 345,
+  SVU 365, and year rules: DEU is 260 through 1990 and 255 after; VNM (GSDB's
+  "South Vietnam") is 817 through 1975 and 816 after; YEM (GSDB's "Yemen,
+  North") is 678 before 1990 and 679 after. GSDB labels some current states by
+  historical names (e.g., "Malaya" for Malaysia, "Ceylon" for Sri Lanka); the
+  ISO3 codes resolve these. The mapping is written to
+  `crosswalk_gsdb_targets.csv`.
+- Not COW states, so not assigned: Hong Kong, Palestine.
+- Target-years before a target was a COW state are dropped (44): Yugoslav
+  successor states named before independence (Montenegro, Kosovo, Macedonia,
+  Croatia, Bosnia, Slovenia), Eritrea before 1993, Mozambique 1970–1971.
+- The GSDB-R5 codebook says ongoing cases have a blank `end_year`; the
+  distributed case list has none, and 828 cases end in 2025. Either way an
+  ongoing case is in force through 2025, so the flag is unaffected.
 - UCDP uses Gleditsch–Ward codes. They are converted with `countrycode`; codes
   it does not convert but which are valid COW codes that year (816 North
   Vietnam, 55 Grenada) are taken as identical. GW 678 after 1990 is COW 679;

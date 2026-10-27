@@ -1,140 +1,184 @@
-"target_name","ccode"
-"Afghanistan",700
-"Albania",339
-"Algeria",615
-"Angola",540
-"Antigua and Barbuda",58
-"Argentina",160
-"Austria",305
-"Azerbaijan",373
-"Bangladesh",771
-"Belarus",370
-"Belgium",211
-"Belize",80
-"Benin",434
-"Bolivia",145
-"Bosnia and Herzegovina",346
-"Brazil",140
-"Bulgaria",355
-"Burkina Faso",439
-"Burundi",516
-"Cambodia",811
-"Cameroon",471
-"Canada",20
-"Central African Republic",482
-"Ceylon",780
-"Chad",483
-"Chile",155
-"China",710
-"Colombia",100
-"Congo DR",490
-"Costa Rica",94
-"Cote d'Ivoire",437
-"Croatia",344
-"Cuba",40
-"Cyprus",352
-"Czechoslovakia",315
-"Dominica",54
-"Dominican Republic",42
-"Ecuador",130
-"Egypt",651
-"El Salvador",92
-"Equatorial Guinea",411
-"Eritrea",531
-"Ethiopia (excludes Eritrea)",530
-"Fiji",950
-"France",220
-"Gabon",481
-"Gambia",420
-"German Democratic Republic",265
-"Germany",260
-"Ghana",452
-"Greece",350
-"Guatemala",90
-"Guinea",438
-"Guinea-Bissau",404
-"Guyana",110
-"Haiti",41
-"Honduras",91
-"Hungary",310
-"India",750
-"Indonesia",850
-"Iran",630
-"Iraq",645
-"Ireland",205
-"Israel",666
-"Jamaica",51
-"Kenya",501
-"Korea North",731
-"Korea South",732
-"Kosovo",347
-"Kuwait",690
-"Kyrgyzstan",703
-"Laos",812
-"Latvia",367
-"Lebanon",660
-"Lesotho",570
-"Liberia",450
-"Libya",620
-"Macedonia",343
-"Malagasy Republic",580
-"Malawi",553
-"Malaya",820
-"Maldives",781
-"Mali",432
-"Malta",338
-"Marshall Islands",983
-"Mauritania",435
-"Mexico",70
-"Moldova",359
-"Montenegro",341
-"Mozambique",541
-"Myanmar",775
-"Nepal",790
-"Nicaragua",93
-"Niger",436
-"Nigeria",475
-"North Vietnam",816
-"Pakistan",770
-"Panama",95
-"Paraguay",150
-"Peru",135
-"Philippines",840
-"Poland",290
-"Rhodesia",552
-"Romania",360
-"Russia",365
-"Rwanda",517
-"Saudi Arabia",670
-"Serbia",345
-"Sierra Leone",451
-"Singapore",830
-"Slovenia",349
-"Somalia",520
-"South Africa",560
-"South Sudan",626
-"South Vietnam",816
-"South Vietnam",817
-"Soviet Union",365
-"Sudan",625
-"Suriname",115
-"Sweden",380
-"Switzerland",225
-"Syria",652
-"Taiwan",713
-"Tajikistan",702
-"Tanzania",510
-"Thailand",800
-"Togo",461
-"Transjordan",663
-"Turkey",640
-"Uganda",500
-"Ukraine",369
-"United Arab Emirates",696
-"Uruguay",165
-"Uzbekistan",704
-"Venezuela",101
-"Yemen North",679
-"Yugoslavia",345
-"Zambia",551
-"Zimbabwe",552
+"sanctioned_state","sanctioned_state_iso3","ccode"
+"Afghanistan","AFG",700
+"Albania","ALB",339
+"Algeria","DZA",615
+"Andorra","AND",232
+"Angola","AGO",540
+"Antigua and Barbuda","ATG",58
+"Argentina","ARG",160
+"Australia","AUS",900
+"Austria","AUT",305
+"Azerbaijan","AZE",373
+"Bahrain","BHR",692
+"Bangladesh","BGD",771
+"Barbados","BRB",53
+"Belarus","BLR",370
+"Belgium","BEL",211
+"Belize","BLZ",80
+"Benin","BEN",434
+"Bolivia","BOL",145
+"Bosnia and Herzegovina","BIH",346
+"Botswana","BWA",571
+"Brazil","BRA",140
+"Bulgaria","BGR",355
+"Burkina Faso","BFA",439
+"Burma","MMR",775
+"Burundi","BDI",516
+"Cambodia","KHM",811
+"Cameroon","CMR",471
+"Canada","CAN",20
+"Cape Verde","CPV",402
+"Central African Republic","CAF",482
+"Ceylon","LKA",780
+"Chad","TCD",483
+"Chile","CHL",155
+"China","CHN",710
+"Colombia","COL",100
+"Comoros","COM",581
+"Congo, Democratic Republic of the","COD",490
+"Congo, Republic of the","COG",484
+"Costa Rica","CRI",94
+"Cote d'Ivoire","CIV",437
+"Croatia","HRV",344
+"Cuba","CUB",40
+"Cyprus","CYP",352
+"Czech Republic","CZE",316
+"Czechoslovakia","CSK",315
+"Denmark","DNK",390
+"Djibouti","DJI",522
+"Dominica","DMA",54
+"Dominican Republic","DOM",42
+"Ecuador","ECU",130
+"Egypt, Arab Rep.","EGY",651
+"El Salvador","SLV",92
+"Equatorial Guinea","GNQ",411
+"Eritrea","ERI",531
+"Estonia","EST",366
+"Ethiopia (excludes Eritrea)","ETH",530
+"Fiji","FJI",950
+"Finland","FIN",375
+"France","FRA",220
+"Gabon","GAB",481
+"Gambia, The","GMB",420
+"Georgia","GEO",372
+"German Democratic Republic","DDR",265
+"Germany","DEU",255
+"Germany","DEU",260
+"Ghana","GHA",452
+"Greece","GRC",350
+"Grenada","GRD",55
+"Guatemala","GTM",90
+"Guinea","GIN",438
+"Guinea-Bissau","GNB",404
+"Guyana","GUY",110
+"Haiti","HTI",41
+"Honduras","HND",91
+"Hungary","HUN",310
+"Iceland","ISL",395
+"India","IND",750
+"Indonesia","IDN",850
+"Iran","IRN",630
+"Iraq","IRQ",645
+"Ireland","IRL",205
+"Israel","ISR",666
+"Italy","ITA",325
+"Jamaica","JAM",51
+"Kenya","KEN",501
+"Korea, North","PRK",731
+"Korea, South","KOR",732
+"Kosovo","KSV",347
+"Kuwait","KWT",690
+"Kyrgyzstan","KGZ",703
+"Laos","LAO",812
+"Latvia","LVA",367
+"Lebanon","LBN",660
+"Lesotho","LSO",570
+"Liberia","LBR",450
+"Libya","LBY",620
+"Liechtenstein","LIE",223
+"Lithuania","LTU",368
+"Luxembourg","LUX",212
+"Macedonia","MKD",343
+"Malagasy Republic","MDG",580
+"Malawi","MWI",553
+"Malaya","MYS",820
+"Maldives","MDV",781
+"Mali","MLI",432
+"Malta","MLT",338
+"Marshall Islands","MHL",983
+"Mauritania","MRT",435
+"Mauritius","MUS",590
+"Mexico","MEX",70
+"Moldova","MDA",359
+"Mongolia","MNG",712
+"Montenegro","MNE",341
+"Morocco","MAR",600
+"Mozambique","MOZ",541
+"Muscat and Oman","OMN",698
+"Myanmar","MMR",775
+"Namibia","NAM",565
+"Nauru","NRU",970
+"Nepal","NPL",790
+"Netherlands","NLD",210
+"New Zealand","NZL",920
+"Nicaragua","NIC",93
+"Niger","NER",436
+"Nigeria","NGA",475
+"North Vietnam","VDR",816
+"Norway","NOR",385
+"Pakistan","PAK",770
+"Palau","PLW",986
+"Panama","PAN",95
+"Paraguay","PRY",150
+"Peru","PER",135
+"Philippines","PHL",840
+"Poland","POL",290
+"Portugal","PRT",235
+"Qatar","QAT",694
+"Rhodesia","RHO",552
+"Romania","ROU",360
+"Russia","RUS",365
+"Rwanda","RWA",517
+"Saint Lucia","LCA",56
+"San Marino","SMR",331
+"Saudi Arabia","SAU",670
+"Senegal","SEN",433
+"Serbia","SRB",345
+"Seychelles","SYC",591
+"Sierra Leone","SLE",451
+"Singapore","SGP",830
+"Slovakia","SVK",317
+"Slovenia","SVN",349
+"Somalia","SOM",520
+"South Africa","ZAF",560
+"South Sudan","SSD",626
+"South Vietnam","VNM",816
+"South Vietnam","VNM",817
+"Soviet Union","SVU",365
+"Spain","ESP",230
+"Sudan","SDN",625
+"Suriname","SUR",115
+"Sweden","SWE",380
+"Switzerland","CHE",225
+"Syria","SYR",652
+"Taiwan","TWN",713
+"Tajikistan","TJK",702
+"Tanzania","TZA",510
+"Thailand","THA",800
+"Togo","TGO",461
+"Transjordan","JOR",663
+"Trinidad and Tobago","TTO",52
+"Tunisia","TUN",616
+"Turkey","TUR",640
+"Uganda","UGA",500
+"Ukraine","UKR",369
+"United Arab Emirates","ARE",696
+"United Kingdom","GBR",200
+"Uruguay","URY",165
+"Uzbekistan","UZB",704
+"Venezuela","VEN",101
+"Western Samoa","WSM",990
+"Yemen, North","YEM",678
+"Yemen, North","YEM",679
+"Zambia","ZMB",551
+"Zimbabwe","ZWE",552

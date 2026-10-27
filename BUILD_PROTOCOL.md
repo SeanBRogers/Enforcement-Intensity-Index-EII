@@ -49,7 +49,7 @@ cannot push tags).
 | Source | Version / coverage | Use and consequence |
 |---|---|---|
 | COW State System Membership | v2024, 1816–Dec 2024 | Country list (D1). 2025 carried forward from 2024 membership, documented |
-| Global Sanctions Database (GSDB) | Release 5, 1950–2025, 1,794 cases (by request form); v4 in hand, 1950–2023, 1,547 cases | Sanctioned flag (D2). v4 has sender, target, begin and end per case; used until R5 is received (section 8) |
+| Global Sanctions Data Base (GSDB) | Release 5 (codebook 2026-09-01): case list 1,794 cases, 1949–2025; dyadic 170,563 sender–target–years, 1950–2025; plus Financial Sanctions (1,072 cases). By request; received 2026-10-27 | Sanctioned flag (D2); financial subtypes for the financial channel. Not redistributed |
 | OFAC archive of SDN list changes | Text 1994–2023; PDF 2001–present | Financial channel (D3). 2024–2025 only as PDF. Pre-1994 needs the Federal Register |
 | OFAC civil penalties and enforcement information | By-year pages 2003–2026. 2025: 14 actions, $265,746,819 | Penalties channel. Missing, not zero, before 2003. The 2025 figures are a hand-check |
 | UCDP/PRIO Armed Conflict Dataset | v26.1, 1946–2025 | Kinetic channel (D5), the one source spanning 1950–2025 |
@@ -245,7 +245,7 @@ party); the Global Terrorism Database (public release appears to end about
 | ID | Decision | Status |
 |---|---|---|
 | D1 | All states, target country-year, 1950–2025; COW v2024 list, 2025 carried forward | SETTLED |
-| D2 | `under_sanctions` = an active GSDB case with the US as a sender, by the case's begin and end years; COW codes; crosswalk logged | SETTLED, pending R5 codebook check |
+| D2 | `under_sanctions` = a GSDB-R5 case naming the US as a sender in force against the state (targets and years from the dyadic file); COW codes; crosswalk logged | SETTLED (release 5 in use) |
 | D3 | Financial channel = SDN additions per country, 1994–2025; pre-1994 missing | SETTLED for the proof of concept |
 | D4 | Multilateral block: UN Security Council and EU listings, outside the index, kept to test whether the US shifts enforcement onto others and toward cheaper instruments | SETTLED; listing-date recovery OPEN |
 | D5 | Kinetic = US-party conflict in UCDP/PRIO v26.1, troop-weighted; MID for validation; GED not used | SETTLED |
@@ -325,3 +325,12 @@ the repository.
   - Location attribution is found for 423 of 1,054 entries and is kept in the
     entry file only; it does not enter the panel until it is built to a
     standard where "not found" can be distinguished from zero.
+- 2026-10-27, GSDB release 5 received (Sean, 16:29) and replaces v4 (D2). US-named
+  cases from the case list; targets and years from the dyadic file (GSDB
+  codebook 8.1); UN- or coalition-only rows excluded (Q2). The 2024–2025 flag is
+  now observed, not missing. A second flag, `under_sanctions_us_single`, counts
+  only single-target cases, separating sanctions aimed at a state from
+  multi-country designation cases. The GSDB Financial Sanctions file (six
+  financial subtypes per case, including exclusion from payment
+  infrastructure) is received for the financial channel. Neither file is
+  redistributed (GSDB terms of use).

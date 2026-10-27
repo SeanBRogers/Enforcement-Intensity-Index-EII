@@ -4,7 +4,7 @@
 #
 # Inputs (raw snapshots, listed with SHA-256 in v2/sources/MANIFEST.csv):
 #   v2/sources/raw/System2024/system2024.csv          COW State System v2024
-#   v2/sources/raw/GSDB_V4.csv                         Global Sanctions Database v4
+#   v2/sources/raw/GSDB-R5.csv, GSDB-R5_Dyadic.dta      Global Sanctions Data Base, release 5 (by request)
 #   v2/sources/raw/ucdp_acd_261/UcdpPrioConflict_v26_1.csv  UCDP/PRIO ACD v26.1
 #   troopdata R package 1.1.0 (get_troopdata), snapshotted to
 #   v2/sources/raw/troopdata_1.1.0_troops_ad.csv
@@ -40,74 +40,53 @@ fr <- fr[order(fr$ccode, fr$year), ]
 lg("Frame: ", nrow(fr), " country-years, ", length(unique(fr$ccode)), " states, ",
    min(fr$year), "-", max(fr$year), " (2025 = 2024 membership carried forward; US excluded)")
 
-# ------------------------------------------------- 2. Sanctioned flag (D2, GSDB v4)
-g <- read.csv(file.path(raw, "GSDB_V4.csv"), stringsAsFactors = FALSE, encoding = "UTF-8")
-us <- g[grepl("United States", g$sanctioning_state, fixed = TRUE), ]
-lg("GSDB v4: ", nrow(g), " cases; ", nrow(us), " name the United States among senders; ",
-   "begin ", min(us$begin), "-", max(us$begin), ", end max ", max(g$end),
-   " (ongoing cases coded end = 2023)")
-
-protect <- c("Korea, North" = "Korea North", "Korea, South" = "Korea South",
-             "Congo, Democratic Republic of the" = "Congo DR", "Gambia, The" = "Gambia",
-             "Egypt, Arab Rep." = "Egypt", "Yemen, North" = "Yemen North")
-split_targets <- function(s) {
-  for (k in names(protect)) s <- gsub(k, protect[[k]], s, fixed = TRUE)
-  trimws(strsplit(s, ",", fixed = TRUE)[[1]])
-}
-# Explicit COW codes for names countrycode does not resolve or resolves ambiguously.
-# NA = not a COW state; the case-target is logged as unassigned.
-special <- c("Korea North" = 731, "Korea South" = 732, "Congo DR" = 490, "Gambia" = 420,
-             "Egypt" = 651, "Yemen North" = 678, "German Democratic Republic" = 265,
-             "Soviet Union" = 365, "Russia" = 365, "Yugoslavia" = 345, "Serbia" = 345,
-             "Ceylon" = 780, "Malagasy Republic" = 580, "Malaya" = 820, "Rhodesia" = 552,
-             "Transjordan" = 663, "Taiwan" = 713, "North Vietnam" = 816, "South Vietnam" = 817,
-             "Ethiopia (excludes Eritrea)" = 530, "Czechoslovakia" = 315, "Macedonia" = 343,
-             "Kosovo" = 347, "Montenegro" = 341, "Marshall Islands" = 983,
-             "Balkans" = NA, "Hong Kong" = NA, "Palestine" = NA,
-             "ICC Rome Statute Signatories" = NA, "League of Arab States" = NA)
-cow_of <- function(nm, yr) {
-  if (nm %in% names(special)) {
-    cc <- unname(special[nm])
-  } else {
-    cc <- suppressWarnings(countrycode(nm, "country.name", "cown"))
-  }
-  if (is.na(cc)) return(NA_integer_)
-  if (nm == "Germany") cc <- if (yr <= 1990) 260 else 255          # FRG to 1990, Germany after
-  if (nm == "Yemen") cc <- if (yr < 1990) 678 else 679              # unified Yemen from 1990
-  # GSDB label quirks (checked 2026-10-27 against case years): "Yemen, North" is used for unified
-  # Yemen after 1990 (cases 962, 1093, 1204); "South Vietnam" is used for unified Vietnam after
-  # 1975 (cases 195, 200, 201, 519, 809).
-  if (nm == "Yemen North" && yr >= 1990) cc <- 679
-  if (nm == "South Vietnam" && yr >= 1976) cc <- 816
-  as.integer(cc)
-}
-rows <- list(); unassigned <- list()
-for (i in seq_len(nrow(us))) {
-  for (nm in split_targets(us$sanctioned_state[i])) {
-    for (yr in max(1950, us$begin[i]):us$end[i]) {
-      cc <- cow_of(nm, yr)
-      if (is.na(cc)) { unassigned[[length(unassigned) + 1]] <- data.frame(case_id = us$case_id[i], target_name = nm); next }
-      rows[[length(rows) + 1]] <- data.frame(case_id = us$case_id[i], target_name = nm, ccode = cc, year = yr)
-    }
-  }
-}
-cy <- do.call(rbind, rows)
-cw <- unique(cy[, c("target_name", "ccode")]); cw <- cw[order(cw$target_name, cw$ccode), ]
-ua <- unique(do.call(rbind, unassigned))
+# ------------------------------------------------- 2. Sanctioned flag (D2, GSDB release 5)
+# Cases: GSDB-R5 case list, cases naming the United States among their senders (alone or with named
+# partners). UN- or coalition-only cases are excluded (Q2: US actions only).
+# Targets and years: GSDB-R5 dyadic file, United States sender rows that draw on at least one of those
+# cases. The codebook (8.1) advises the dyadic file for dyad-year indicators, and its target ISO3 codes
+# avoid splitting the case list's comma-separated target strings (codebook 4).
+suppressPackageStartupMessages(library(haven))
+c5 <- read.csv(file.path(raw, "GSDB-R5.csv"), stringsAsFactors = FALSE, na.strings = "NA")
+us <- c5[grepl("United States", c5$sanctioning_state, fixed = TRUE), ]
+lg("GSDB-R5 case list: ", nrow(c5), " cases; ", nrow(us), " name the United States among senders (",
+   sum(us$target_mult == 1), " with several targets)")
+lg("GSDB-R5 file check: cases with a blank end_year: ", sum(is.na(c5$end_year)), "; ending 2025: ", sum(c5$end_year == 2025, na.rm = TRUE),
+   " (the codebook says ongoing cases have a blank end_year; this file codes them 2025, which leaves the flag unchanged)")
+dy <- read_dta(file.path(raw, "GSDB-R5_Dyadic.dta"))
+du <- as.data.frame(dy[dy$sanctioning_state == "United States", ])
+ids <- lapply(strsplit(as.character(du$case_id), ","), function(x) as.integer(trimws(x)))
+named  <- vapply(ids, function(x) any(x %in% us$case_id), logical(1))
+single <- vapply(ids, function(x) any(x %in% us$case_id[us$target_mult == 0]), logical(1))
+ncase  <- vapply(ids, function(x) sum(x %in% us$case_id), integer(1))
+lg("GSDB-R5 dyadic: ", nrow(du), " United States sender dyad-years; ", sum(named), " draw on a US-named case; ",
+   sum(!named), " only on UN or coalition cases (excluded)")
+du <- du[named, ]; du$single <- single[named]; du$ncase <- ncase[named]
+# Target ISO3 (USITC Dynamic Gravity codes) to COW, year-aware where codes span a change of state
+iso_special <- c(CSK = 315, DDR = 265, KSV = 347, VDR = 816, RHO = 552, SRB = 345, SVU = 365)
+du$ccode <- suppressWarnings(countrycode(du$sanctioned_state_iso3, "iso3c", "cown"))
+hit <- du$sanctioned_state_iso3 %in% names(iso_special)
+du$ccode[hit] <- iso_special[du$sanctioned_state_iso3[hit]]
+du$ccode[du$sanctioned_state_iso3 == "DEU" & du$year <= 1990] <- 260      # FRG to 1990, Germany after
+du$ccode[du$sanctioned_state_iso3 == "VNM" & du$year <= 1975] <- 817      # GSDB "South Vietnam" (VNM) before unification
+du$ccode[du$sanctioned_state_iso3 == "YEM" & du$year < 1990] <- 678       # GSDB "Yemen, North" (YEM) before unification
+ua <- unique(du$sanctioned_state[is.na(du$ccode)])
+lg("GSDB-R5 targets without a COW state (not assigned): ", paste(sort(ua), collapse = "; "))
+du <- du[!is.na(du$ccode), ]
+cw <- unique(du[, c("sanctioned_state", "sanctioned_state_iso3", "ccode")]); cw <- cw[order(cw$sanctioned_state, cw$ccode), ]
 write.csv(cw, file.path(out, "crosswalk_gsdb_targets.csv"), row.names = FALSE)
-lg("GSDB targets: ", length(unique(cw$target_name)), " names mapped to COW codes (",
-   "crosswalk_gsdb_targets.csv); ", nrow(ua), " case-targets unassigned (not COW states): ",
-   paste(sort(unique(ua$target_name)), collapse = "; "))
-nc <- aggregate(case_id ~ ccode + year, data = unique(cy[, c("case_id", "ccode", "year")]), FUN = length)
-names(nc)[3] <- "us_sanction_cases"
+nc <- aggregate(cbind(us_sanction_cases = ncase, single = single) ~ ccode + year, data = du, FUN = max)
+nc$under_sanctions_us_single <- as.integer(nc$single > 0); nc$single <- NULL
 fr <- merge(fr, nc, by = c("ccode", "year"), all.x = TRUE)
 off <- setdiff(paste(nc$ccode, nc$year), paste(fr$ccode, fr$year))
-lg("Case-target-years outside the frame (state not a system member that year), dropped: ", length(off),
+lg("Target-years outside the frame (state not a system member that year), dropped: ", length(off),
    if (length(off)) paste0(" — by code: ", paste(names(table(sub(" .*", "", off))), table(sub(" .*", "", off)), sep = " x", collapse = ", ")) else "")
 fr$us_sanction_cases[is.na(fr$us_sanction_cases)] <- 0L
+fr$under_sanctions_us_single[is.na(fr$under_sanctions_us_single)] <- 0L
 fr$under_sanctions_us <- as.integer(fr$us_sanction_cases > 0)
-fr$us_sanction_cases[fr$year > 2023] <- NA                       # GSDB v4 ends 2023 (Rule 3)
-fr$under_sanctions_us[fr$year > 2023] <- NA
+lg("States under US sanctions (any / single-target cases): ",
+   paste(sapply(c(1950, 1970, 1990, 2010, 2020, 2023, 2025), function(y) paste0(y, " ", sum(fr$under_sanctions_us[fr$year == y]), "/",
+         sum(fr$under_sanctions_us_single[fr$year == y]))), collapse = "; "))
 
 # ------------------------------------------------ 3. Kinetic (D5, UCDP/PRIO v26.1)
 a <- read.csv(file.path(raw, "ucdp_acd_261", "UcdpPrioConflict_v26_1.csv"),
@@ -184,7 +163,7 @@ lg("Penalties: ", sum(fr$pen_program_count, na.rm = TRUE), " program-attributed 
 
 # ------------------------------------------------------------------ 6. Write
 fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
-        "under_sanctions_us", "us_sanction_cases",
+        "under_sanctions_us", "under_sanctions_us_single", "us_sanction_cases",
         "kin_vs_state", "kin_vs_state_intensity", "kin_in_state", "kin_in_state_intensity",
         "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms")]
 write.csv(fr, file.path(out, "EII_v2_partial.csv"), row.names = FALSE, na = "")

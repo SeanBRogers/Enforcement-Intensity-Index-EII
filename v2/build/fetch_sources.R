@@ -1,7 +1,8 @@
 # EII v2 — fetch and verify raw sources (Rule 2).
 # Downloads every public source listed in v2/sources/MANIFEST.csv into v2/sources/raw/,
 # regenerates the troopdata snapshot, unzips archives, and checks each file's SHA-256
-# against the manifest. GSDB is released by request only: place GSDB_V4.csv in
+# against the manifest. GSDB is released by request only: place GSDB-R5.csv, GSDB-R5_Dyadic.dta,
+# GSDB-FS.csv and GSDB-FS_Dyadic.dta (and their codebooks) in
 # v2/sources/raw/ yourself; this script verifies it if present.
 # Usage (from the repository root): Rscript v2/build/fetch_sources.R
 
