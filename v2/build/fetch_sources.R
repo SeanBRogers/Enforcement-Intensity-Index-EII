@@ -52,5 +52,19 @@ for (f in list.files(file.path(raw, "ofac_enforcement", "docs"), full.names = TR
   txt <- file.path(raw, "ofac_enforcement", "txt", sub("\\.pdf$", ".txt", basename(f)))
   if (!file.exists(txt)) system2("pdftotext", c("-layout", shQuote(f), shQuote(txt)))
 }
+# OFAC archive of changes to the SDN list (financial channel): v2/sources/MANIFEST_sdn.csv
+ms <- read.csv(file.path("v2", "sources", "MANIFEST_sdn.csv"), stringsAsFactors = FALSE)
+dir.create(file.path(raw, "ofac_sdn"), showWarnings = FALSE, recursive = TRUE)
+for (i in seq_len(nrow(ms))) {
+  f <- file.path(raw, ms$file[i])
+  if (!file.exists(f)) download.file(ms$source[i], f, mode = "wb", quiet = TRUE)
+  if (!identical(digest(file = f, algo = "sha256"), ms$sha256[i])) { cat("MISMATCH ", ms$file[i], "\n"); ok <- FALSE }
+}
+cat("SDN change files checked: ", nrow(ms), "\n", sep = "")
+# 2024-2025 are three-column PDFs: convert to reading-order text
+for (f in ms$file[grepl("\\.pdf$", ms$file)]) {
+  out <- file.path(raw, sub("\\.pdf$", "_pdf.txt", f))
+  if (!file.exists(out)) system2("Rscript", c(file.path("v2", "build", "sdn_pdf_to_text.R"), shQuote(file.path(raw, f)), shQuote(out)))
+}
 if (!ok) stop("One or more sources are missing or differ from the manifest; do not build.")
 cat("All sources match the manifest.\n")

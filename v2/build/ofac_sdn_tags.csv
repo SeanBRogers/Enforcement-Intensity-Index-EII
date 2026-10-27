@@ -1,0 +1,114 @@
+tag,program,ccode,from,to,sdn,note
+CUBA,Cuba (CACR),40,,,1,
+HAITI,Haiti,41,,,1,
+NICARAGUA,Nicaragua,93,,,1,
+NICARAGUA-NHRAA,Nicaragua (NHRAA),93,,,1,Nicaraguan Human Rights and Anticorruption Act
+VENEZUELA,Venezuela,101,,,1,
+VENEZUELA-EO13850,Venezuela (EO 13850),101,,,1,
+VENEZUELA-EO13884,Venezuela (EO 13884),101,,,1,
+FRYK,Yugoslavia (Kosovo),345,,,1,Federal Republic of Yugoslavia (Serbia and Montenegro)
+FRYM,Yugoslavia (Milosevic),345,,,1,
+FRY S&M,Yugoslavia (Serbia and Montenegro),345,,,1,
+FRKY,Yugoslavia (Kosovo),345,,,1,misspelling of FRYK in one entry
+BALKANS,Western Balkans,,,,1,multi-country program; not assigned (as in the penalties channel)
+BALKANS-EO14033,Western Balkans (EO 14033),,,,1,multi-country program; not assigned
+BELARUS,Belarus,370,,,1,
+BELARUS-EO,Belarus (EO),370,,,1,
+BELARUS-EO14038,Belarus (EO 14038),370,,,1,
+RUSSIA-EO14024,Russia (EO 14024),365,,,1,
+BPI-RUSSIA-EO14024,Russia (EO 14024; blocked pending investigation),365,,,1,
+RUSSIA-EO,Russia (EO 14024),365,,,1,
+RUSSIA-EO14065,Russia (EO 14065; occupied regions of Ukraine),365,,,1,attributed to Russia as with the other Ukraine-related programs
+CAATSA - RUSSIA,Russia (CAATSA),365,,,1,
+CAATSA -RUSSIA,Russia (CAATSA),365,,,1,spacing variant
+UKRAINE,Russia (Ukraine-related; EO 13660),365,,,1,Ukraine-related programs are attributed to Russia (Q8; as in the penalties channel)
+UKRAINE2,Russia (Ukraine-related; EO 13661),365,,,1,
+UKRAINE-EO13660,Russia (Ukraine-related; EO 13660),365,,,1,
+UKRAINE-EO13661,Russia (Ukraine-related; EO 13661),365,,,1,
+UKRAINE-EO13662,Russia (Ukraine-related; EO 13662),365,,,1,
+UKRAINE-EO13685,Russia (Ukraine-related; Crimea; EO 13685),365,,,1,
+MAGNIT,Russia (Sergei Magnitsky Act),365,,,1,the Magnitsky Act targets Russian officials
+PEESA,Russia (PEESA; Nord Stream 2),365,,,1,Protecting Europe's Energy Security Act
+PEESA-EO,Russia (PEESA; Nord Stream 2),365,,,1,
+PEESA-EO14039,Russia (PEESA; Nord Stream 2),365,,,1,
+SUDAN,Sudan,625,,,1,
+DARFUR,Sudan (Darfur),625,,,1,
+SUDAN-EO14098,Sudan (EO 14098),625,,,1,
+BPI-SUDAN-14098,Sudan (EO 14098; blocked pending investigation),625,,,1,
+SOUTH SUDAN,South Sudan,626,,,1,
+LIBYA,Libya,620,,,1,
+LIBYA2,Libya (EO 13566),620,,,1,
+LIBYA3,Libya (EO 13726),620,,,1,
+IRAQ,Iraq,645,,,1,
+IRAQ2,Iraq (EO 13315),645,,,1,
+IRAQ3,Iraq (EO 13438),645,,,1,
+IRAN,Iran,630,,,1,
+IRGC,Iran (IRGC),630,,,1,
+IFSR,Iran (IFSR),630,,,1,
+IRAN-HR,Iran (human rights),630,,,1,
+IRAN-TRA,Iran (Threat Reduction Act),630,,,1,
+IRAN-EO13846,Iran (EO 13846),630,,,1,
+IRAN-EO13871,Iran (EO 13871),630,,,1,
+IRAN-EO13876,Iran (EO 13876),630,,,1,
+IRAN-EO13902,Iran (EO 13902),630,,,1,
+IRAN-CON-ARMS-EO,Iran (conventional arms; EO 13949),630,,,1,
+CAATSA - IRAN,Iran (CAATSA),630,,,1,
+IFCA,Iran (Freedom and Counter-Proliferation Act),630,,,1,
+ISA,Iran (Iran Sanctions Act),630,,,1,
+EO13622,Iran (EO 13622),630,,,1,
+EO13645,Iran (EO 13645),630,,,1,
+HRIT-IR,Iran (GHRAVITY; EO 13606),630,,,1,
+HRIT-SY,Syria (GHRAVITY; EO 13606),652,,,1,
+HRIT,GHRAVITY (EO 13606),,,,1,program covers Iran and Syria; untagged by country; not assigned
+SYRIA,Syria,652,,,1,
+SYRIA-EO13894,Syria-related (EO 13894),652,,,1,
+SYRIA-CAESAR,Syria (Caesar Act),652,,,1,
+DPRK,North Korea,731,,,1,
+DPRK2,North Korea (EO 13687),731,,,1,
+DPRK3,North Korea (EO 13722),731,,,1,
+DPRK4,North Korea (EO 13810),731,,,1,
+DPRK-NKSPEA,North Korea (NKSPEA),731,,,1,
+BURMA,Burma,775,,,1,
+BURMA-EO,Burma (EO 14014),775,,,1,
+BURMA-EO14014,Burma (EO 14014),775,,,1,
+JADE,Burma (JADE Act),775,,,1,
+ZIMBABWE,Zimbabwe,552,,,1,
+ZIMB,Zimbabwe,552,,,1,
+LIBERIA,Liberia (former regime of Charles Taylor),450,,,1,
+COTED,Cote d'Ivoire,437,,,1,
+DRCONGO,Democratic Republic of the Congo,490,,,1,
+CAR,Central African Republic,482,,,1,
+SOMALIA,Somalia,520,,,1,
+BURUNDI,Burundi,516,,,1,
+MALI-EO13882,Mali (EO 13882),432,,,1,
+ETHIOPIA-EO14046,Ethiopia (EO 14046),530,,,1,the program also reaches Eritrean parties; their location attribution records Eritrea
+LEBANON,Lebanon,660,,,1,
+YEMEN,Yemen,679,,,1,
+UNITA,Angola (UNITA),540,,,1,
+TALIBAN,Afghanistan (Taliban),700,,,1,
+HK-EO13936,China (Hong Kong Normalization; EO 13936),710,,,1,Hong Kong is not a COW state; the program targets PRC actions in Hong Kong
+UHRPA,China (Uyghur Human Rights Policy Act),710,,,1,
+SDGT,Global terrorism,,,,1,non-country
+SDT,Terrorism (Middle East peace process),,,,1,non-country
+FTO,Foreign terrorist organizations,,,,1,non-country
+BPI-PA,Terrorism (blocked pending investigation; Patriot Act),,,,1,non-country
+SDNT,Narcotics (SDNT),,,,1,non-country
+SDNTK,Narcotics (Kingpin Act),,,,1,non-country
+BPI-SDNTK,Narcotics (Kingpin Act; blocked pending investigation),,,,1,non-country
+ILLICIT-DRUGS-EO14059,Illicit drugs (EO 14059),,,,1,non-country
+ILLICIT-DRUGS-EO,Illicit drugs (EO 14059),,,,1,non-country
+TCO,Transnational criminal organizations,,,,1,non-country
+NPWMD,Nonproliferation (WMD),,,,1,non-country
+GLOMAG,Global Magnitsky,,,,1,non-country
+CYBER2,Cyber (EO 13694 as amended),,,,1,non-country
+CYBER3,Cyber,,,,1,non-country
+CYBER4,Cyber,,,,1,non-country
+ELECTION-EO13848,Election interference (EO 13848),,,,1,non-country
+HOSTAGES-EO14078,Hostage-taking (EO 14078),,,,1,non-country
+ICC-EO14203,International Criminal Court (EO 14203),,,,1,non-country
+ICCP-EO13928,International Criminal Court (EO 13928),,,,1,non-country
+WEST-BANK-EO14115,West Bank (EO 14115),,,,1,the West Bank is not a COW state; not assigned
+MIDDLE-EAST-EO,West Bank (EO 14115),,,,1,early tag for the EO 14115 program; not assigned
+FSE-IR,Foreign sanctions evaders (Iran),630,,,0,not an SDN program (FSE list); an entry tagged only with non-SDN lists is not counted
+FSE-SY,Foreign sanctions evaders (Syria),652,,,0,not an SDN program (FSE list)
+NS-PLC,Non-SDN Palestinian Legislative Council list,,,,0,not an SDN program

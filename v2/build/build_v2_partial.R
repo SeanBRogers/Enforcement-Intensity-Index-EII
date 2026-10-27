@@ -161,11 +161,26 @@ offp <- setdiff(paste(pen$ccode[!is.na(pen$pen_program_count)], pen$year[!is.na(
 lg("Penalties: ", sum(fr$pen_program_count, na.rm = TRUE), " program-attributed penalty-country counts merged; ",
    "program country-years outside the frame: ", length(offp), if (length(offp)) paste0(" (", paste(offp, collapse = "; "), ")") else "")
 
-# ------------------------------------------------------------------ 6. Write
+# ---------------------------------------------- 6. Financial (build_financial.R)
+fin <- read.csv(file.path(out, "financial_country_year.csv"), stringsAsFactors = FALSE)
+fv <- c("fin_program_count", "fin_program_count_nonindiv", "fin_location_count")
+fr <- merge(fr, fin[, c("ccode", "year", fv)], by = c("ccode", "year"), all.x = TRUE)
+for (v in fv) {
+  fr[[v]][is.na(fr[[v]]) & fr$year >= 1995] <- 0L                              # itemized archive covers 1995-2025
+  fr[[v]][fr$year < 1995] <- NA                                                 # 1994 is narrative only; pre-1994 needs the Federal Register
+}
+for (v in c("fin_program_count", "fin_location_count")) {
+  off <- setdiff(paste(fin$ccode[fin[[v]] > 0], fin$year[fin[[v]] > 0]), paste(fr$ccode, fr$year))
+  lg("Financial ", v, ": ", sum(fr[[v]], na.rm = TRUE), " counts merged; country-years outside the frame: ", length(off),
+     if (length(off)) paste0(" (", paste(off, collapse = "; "), "; code 2 is the United States, excluded as a target)") else "")
+}
+
+# ------------------------------------------------------------------ 7. Write
 fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "under_sanctions_us", "under_sanctions_us_single", "us_sanction_cases",
         "kin_vs_state", "kin_vs_state_intensity", "kin_in_state", "kin_in_state_intensity",
-        "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms")]
+        "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms",
+        "fin_program_count", "fin_program_count_nonindiv", "fin_location_count")]
 write.csv(fr, file.path(out, "EII_v2_partial.csv"), row.names = FALSE, na = "")
 lg("Wrote EII_v2_partial.csv: ", nrow(fr), " rows, ", ncol(fr), " columns")
-lg("Not yet built: financial (SDN) channel, multilateral block, burden blocks, covariates")
+lg("Not yet built: multilateral block, burden blocks, covariates")

@@ -1,15 +1,16 @@
 # EII v2 — Codebook (partial release, 2026-10-27)
 
 **Status: PARTIAL. Not for estimation.** This release contains the frame, the
-US sanctions flag, and the kinetic, posture and penalties channels. The
-financial (SDN) channel, the multilateral block, the burden blocks and the
+US sanctions flag, and the four exertion channels: financial, penalties,
+kinetic and posture. The multilateral block, the burden blocks and the
 covariates are not yet built (`BUILD_PROTOCOL.md`, section 7).
 
 File: `v2/output/EII_v2_partial.csv`. Built by `v2/build/run_all.R`
-(`build_penalties.R`, then `build_v2_partial.R`) from the sources in
-`v2/sources/MANIFEST.csv` and `v2/sources/MANIFEST_ofac.csv` (fetch and verify
-with `v2/build/fetch_sources.R`). Build logs: `v2/output/build_log.txt`,
-`v2/output/penalties_log.txt`.
+(`build_penalties.R`, `build_financial.R`, then `build_v2_partial.R`) from the
+sources in `v2/sources/MANIFEST.csv`, `v2/sources/MANIFEST_ofac.csv` and
+`v2/sources/MANIFEST_sdn.csv` (fetch and verify with
+`v2/build/fetch_sources.R`). Build logs: `v2/output/build_log.txt`,
+`v2/output/penalties_log.txt`, `v2/output/financial_log.txt`.
 
 ## Unit and frame
 
@@ -39,6 +40,9 @@ in COW.
 | `posture_note` | Reason a posture cell is blank | build | — | — |
 | `pen_program_count` | OFAC civil penalties, settlements and findings of violation published in the year whose sanctions program targets this country. An entry naming several country programs counts once for each; OFAC's own count is used where one entry aggregates several penalties | OFAC enforcement information, 2003–2025 (`build_penalties.R`) | 2003–2025; blank before 2003 | Negotiated and discretionary, published only when resolved. Understates enforcement against US banks, most of which runs through anti-money-laundering law (FinCEN, OCC, Fed, DOJ). 59% of penalties (1,219 of 2,052) were against individuals, mostly Cuba travel cases in 2003–2005 |
 | `pen_program_count_firms` | As `pen_program_count`, firms and organizations only (entries for individuals excluded) | as above | as above | Use this to separate exertion against a target from mass enforcement against US travelers |
+| `fin_program_count` | Persons, entities, vessels and aircraft added to OFAC's SDN list in the year under a sanctions program that targets this country. An addition under several country programs counts once for each | OFAC, archive of changes to the SDN list (`build_financial.R`) | 1995–2025; blank before 1995 | Records designations, not their effect. Additions under non-country programs (terrorism, narcotics, nonproliferation, cyber, Global Magnitsky, Western Balkans: 39% of additions) have no program country. Vessels and aircraft count as additions (2,023 of 24,277) |
+| `fin_program_count_nonindiv` | As `fin_program_count`, excluding individuals | as above | as above | Separates designations of firms, banks, state bodies, vessels and aircraft from designations of officials and other individuals |
+| `fin_location_count` | SDN additions in the year whose address is in this country, whatever the program (the second attribution, Q8): e.g., a UAE company designated under the Iran program counts for the UAE | as above | as above | An address is found for 84% of additions; vessels, aircraft and individuals listed without an address have none, so 0 means none of the located additions, not none at all. Additions located in the United States (code 2) are outside the frame |
 
 `kin_vs_state` and `kin_in_state` are kept separate and never summed: the first
 is force against a state, the second is force spent in a state alongside its
@@ -127,3 +131,65 @@ read from.
 - **Text extraction.** Documents are converted with poppler `pdftotext
   -layout`; the version is recorded in the penalties log. A different version
   may extract text differently.
+
+## Financial channel: how additions are counted and attributed
+
+Entry-level file: `v2/output/sdn_additions.csv` (one row per addition, 24,277
+additions, 1995–2025), with its date, type, program tags, program country,
+location country, the heading it was listed under, and the first 400
+characters of the entry. Year totals: `v2/output/financial_year_totals.csv`.
+
+- **Source.** OFAC's archive of changes to the SDN list: one text file per
+  year for 1994–2023 and a three-column PDF for 2024 and 2025. The PDFs are
+  converted in reading order by `v2/build/sdn_pdf_to_text.R` (word positions
+  from poppler `pdftotext -bbox-layout`, ordered by page, column and line).
+  On 2023, which OFAC publishes in both forms, the converted PDF gives the
+  same number of additions as the text file on all 223 dates, and 5,613 of
+  5,616 entries are identical after normalization.
+- **Addition.** An entry in a section OFAC heads as added or designated.
+  Changed and removed entries are not additions, nor are entries that appear
+  only because an existing entry was changed ("resulting in the following new
+  entries"). Year is the date of the change notice (Q10).
+- **Aliases.** OFAC prints each a.k.a. of many designees as a separate entry
+  (one 2017 designee appears five times). Entries with the same set of names
+  and the same identifying details on the same date are counted once
+  (26,110 removed). Names in other scripts, printed in the PDFs, are ignored
+  for this comparison.
+- **Relistings.** An entry deleted and listed again on the same date is not a
+  new designation (115 removed; e.g., 1997-10-08, when OFAC deleted
+  terrorist organizations and relisted them as Foreign Terrorist
+  Organizations). Additions after an earlier delisting do count (e.g., the
+  November 2018 reimposition of Iran sanctions).
+- **Program country.** From the entry's program tags, by the fixed table
+  `v2/build/ofac_sdn_tags.csv`, on the same rules as the penalties channel:
+  Ukraine-related programs (including Crimea and the occupied regions) are
+  attributed to Russia; non-country programs are not assigned. The Hong Kong
+  and Uyghur programs are attributed to China. Tags of non-SDN lists (Foreign
+  Sanctions Evaders, Non-SDN Palestinian Legislative Council) are ignored.
+- **Location country.** The country of each address in the entry (the last
+  element of each address), read as written by OFAC: an address in occupied
+  Crimea reads Ukraine. Places that are not COW states (Hong Kong, the West
+  Bank, Gaza, British Virgin Islands and other dependencies) are recognized
+  but not assigned. Montenegro before 2006, Kosovo before 2008 and South
+  Sudan before 2011 are assigned to their predecessor state. Place of birth,
+  nationality and the country in identity-document numbers are not
+  locations.
+- **1994.** The 1994 file is narrative: it reports most designations as
+  counts (e.g., "523 individual officers of the Haitian Armed Forces") whose
+  names were published in separate files not in the archive. The panel's
+  financial columns therefore start in 1995; 1994 is blank.
+- **Checked by hand:** 25 random additions against their source entries and
+  headings (program country, location, type and section all correct).
+- **Checked against CNAS "Sanctions by the Numbers"**
+  (`v2/output/financial_validation_cnas.csv`): within 1% of CNAS's yearly
+  total in 11 of the 16 years CNAS publishes (exact in 2010, 2013, 2020 and
+  2023). Below CNAS by 2–5% in 2014 and 2017 and by 18–37% in 2012, 2015 and
+  2016. CNAS's 2009–2019 series also counts non-SDN lists (Sectoral
+  Sanctions Identifications, Foreign Sanctions Evaders, Part 561), which may
+  explain 2014–2017; the 2012 gap is not yet explained and is open. Against
+  CNAS's 2024 country tallies (individuals by nationality, entities by
+  address; this build uses addresses for both), the 2024 location counts
+  are: Russia 1,682 (CNAS 1,706), China 286 (276), UAE 142 (119), Iran 134
+  (130), Turkey 122 (109), Mexico 106 (102), Belarus 67 (55), Venezuela 38
+  (37), North Korea 12 (29). North Korea is low because many North Korean
+  individuals are listed with a nationality but no address.

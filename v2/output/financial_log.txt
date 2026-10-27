@@ -1,0 +1,46 @@
+EII v2 financial channel build, 2026-10-27 17:46 EDT
+R 4.3.3; countrycode 1.9.0; pdftotext version 24.02.0
+Parsed 102504 units from 32 files (98335 entries, 4094 headers, 75 other text blocks)
+Entries in sections headed as additions: 50502
+Dropped 0 additions dated before 1994 (the 1994 file opens with December 1993 actions)
+Additions whose date year differs from the file year: 0 (dated year used)
+Alias and repeat listings removed: 26110 (one entry per name set and identifying details per date; OFAC lists each a.k.a. of some designees as its own entry)
+  by year: 1995=78, 1996=17, 1997=154, 1998=223, 1999=63, 2000=70, 2001=47, 2002=103, 2003=517, 2004=447, 2005=385, 2006=485, 2007=626, 2008=985, 2009=307, 2010=784, 2011=831, 2012=627, 2013=561, 2014=870, 2015=793, 2016=917, 2017=933, 2018=1635, 2019=980, 2020=1181, 2021=1187, 2022=2880, 2023=2931, 2024=3174, 2025=1319
+Same-day relistings removed (deleted and added again on the same date): 115
+  dates: 1997-10-08=8, 2001-01-19=30, 2003-05-29=74, 2022-06-28=1, 2022-11-08=1, 2024-03-04=1
+Location (address country) found for 20358 of 24277 additions (83.9%)
+Dropped 0 additions tagged only with non-SDN lists (FSE, NS-PLC)
+Additions with at least one program tag: 24277 of 24277
+Additions with a program country: 14838 (the rest are under non-country programs only, e.g. terrorism, narcotics, nonproliferation)
+Additions by year (after alias removal):
+  1995    278 additions     82 individuals    239 with program country    248 with location
+  1996    199 additions    138 individuals      0 with program country    199 with location
+  1997    176 additions    111 individuals      3 with program country    152 with location
+  1998    842 additions      9 individuals    811 with program country    778 with location
+  1999    209 additions     96 individuals    150 with program country    186 with location
+  2000     78 additions     38 individuals      7 with program country     61 with location
+  2001    185 additions    117 individuals     51 with program country    106 with location
+  2002    140 additions     73 individuals      9 with program country     99 with location
+  2003    741 additions    536 individuals     81 with program country    495 with location
+  2004    499 additions    254 individuals     90 with program country    336 with location
+  2005    379 additions    210 individuals    125 with program country    316 with location
+  2006    233 additions    125 individuals     26 with program country    187 with location
+  2007    458 additions    241 individuals     99 with program country    384 with location
+  2008    526 additions    184 individuals    108 with program country    366 with location
+  2009    321 additions    152 individuals     33 with program country    297 with location
+  2010    619 additions    301 individuals     82 with program country    543 with location
+  2011    486 additions    202 individuals    130 with program country    358 with location
+  2012    370 additions    190 individuals    114 with program country    252 with location
+  2013    525 additions    217 individuals    245 with program country    358 with location
+  2014    585 additions    331 individuals    275 with program country    307 with location
+  2015    428 additions    233 individuals    175 with program country    265 with location
+  2016    542 additions    247 individuals    233 with program country    395 with location
+  2017    860 additions    592 individuals    582 with program country    787 with location
+  2018   1445 additions    382 individuals   1136 with program country   1129 with location
+  2019    784 additions    334 individuals    452 with program country    651 with location
+  2020    777 additions    374 individuals    649 with program country    695 with location
+  2021    771 additions    400 individuals    410 with program country    745 with location
+  2022   2553 additions   1351 individuals   2064 with program country   2273 with location
+  2023   2685 additions    880 individuals   2105 with program country   2491 with location
+  2024   3363 additions    741 individuals   2741 with program country   3125 with location
+  2025   2220 additions    491 individuals   1613 with program country   1774 with location

@@ -246,7 +246,7 @@ party); the Global Terrorism Database (public release appears to end about
 |---|---|---|
 | D1 | All states, target country-year, 1950–2025; COW v2024 list, 2025 carried forward | SETTLED |
 | D2 | `under_sanctions` = a GSDB-R5 case naming the US as a sender in force against the state (targets and years from the dyadic file); COW codes; crosswalk logged | SETTLED (release 5 in use) |
-| D3 | Financial channel = SDN additions per country, 1994–2025; pre-1994 missing | SETTLED for the proof of concept |
+| D3 | Financial channel = SDN additions per country, 1994–2025; pre-1994 missing | SETTLED for the proof of concept; built for 1995–2025 (1994 OPEN, change log 2026-10-27) |
 | D4 | Multilateral block: UN Security Council and EU listings, outside the index, kept to test whether the US shifts enforcement onto others and toward cheaper instruments | SETTLED; listing-date recovery OPEN |
 | D5 | Kinetic = US-party conflict in UCDP/PRIO v26.1, troop-weighted; MID for validation; GED not used | SETTLED |
 | D6 | Program variables from GSDB's coded types and objectives, not hand-coded | SETTLED |
@@ -334,3 +334,38 @@ the repository.
   financial subtypes per case, including exclusion from payment
   infrastructure) is received for the financial channel. Neither file is
   redistributed (GSDB terms of use).
+- 2026-10-27, financial channel built (`v2/build/build_financial.R`; D3, Q8):
+  - Source: OFAC's archive of changes to the SDN list, one file per year
+    (text 1994–2023; three-column PDFs 2024–2025, converted in reading order
+    by `sdn_pdf_to_text.R`). The converter was checked on 2023, for which
+    OFAC publishes both: identical addition counts on every one of 223
+    dates, and 5,613 of 5,616 entries identical after normalization.
+  - An addition is an entry in a section OFAC heads as added or designated.
+    Changes, removals and entries that become new only because an existing
+    entry was changed ("resulting in the following new entries") are not
+    additions.
+  - OFAC prints each a.k.a. of many designees as its own entry (one 2017
+    designee appears five times). Entries with the same name set and the
+    same identifying details on the same date are counted once (26,110
+    removed). An entry deleted and relisted on the same date is not a new
+    designation (115 removed).
+  - Program country from the entry's program tags (`ofac_sdn_tags.csv`), on
+    the penalties channel's rules: Ukraine-related programs to Russia;
+    Western Balkans, terrorism, narcotics, nonproliferation, cyber, Global
+    Magnitsky and other non-country programs not assigned. Location country
+    from the entry's address(es); vessels and aircraft have none.
+  - 1994 is narrative, not itemized (e.g., "523 individual officers of the
+    Haitian Armed Forces", listed only in a separate file not in the
+    archive). The panel's financial columns start in 1995; 1994 is left
+    missing pending Sean's decision between hand-coding the counts OFAC
+    states in the text and leaving it missing.
+  - Checked against CNAS "Sanctions by the Numbers" (16 years with a
+    published CNAS total; `v2/output/financial_validation_cnas.csv`): within
+    1% in 11 (2009–2011, 2013, 2018–2020, 2022–2025; exact in 2010, 2013,
+    2020 and 2023). Below CNAS by 2–5% in 2014 and 2017 and by 18–37% in
+    2012, 2015 and 2016. CNAS's 2009–2019 series also counts non-SDN lists
+    (Sectoral Sanctions Identifications from 2014, Foreign Sanctions Evaders,
+    Part 561), which may explain 2014–2017; 2012 is not explained. A crude
+    independent count of 2012 entries under "added" headings (990) matches
+    the parser's 997 before alias removal, so the gap is not a parsing loss.
+    OPEN: reconcile 2012 against OFAC's 2012 recent-actions notices.
