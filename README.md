@@ -49,7 +49,9 @@ Rscript v2/build/run_all.R         # build the panel
 Requires R with `countrycode`, `troopdata` (1.1.0), `haven` and
 `digest`, and poppler's `pdftotext`. The Global Sanctions Data Base (release 5)
 is distributed by its authors on request and may not be redistributed; place
-its files in `v2/sources/raw/` as `fetch_sources.R` describes.
+its files in `v2/sources/raw/` as `fetch_sources.R` describes. Rebuilt from an
+empty folder on 2026-10-27 (every public source re-downloaded and verified),
+all eight output files matched the committed ones byte for byte.
 
 ## Earlier version
 

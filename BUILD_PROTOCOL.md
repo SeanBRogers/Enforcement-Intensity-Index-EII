@@ -374,3 +374,9 @@ the repository.
   commit `686d009` and remains there at tag `v1-2026-10-17`. References in
   this protocol to v1 files (`EII_Panel_Definitive.csv`,
   `fiscal_indicators.csv`, `validate.R`) mean those files at that tag.
+- 2026-10-27, reproduction: rebuilt from an empty folder with every public
+  source re-downloaded (including the 32 SDN change files) and checked against
+  the manifests, and the GSDB release 5 files placed by hand, the eight output
+  files (panel, penalties, financial, kinetic, crosswalk) matched commit
+  `0535c90` byte for byte. Two consecutive runs of the financial build were
+  also identical.
