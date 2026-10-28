@@ -193,3 +193,52 @@ characters of the entry. Year totals: `v2/output/financial_year_totals.csv`.
   (130), Turkey 122 (109), Mexico 106 (102), Belarus 67 (55), Venezuela 38
   (37), North Korea 12 (29). North Korea is low because many North Korean
   individuals are listed with a nationality but no address.
+
+## Covariates (`build_covariates.R`)
+
+Kept in two files apart from the exertion panel, keyed the same way. Sources
+and checksums: `v2/sources/MANIFEST_covariates.csv`; build log:
+`v2/output/covariates_log.txt`. Not yet built: dollar integration (measure to
+be chosen and logged first, Q6), the US as a target (Q15), and the trade
+channel.
+
+### `v2/output/covariates_year.csv` (one row per year, 1950–2025)
+
+Year-level variables are the same for every state in a year, so their
+effects are identified from year-to-year variation only (about 31 years for
+the financial channel, 1995–2025).
+
+| Variable | Definition | Source | Coverage | Notes |
+|---|---|---|---|---|
+| `us_debt_gross_gdp` | Gross federal debt, end of fiscal year, % of GDP | OMB Historical Tables (FY2027 Budget), Table 7.1 | 1950–2025 | Includes debt held by federal trust funds |
+| `us_debt_public_gdp` | Federal debt held by the public, % of GDP | as above | 1950–2025 | |
+| `us_debt_public_exfed_gdp` | Debt held by the public other than the Federal Reserve, % of GDP | as above | 1950–2025 | |
+| `us_net_interest_gdp` | Net interest outlays, % of GDP | Table 6.1 | 1950–2025 | The measure of the "check coming due"; it moves differently from debt (Q3 caution) |
+| `us_surplus_gdp` | Total surplus (+) or deficit (−), % of GDP | Table 1.2 | 1950–2025 | |
+| `us_outlays_gdp` | Total outlays, % of GDP | Table 6.1 | 1950–2025 | |
+| `us_defense_gdp` | National defense outlays, % of GDP | Table 6.1 | 1950–2025 | |
+| `us_gdp_share` | US GDP as % of world GDP, current US$ | World Bank WDI | 1960–2025 | Market exchange rates; 1950–1959 missing |
+| `china_gdp_share` | China, as above | WDI | 1960–2025 | |
+| `eu_gdp_share` | EEC/EC/EU members in the year (by accession; the UK through 2019), as above | WDI | 1960–2025 | Missing in a year when any member lacks data |
+| `brics_gdp_share` | BRICS members in the year: Brazil, Russia, India, China from 2009; South Africa 2011; Egypt, Ethiopia, Iran, UAE 2024; Indonesia 2025 | WDI | 2009–2024 | Missing before the bloc existed and in 2025 (no 2025 UAE figure). Saudi Arabia is not counted (membership unconfirmed) |
+| `brics5_gdp_share_fixed` | The five founding-era members in every year | WDI | 1988–2025 | Fixed membership, for comparison with the time-varying series |
+
+Fiscal years are used as panel years (FY *t* ends in calendar year *t*; the
+fiscal year ended June 30 before FY1977). The 1976 transition quarter is
+dropped. Net interest matches the v1 series (`fiscal_indicators.csv`, tag
+`v1-2026-10-17`) to one decimal place; v1's debt series was gross debt.
+
+### `v2/output/covariates_country_year.csv` (one row per state-year, same frame as the panel)
+
+| Variable | Definition | Source | Coverage | Notes |
+|---|---|---|---|---|
+| `us_defense_pact` | 1 if the state has a defense obligation with the US in the year | ATOP v5.1 dyad-years | 1950–2018 observed; 2019–2025 carried forward | 2019–2025: 2018 partners plus NATO accessions of North Macedonia (2020), Finland (2023) and Sweden (2024). ATOP's broader `atopally` includes consultation and non-aggression pacts (it lists Russia and China) and is not used. US defense partners: 31 in 1950, 53 in 1990, 66 in 2018, 69 in 2025 |
+| `unga_ideal` | UN General Assembly ideal point (higher = closer to the US and Western positions) | Bailey, Strezhnev & Voeten, 1946–2025 file (Voeten Dataverse, v39) | 1950–2025, UN members casting votes | Missing for non-members and years without votes |
+| `unga_dist_us` | Absolute distance between the state's and the US's ideal point in the year | as above | as above | The US ideal point moves sharply in 2025 (2.16 in 2024, 2.89 in 2025), so distances to every state change that year |
+| `unga_votes` | Roll-call votes behind the estimate | as above | as above | Few votes means a wide credible interval |
+| `nat_res_rents_gdp` | Total natural resource rents, % of GDP (extractive value, Q7) | WDI | 1970–2021 | Missing before 1970 and after 2021. WDI's Germany series is assigned to West Germany (260) through 1990 and Yemen's to North Yemen (678) before 1990 |
+
+The protocol named the July 2025 ideal-point release; the 1946–2025 file
+posted since adds the 2025 session and is used instead (logged in the
+protocol).
+

@@ -402,3 +402,18 @@ the repository.
   problematic, especially recently. But it is consistent with the [storm] I
   theorize." Rule for threats OPEN (proposal in the session: formal steps
   only, recorded separately from impositions).
+- 2026-10-27, covariates built (`v2/build/build_covariates.R`; Sean, 20:15:
+  threats paused, back to covariates). US burden from OMB Historical Tables
+  (FY2027 Budget) 1950–2025: gross debt, debt held by the public (with and
+  without the Fed), net interest, surplus, outlays and defense, all % of GDP.
+  Rival capacity from WDI at market exchange rates, 1960–2025 (1950–1959
+  missing); BRICS and EU membership time-varying by accession, plus a fixed
+  BRICS-5 series. Sanctuary: ATOP v5.1 defense obligations (not `atopally`,
+  which includes non-aggression and consultation pacts with Russia and
+  China), 2019–2025 carried forward with logged NATO accessions; UNGA ideal
+  points from the 1946–2025 file (supersedes the July 2025 release named in
+  section 3). Extractive value: WDI natural resource rents, 1970–2021. WDI
+  API responses are committed as snapshots (CC BY 4.0). Year-level covariates
+  are identified from year-to-year variation only. Still to build: dollar
+  integration (measure to choose), the US as a target (Q15), trade channel.
+

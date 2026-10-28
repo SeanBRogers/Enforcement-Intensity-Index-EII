@@ -66,5 +66,17 @@ for (f in ms$file[grepl("\\.pdf$", ms$file)]) {
   out <- file.path(raw, sub("\\.pdf$", "_pdf.txt", f))
   if (!file.exists(out)) system2("Rscript", c(file.path("v2", "build", "sdn_pdf_to_text.R"), shQuote(file.path(raw, f)), shQuote(out)))
 }
+# Covariates: v2/sources/MANIFEST_covariates.csv (paths relative to v2/sources).
+# Files under raw/ are downloaded; the WDI API snapshots under snapshots/ are
+# committed to the repository (CC BY 4.0) because the live API changes.
+mc <- read.csv(file.path("v2", "sources", "MANIFEST_covariates.csv"), stringsAsFactors = FALSE)
+for (i in seq_len(nrow(mc))) {
+  f <- file.path("v2", "sources", mc$file[i])
+  dir.create(dirname(f), showWarnings = FALSE, recursive = TRUE)
+  if (!file.exists(f) && grepl("^raw/", mc$file[i])) download.file(mc$source[i], f, mode = "wb", quiet = TRUE)
+  if (!file.exists(f)) { cat("MISSING  ", mc$file[i], "\n"); ok <- FALSE; next }
+  if (!identical(digest(file = f, algo = "sha256"), mc$sha256[i])) { cat("MISMATCH ", mc$file[i], "\n"); ok <- FALSE }
+}
+cat("Covariate sources checked: ", nrow(mc), "\n", sep = "")
 if (!ok) stop("One or more sources are missing or differ from the manifest; do not build.")
 cat("All sources match the manifest.\n")
