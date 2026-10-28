@@ -416,4 +416,17 @@ the repository.
   API responses are committed as snapshots (CC BY 4.0). Year-level covariates
   are identified from year-to-year variation only. Still to build: dollar
   integration (measure to choose), the US as a target (Q15), trade channel.
+- 2026-10-27, kinetic channel gaps found (Sean, 20:37: "Are we sure conflicts
+  aren't part of US pressures?"). UCDP/PRIO v26.1 does not code the US as a
+  warring party in three kinds of US force, so the channel reads 0 there:
+  (1) air campaigns: Libya 2011 lists no US or NATO secondary party;
+  (2) force inside a state without its government: US operations against IS
+  in Syria 2014–2024 are not assigned to Syria (2025, after the change of
+  government, is); (3) arming one side: Ukraine against Russia from 2022.
+  The channel understates US kinetic exertion in these cases. Consequence for
+  Q14: "conflict in the target" cannot be used as a control where the
+  conflict is itself US pressure (a post-treatment control). Candidate
+  sources for the missing forms (OPEN): UCDP External Support Dataset
+  (1975–2017), SIPRI arms transfers (US to each recipient, 1950–), USAID
+  Greenbook military assistance by country.
 
