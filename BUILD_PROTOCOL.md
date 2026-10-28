@@ -429,4 +429,22 @@ the repository.
   sources for the missing forms (OPEN): UCDP External Support Dataset
   (1975–2017), SIPRI arms transfers (US to each recipient, 1950–), USAID
   Greenbook military assistance by country.
+- 2026-10-27, Q2 and D4 amended (Sean, 20:55: "I like it"; 20:46: "Do we think
+  UN or NATO pressure isn't the US? ... who is the gun? ... It's not always us
+  v the world, it's UN/coalition with US might"). The enforcer is the US,
+  acting in its own name (tier 1) or through UN, NATO and coalition action it
+  drafted, sponsored or mainly armed (tier 2). Tier 3 (multilateral action
+  without US lead) stays an outside block. Tiers are recorded separately and
+  never summed. Tier 2 requires case evidence (drafter or sponsor of the
+  resolution; US share of strikes, sorties or troops); the US's structural
+  weight (UN budget share, NATO spending share) is the same in every case and
+  does not by itself make a case tier 2. The 450 GSDB country-years excluded
+  as UN- or coalition-only under the original Q2 are reclassified to tier 2 or
+  3 as evidence allows. AC already treats multilateral institutions as
+  "formally multilateral but institutionally captured by apex influence" and
+  as "the architecture's optical mask" (IMF, World Bank); AC does not discuss
+  the Security Council or vetoes. Sean, 20:55: "the Noblest of Shrouds:
+  international cover. Also, China and Russia block all kinds of [things] in
+  brinkmanship." Security Council vetoes are a candidate measure of denied
+  cover (OPEN; source to verify).
 
