@@ -447,4 +447,20 @@ the repository.
   international cover. Also, China and Russia block all kinds of [things] in
   brinkmanship." Security Council vetoes are a candidate measure of denied
   cover (OPEN; source to verify).
+- 2026-10-27, proposition 4 given a mechanism and the burden measure named
+  (Sean, 21:06–21:07). Sean: "Cheaper instruments is important because fiscal
+  stress requires it and bullets are expensive. Not always the case but
+  non-kinetic exists for that reason." Logged as the testable form: fiscal
+  stress raises the share of exertion carried by non-kinetic instruments
+  (financial, and tier-2 multilateral) relative to kinetic ones. The cost
+  mechanism fails if the shift follows the calendar but not burden, even if
+  the Kinetic Sprint pattern holds. The stronger claim that cost is why the
+  instruments exist is not tested (sanctions predate fiscal stress; IEEPA
+  1977 and post-2001 Treasury capacity are rival causes). Burden measure,
+  fixed before any substitution analysis: primary `us_debt_public_gdp`
+  (accumulated deferred cost, "the check comes due"); reported alternative
+  `us_net_interest_gdp` (the cost paid each year). Both are reported
+  whichever way they come out. No substitution analysis had been run when
+  this was logged. Note: the original mycology framing was removed from AC
+  for parsimony; the slime-mold analogy stands.
 
