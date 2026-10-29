@@ -26,3 +26,10 @@ __pycache__/
 # EII v2 raw source snapshots: fetched and verified by v2/build/fetch_sources.R
 # (GSDB is released by request and is not redistributed)
 v2/sources/raw/
+
+# Archives and by-request data dropped next to the sources by hand: never commit
+# (GSDB's terms forbid redistribution; the raw bundle contains GSDB files)
+v2/sources/*.zip
+v2/sources/*.tar.gz
+v2/sources/*.tgz
+**/GSDB*
