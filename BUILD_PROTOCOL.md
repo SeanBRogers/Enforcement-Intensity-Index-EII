@@ -503,4 +503,41 @@ the repository.
   after 2010 is not necessarily the Shroud (rival readings: partnership under
   Plan Colombia, fragmentation of the cartels, designations moving to
   Mexico).
+- 2026-10-29, item 2 decisions (Sean, 11:32):
+  - Extractive value (proposition 3): physical endowment (production or
+    holdings of oil, gas and key minerals, from a window before the outcome
+    it explains), not yearly rents, which sanctions, war and price policy
+    push down. Sean: "It can be priced by markets too if need be": a
+    market-priced version is the stated alternative. Weighting resources by
+    era using the US's own declared needs (stockpile lists, critical-minerals
+    lists, Strategic Petroleum Reserve) is proposed, OPEN.
+  - Proposition 5 (the Handshake priced in the current node's goods), in
+    Sean's form: "there is no relief, you've joined a gang and accepted mafia
+    protection. Hotel California." Aligned states that make what the current
+    node runs on pay continuing tribute (arms purchases, investment in the
+    US, Treasury holdings, pledges) for protection; unaligned ones are
+    contained. Falsifiable form (Claude, in session): exit is punished. The
+    proposition fails if an ally that stops paying or realigns faces no rise
+    in US exertion. Candidate cases: France leaving NATO's integrated command
+    (1966), New Zealand's nuclear ban and ANZUS (1985), the Philippine base
+    closures (1991), Turkey's S-400 purchase and the CAATSA sanctions (2020).
+    Wording of the test OPEN pending Sean.
+  - Dollar integration (Q6, zero part): dollar peg, from the
+    Ilzetzki-Reinhart-Rogoff anchor-currency classification (1946-2016 on
+    the authors' site; extension to 2025 to verify). A check measure is
+    OPEN.
+  - Candidate propositions, not yet design: (a) 1970-71 as the assembly of
+    the 99/1 architecture: the Bank Secrecy Act (26 October 1970) builds the
+    apparatus that makes dollar flows legible, the Comprehensive Drug Abuse
+    Prevention and Control Act (27 October 1970) completes the drug
+    prohibition, the gold window closes (15 August 1971), while the
+    Eurodollar and offshore zone grows outside US reach; (b) dollars held
+    abroad, including in informal and illicit economies, finance the US
+    through seigniorage (Federal Reserve estimates put about 60% of $100
+    notes abroad). Note, not a proposition (Sean: "critical and important"
+    but risks reading as conspiratorial): intelligence-community payments
+    to warlords and local power holders (mujahideen 1980s, Afghanistan 2001,
+    Iraq's Awakening 2007-08, the Contras), to be hand-coded only with an
+    evidence grade (official record, investigation, credible reporting) and
+    reported by grade.
 
