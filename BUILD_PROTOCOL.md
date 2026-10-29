@@ -679,9 +679,8 @@ the repository.
   soil-only test has one or two events, so attacks abroad are kept as
   robustness. Investigations count as trade events (threats; dropping a case
   or finding nothing is a US choice). Actions defined against the EU count for
-  every member. Open: whether an action against a single member (France's
-  digital services tax, 2019–20) counts for all members; coded to the member
-  only. Built: trade channel (`trade_*`, `build_trade.R`); state cyber
+  every member. An action against a single member counts for that member only
+  (Sean, 17:32: "France if explicitly named, not EU regs"), as coded. Built: trade channel (`trade_*`, `build_trade.R`); state cyber
   operations against the US from EuRepoC 1.3 (the CFR tracker has no
   download). Pre-1995 Section 301 outcomes and the 1986 machine-tool 232
   restraints remain OPEN.
