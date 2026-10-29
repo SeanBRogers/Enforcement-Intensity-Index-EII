@@ -40,7 +40,9 @@ in COW.
 | `posture_note` | Reason a posture cell is blank | build | — | — |
 | `pen_program_count` | OFAC civil penalties, settlements and findings of violation published in the year whose sanctions program targets this country. An entry naming several country programs counts once for each; OFAC's own count is used where one entry aggregates several penalties | OFAC enforcement information, 2003–2025 (`build_penalties.R`) | 2003–2025; blank before 2003 | Negotiated and discretionary, published only when resolved. Understates enforcement against US banks, most of which runs through anti-money-laundering law (FinCEN, OCC, Fed, DOJ). 59% of penalties (1,219 of 2,052) were against individuals, mostly Cuba travel cases in 2003–2005 |
 | `pen_program_count_firms` | As `pen_program_count`, firms and organizations only (entries for individuals excluded) | as above | as above | Use this to separate exertion against a target from mass enforcement against US travelers |
-| `fin_program_count` | Persons, entities, vessels and aircraft added to OFAC's SDN list in the year under a sanctions program that targets this country. An addition under several country programs counts once for each | OFAC, archive of changes to the SDN list (`build_financial.R`) | 1995–2025; blank before 1995 | Records designations, not their effect. Additions under non-country programs (terrorism, narcotics, nonproliferation, cyber, Global Magnitsky, Western Balkans: 39% of additions) have no program country. Vessels and aircraft count as additions (2,023 of 24,277) |
+| `fin_program_count` | Persons, entities, vessels and aircraft added to OFAC's SDN list in the year under a sanctions program that targets this country. An addition under several country programs counts once for each | OFAC, archive of changes to the SDN list (`build_financial.R`; 1994: `estimate_sdn_1994.R`) | 1994–2025 (1994 estimated); blank before 1994 | Records designations, not their effect. Additions under non-country programs (terrorism, narcotics, nonproliferation, cyber, Global Magnitsky, Western Balkans: 39% of additions) have no program country. Vessels and aircraft count as additions (2,023 of 24,277) |
+| `fin_program_count_low`, `fin_program_count_high` | Bounds on `fin_program_count`. Equal to it in every year except 1994 | as above | 1994–2025 | 1994 Haiti: 944–1,033 around 1,011 (see below) |
+| `fin_estimated` | 1 if `fin_program_count` is estimated (1994), 0 if counted from itemized entries | build | 1994–2025 | Rerun any result without the 1994 rows |
 | `fin_program_count_nonindiv` | As `fin_program_count`, excluding individuals | as above | as above | Separates designations of firms, banks, state bodies, vessels and aircraft from designations of officials and other individuals |
 | `fin_location_count` | SDN additions in the year whose address is in this country, whatever the program (the second attribution, Q8): e.g., a UAE company designated under the Iran program counts for the UAE | as above | as above | An address is found for 84% of additions; vessels, aircraft and individuals listed without an address have none, so 0 means none of the located additions, not none at all. Additions located in the United States (code 2) are outside the frame |
 
@@ -174,10 +176,29 @@ characters of the entry. Year totals: `v2/output/financial_year_totals.csv`.
   Sudan before 2011 are assigned to their predecessor state. Place of birth,
   nationality and the country in identity-document numbers are not
   locations.
-- **1994.** The 1994 file is narrative: it reports most designations as
-  counts (e.g., "523 individual officers of the Haitian Armed Forces") whose
-  names were published in separate files not in the archive. The panel's
-  financial columns therefore start in 1995; 1994 is blank.
+- **1994 (estimated; `estimate_sdn_1994.R`, `v2/output/sdn_1994_estimate.csv`).**
+  The 1994 file is narrative: it reports most designations as counts (e.g.,
+  "General Notice No. 3 ... naming 523 individual officers of the Haitian
+  Armed Forces") whose names were published in separate files not in the
+  archive. Program counts are estimated; the split by type and the location
+  attribution are not, and stay blank for 1994.
+  - Libya 32, Iraq 1 and Yugoslavia 3 are counted exactly from the text.
+  - Haiti: the stated Haiti general notices of 1994 (Nos. 3, 4, 5, 6, 8, 10)
+    total 664 listings. The one count OFAC does not state, the Haitian
+    residents named under the 21 June 1994 executive order, is taken from
+    the itemized list of the residents' category ("**") deleted on 10/05/94:
+    333 distinct listings, plus 14 redesignated that day. That category
+    exists only from 21 June 1994, so all of it is a 1994 addition; it holds
+    General Notice 9 (117) and 230 other residents. Point estimate 1,011.
+    Low (944): General Notices 8 and 10 are already inside the residents'
+    category. High (1,033): the 22 blocked individuals removed on 10/05/94,
+    whose listing date is not stated, were also 1994 listings.
+  - Check: the itemized list of every Haiti listing deleted on 10/16/94,
+    when the program ended, leaves about 19 individuals and 37 government
+    entities not accounted for by the 1994 notices, consistent with Haiti
+    listings made before 1994.
+  - Total 1994: 1,047 (bounds 980–1,069). The bounds come from alternative
+    readings of the source, not from a statistical model.
 - **Checked by hand:** 25 random additions against their source entries and
   headings (program country, location, type and section all correct).
 - **Checked against CNAS "Sanctions by the Numbers"**

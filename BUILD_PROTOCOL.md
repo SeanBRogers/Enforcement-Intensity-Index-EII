@@ -246,7 +246,7 @@ party); the Global Terrorism Database (public release appears to end about
 |---|---|---|
 | D1 | All states, target country-year, 1950–2025; COW v2024 list, 2025 carried forward | SETTLED |
 | D2 | `under_sanctions` = a GSDB-R5 case naming the US as a sender in force against the state (targets and years from the dyadic file); COW codes; crosswalk logged | SETTLED (release 5 in use) |
-| D3 | Financial channel = SDN additions per country, 1994–2025; pre-1994 missing | SETTLED for the proof of concept; built for 1995–2025 (1994 OPEN, change log 2026-10-27) |
+| D3 | Financial channel = SDN additions per country, 1994–2025; pre-1994 missing | SETTLED; built for 1995–2025, 1994 estimated (change log 2026-10-29) |
 | D4 | Multilateral block: UN Security Council and EU listings, outside the index, kept to test whether the US shifts enforcement onto others and toward cheaper instruments | SETTLED; listing-date recovery OPEN |
 | D5 | Kinetic = US-party conflict in UCDP/PRIO v26.1, troop-weighted; MID for validation; GED not used | SETTLED |
 | D6 | Program variables from GSDB's coded types and objectives, not hand-coded | SETTLED |
@@ -463,4 +463,15 @@ the repository.
   whichever way they come out. No substitution analysis had been run when
   this was logged. Note: the original mycology framing was removed from AC
   for parsimony; the slime-mold analogy stands.
+- 2026-10-29, financial channel 1994 estimated (Sean, 10:03: "I think
+  estimate since that's the whole thing ... tag it ... give a CI and move
+  on"). `estimate_sdn_1994.R`: program counts for 1994 from the counts OFAC
+  states in the narrative file, with the one unstated count (residents named
+  under the 21 June 1994 order) taken from the itemized October 1994 deletion
+  lists. Total 1,047 (bounds 980–1,069; Haiti 1,011, 944–1,033). The bounds
+  are alternative readings of the source, not a statistical interval.
+  Flagged in the panel (`fin_estimated`, `fin_program_count_low`/`_high`);
+  the type split and location stay missing for 1994. Results are reported
+  with and without the 1994 rows. A 1995 value was not used as a prior:
+  1994 is dominated by the Haiti program, which ended in October 1994.
 

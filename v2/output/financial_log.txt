@@ -1,4 +1,4 @@
-EII v2 financial channel build, 2026-10-27 17:58 EDT
+EII v2 financial channel build, 2026-10-29 10:08 EDT
 R 4.3.3; countrycode 1.9.0; pdftotext version 24.02.0
 Parsed 102504 units from 32 files (98335 entries, 4094 headers, 75 other text blocks)
 Entries in sections headed as additions: 50502

@@ -167,8 +167,24 @@ fv <- c("fin_program_count", "fin_program_count_nonindiv", "fin_location_count")
 fr <- merge(fr, fin[, c("ccode", "year", fv)], by = c("ccode", "year"), all.x = TRUE)
 for (v in fv) {
   fr[[v]][is.na(fr[[v]]) & fr$year >= 1995] <- 0L                              # itemized archive covers 1995-2025
-  fr[[v]][fr$year < 1995] <- NA                                                 # 1994 is narrative only; pre-1994 needs the Federal Register
+  fr[[v]][fr$year < 1995] <- NA                                                 # 1994 estimated below (program count only); pre-1994 needs the Federal Register
 }
+# 1994: the change file is narrative, so program counts are estimated
+# (estimate_sdn_1994.R; Sean, 2026-10-29) with bounds; the split by type and
+# the location attribution are not estimated and stay missing.
+e94 <- read.csv(file.path(out, "sdn_1994_estimate.csv"), stringsAsFactors = FALSE)
+y94 <- fr$year == 1994
+fr$fin_program_count[y94] <- 0L
+m <- match(paste(fr$ccode[y94], 1994), paste(e94$ccode, e94$year))
+fr$fin_program_count[y94][!is.na(m)] <- e94$point[m[!is.na(m)]]
+fr$fin_program_count_low  <- fr$fin_program_count
+fr$fin_program_count_high <- fr$fin_program_count
+fr$fin_program_count_low[y94][!is.na(m)]  <- e94$low[m[!is.na(m)]]
+fr$fin_program_count_high[y94][!is.na(m)] <- e94$high[m[!is.na(m)]]
+fr$fin_estimated <- ifelse(is.na(fr$fin_program_count), NA_integer_, as.integer(y94))
+stopifnot(all(e94$ccode %in% fr$ccode[y94]))
+lg("Financial 1994 (estimated from the narrative change file): ", sum(e94$point), " additions (bounds ",
+   sum(e94$low), "-", sum(e94$high), ") in ", nrow(e94), " program countries; type split and location missing for 1994")
 for (v in c("fin_program_count", "fin_location_count")) {
   off <- setdiff(paste(fin$ccode[fin[[v]] > 0], fin$year[fin[[v]] > 0]), paste(fr$ccode, fr$year))
   lg("Financial ", v, ": ", sum(fr[[v]], na.rm = TRUE), " counts merged; country-years outside the frame: ", length(off),
@@ -180,7 +196,8 @@ fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "under_sanctions_us", "under_sanctions_us_single", "us_sanction_cases",
         "kin_vs_state", "kin_vs_state_intensity", "kin_in_state", "kin_in_state_intensity",
         "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms",
-        "fin_program_count", "fin_program_count_nonindiv", "fin_location_count")]
+        "fin_program_count", "fin_program_count_low", "fin_program_count_high", "fin_estimated",
+        "fin_program_count_nonindiv", "fin_location_count")]
 write.csv(fr, file.path(out, "EII_v2_partial.csv"), row.names = FALSE, na = "")
 lg("Wrote EII_v2_partial.csv: ", nrow(fr), " rows, ", ncol(fr), " columns")
-lg("Not yet built: multilateral block, burden blocks, covariates")
+lg("Not yet built here: multilateral block, target burden block (covariates: build_covariates.R)")
