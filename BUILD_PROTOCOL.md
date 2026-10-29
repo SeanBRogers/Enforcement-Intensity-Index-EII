@@ -651,3 +651,25 @@ the repository.
   - Q14 control: UCDP conflicts without the US, with the US-backed share
     flagged (38% of conflict-years in 1975–2017 have US support to a side
     in ESD, so they cannot serve as controls).
+- 2026-10-29, trade channel measure PROPOSED (Claude, for Sean's approval
+  before any pull; Sean, 16:38: "Unpause"). Tier 1, US tariff coercion
+  against a named state; anti-dumping and countervailing duties stay outside
+  the index (2026-10-27); threats (statements, posts) excluded.
+  - Events: (a) Section 301 investigation opened against the state (a formal
+    Federal Register action, the stage before retaliation); (b) Section 301
+    retaliation imposed (tariffs or suspended preferences); (c) Section 232
+    measures that name the state (a country-specific rate, quota or the loss
+    of an exemption: Turkey's doubled steel tariff, 2018); (d) emergency
+    (IEEPA) tariffs that name the state (Canada, Mexico and China, 2025;
+    Brazil and India, 2025); for the 2025 country-rate tariffs, only rates
+    above the general baseline count.
+  - Sources: CRS R46604 (2020), Table A-2 (all 130 Section 301 cases,
+    1975–2020) and Table A-1 (outcomes 1995–2020); the Federal Register for
+    outcomes before 1995 and for cases from 2021; presidential proclamations
+    (232) and executive orders (IEEPA).
+  - Cases against the European Communities or EU count for each member in
+    that year, flagged, as GSDB does for EU sanctions.
+  - Coverage 1975–2025 (Section 301 begins with the Trade Act of 1974);
+    blank before 1975.
+  - For Sean: whether investigations count as events or only retaliation;
+    whether EU cases go to members or stay EU-level.
