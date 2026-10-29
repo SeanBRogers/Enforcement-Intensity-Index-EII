@@ -310,7 +310,14 @@ cy <- function(df, nm) { if (!nrow(df)) return(data.frame(ccode = integer(), yea
 p_all  <- cy(long("program_ccode", rep(TRUE, nrow(add))), "fin_program_count")
 p_ent  <- cy(long("program_ccode", add$etype != "individual"), "fin_program_count_nonindiv")
 l_all  <- cy(long("location_ccode", rep(TRUE, nrow(add))), "fin_location_count")
-fy <- Reduce(function(a, b) merge(a, b, all = TRUE), list(p_all, p_ent, l_all))
+# Q8 amended 2026-10-29: additions under non-country programs only (narcotics,
+# terrorism, transnational crime, cyber, Global Magnitsky ...) have no program
+# country; they are counted where the designee is located, as their own column.
+thematic <- !nzchar(add$program_ccode)
+t_loc  <- cy(long("location_ccode", thematic), "fin_thematic_location_count")
+lg("Additions under non-country programs only: %d (%.0f%%); with a located COW state: %d",
+   sum(thematic), 100 * mean(thematic), sum(thematic & nzchar(add$location_ccode)))
+fy <- Reduce(function(a, b) merge(a, b, all = TRUE), list(p_all, p_ent, l_all, t_loc))
 fy[is.na(fy)] <- 0
 write.csv(fy[order(fy$ccode, fy$year), ], file.path(outd, "financial_country_year.csv"), row.names = FALSE)
 

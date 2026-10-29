@@ -163,7 +163,7 @@ lg("Penalties: ", sum(fr$pen_program_count, na.rm = TRUE), " program-attributed 
 
 # ---------------------------------------------- 6. Financial (build_financial.R)
 fin <- read.csv(file.path(out, "financial_country_year.csv"), stringsAsFactors = FALSE)
-fv <- c("fin_program_count", "fin_program_count_nonindiv", "fin_location_count")
+fv <- c("fin_program_count", "fin_program_count_nonindiv", "fin_location_count", "fin_thematic_location_count")
 fr <- merge(fr, fin[, c("ccode", "year", fv)], by = c("ccode", "year"), all.x = TRUE)
 for (v in fv) {
   fr[[v]][is.na(fr[[v]]) & fr$year >= 1995] <- 0L                              # itemized archive covers 1995-2025
@@ -182,6 +182,7 @@ fr$fin_program_count_high <- fr$fin_program_count
 fr$fin_program_count_low[y94][!is.na(m)]  <- e94$low[m[!is.na(m)]]
 fr$fin_program_count_high[y94][!is.na(m)] <- e94$high[m[!is.na(m)]]
 fr$fin_estimated <- ifelse(is.na(fr$fin_program_count), NA_integer_, as.integer(y94))
+fr$fin_thematic_location_count[y94] <- 0L                  # no non-country program existed in 1994 (SDT from 1995, SDNT from October 1995)
 stopifnot(all(e94$ccode %in% fr$ccode[y94]))
 lg("Financial 1994 (estimated from the narrative change file): ", sum(e94$point), " additions (bounds ",
    sum(e94$low), "-", sum(e94$high), ") in ", nrow(e94), " program countries; type split and location missing for 1994")
@@ -197,7 +198,7 @@ fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "kin_vs_state", "kin_vs_state_intensity", "kin_in_state", "kin_in_state_intensity",
         "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms",
         "fin_program_count", "fin_program_count_low", "fin_program_count_high", "fin_estimated",
-        "fin_program_count_nonindiv", "fin_location_count")]
+        "fin_program_count_nonindiv", "fin_location_count", "fin_thematic_location_count")]
 write.csv(fr, file.path(out, "EII_v2_partial.csv"), row.names = FALSE, na = "")
 lg("Wrote EII_v2_partial.csv: ", nrow(fr), " rows, ", ncol(fr), " columns")
 lg("Not yet built here: multilateral block, target burden block (covariates: build_covariates.R)")

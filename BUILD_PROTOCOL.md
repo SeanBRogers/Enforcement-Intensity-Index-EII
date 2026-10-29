@@ -489,4 +489,18 @@ the repository.
   material is §8.3–8.4 (Truman Doctrine, Leffler 1992, Westad 2005) and the
   post-Vietnam turn to "proxy mechanisms". Proposition 5 (the Handshake
   priced in the current node's goods; test: relief after payment) is OPEN.
+- 2026-10-29, Q8 amended (Sean, 11:14: "I agree emphatically"). Additions
+  under non-country programs only (39% of SDN additions; 19% are narcotics)
+  are counted where the designee is located, in their own column
+  (`fin_thematic_location_count`), alongside the program-country count. The
+  original rule left the drug war invisible: 4,599 narcotics additions, 2,058
+  of them located in Colombia and 1,278 in Mexico, counted toward no country.
+  The same change is due for penalties once location attribution there is
+  built (currently 423 of 1,054 entries). Sean's notes, same exchange, not yet
+  design: the Monroe Doctrine and Roosevelt Corollary as hemispheric
+  extraction (AC's August draft treats the Monroe Doctrine as British-enforced
+  free-riding, not extraction); the fall in Colombia's narcotics designations
+  after 2010 is not necessarily the Shroud (rival readings: partnership under
+  Plan Colombia, fragmentation of the cartels, designations moving to
+  Mexico).
 

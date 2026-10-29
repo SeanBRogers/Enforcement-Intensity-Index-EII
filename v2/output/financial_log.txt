@@ -1,4 +1,4 @@
-EII v2 financial channel build, 2026-10-29 10:08 EDT
+EII v2 financial channel build, 2026-10-29 11:15 EDT
 R 4.3.3; countrycode 1.9.0; pdftotext version 24.02.0
 Parsed 102504 units from 32 files (98335 entries, 4094 headers, 75 other text blocks)
 Entries in sections headed as additions: 50502
@@ -12,6 +12,7 @@ Location (address country) found for 20358 of 24277 additions (83.9%)
 Dropped 0 additions tagged only with non-SDN lists (FSE, NS-PLC)
 Additions with at least one program tag: 24277 of 24277
 Additions with a program country: 14838 (the rest are under non-country programs only, e.g. terrorism, narcotics, nonproliferation)
+Additions under non-country programs only: 9439 (39%); with a located COW state: 7663
 Additions by year (after alias removal):
   1995    278 additions     82 individuals    239 with program country    248 with location
   1996    199 additions    138 individuals      0 with program country    199 with location
