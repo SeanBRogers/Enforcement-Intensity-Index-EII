@@ -269,6 +269,25 @@ k3 <- merge(cs, cb, by = c("key", "year", "month"))
 lg("  Check: beta and stable releases agree on the monthly coarse regime in %.2f%% of %d country-months (1946-2019)",
    100 * mean(k3$value.x == k3$value.y, na.rm = TRUE), sum(!is.na(k3$value.x)))
 
+# ------------------------------------------------------- dollar integration, check measure: dollar share of external debt
+# World Bank International Debt Statistics (source 6, December 2025 release),
+# DT.CUR.USDL.ZS: share of long-term public and publicly guaranteed external
+# debt contracted in US dollars, counterpart "World". Reporting countries only
+# (low- and middle-income debtors): high-income states are not covered.
+ids <- fromJSON(file.path(snap, "ids_DT.CUR.USDL.ZS_2026-10-29.json"), simplifyVector = FALSE)
+idv <- do.call(rbind, lapply(ids$source$data, function(r) {
+  if (is.null(r$value)) return(NULL)
+  g <- setNames(lapply(r$variable, function(x) x$id), vapply(r$variable, function(x) x$concept, ""))
+  data.frame(iso3 = g$Country, year = as.integer(sub("^YR", "", g$Time)), usd_debt_share = as.numeric(r$value))
+}))
+idv <- idv[idv$year %in% yrs, ]
+idv$ccode <- iso_cow(idv$iso3, idv$year)
+nm_id <- unique(idv$iso3[is.na(idv$ccode)])
+idv <- idv[!is.na(idv$ccode), c("ccode", "year", "usd_debt_share")]
+stopifnot(!anyDuplicated(paste(idv$ccode, idv$year)))
+lg("Dollar share of PPG external debt (IDS, %s release): %d state-years %d-%d, %d states; codes not mapped (regional aggregates): %d",
+   ids$lastupdated, nrow(idv), min(idv$year), max(idv$year), length(unique(idv$ccode)), length(nm_id))
+
 # ------------------------------------------------------- extractive value: physical endowment (oil, gas, coal production)
 # Our World in Data energy dataset (Energy Institute Statistical Review and
 # other sources), TWh of primary energy. Successor and predecessor series are
@@ -353,13 +372,14 @@ cy <- merge(cy, rents, by = c("ccode", "year"), all.x = TRUE)    # outside WDI c
 cy <- merge(cy, irr, by = c("ccode", "year"), all.x = TRUE)      # not classified by IRR: missing
 cy <- merge(cy, endow, by = "ccode", all.x = TRUE)               # time-invariant
 cy <- merge(cy, ec, by = c("ccode", "year"), all.x = TRUE)       # not in the Atlas: missing
-offs <- sapply(list(UNGA = un, rents = rents, IRR = irr, energy = energy, ECI = ec), function(s)
+cy <- merge(cy, idv, by = c("ccode", "year"), all.x = TRUE)      # not an IDS reporter: missing
+offs <- sapply(list(UNGA = un, rents = rents, IRR = irr, energy = energy, ECI = ec, IDS = idv), function(s)
   length(setdiff(paste(s$ccode, s$year), paste(frame$ccode, frame$year))))
 lg("Merged on the frame (%d state-years). Source rows outside the frame: %s (non-COW members or years before COW membership)",
    nrow(cy), paste(names(offs), offs, collapse = ", "))
-lg("Coverage in the frame (of %d): defense pact %d; UNGA %d; resource rents %d; USD anchor %d; regime %d; USD peg %d; endowment %d; ECI %d",
+lg("Coverage in the frame (of %d): defense pact %d; UNGA %d; resource rents %d; USD anchor %d; regime %d; USD peg %d; USD debt share %d; endowment %d; ECI %d",
    nrow(cy), sum(!is.na(cy$us_defense_pact)), sum(!is.na(cy$unga_dist_us)), sum(!is.na(cy$nat_res_rents_gdp)),
-   sum(!is.na(cy$usd_anchor)), sum(!is.na(cy$fx_regime_coarse)), sum(!is.na(cy$usd_peg)),
+   sum(!is.na(cy$usd_anchor)), sum(!is.na(cy$fx_regime_coarse)), sum(!is.na(cy$usd_peg)), sum(!is.na(cy$usd_debt_share)),
    sum(!is.na(cy$endow_oilgas_twh)), sum(!is.na(cy$eci_sitc)))
 cy <- cy[order(cy$ccode, cy$year), ]
 write.csv(cy, file.path(outd, "covariates_country_year.csv"), row.names = FALSE, na = "")
@@ -372,4 +392,4 @@ dir.create(file.path(outd, "local"), showWarnings = FALSE)
 write.csv(en[order(en$ccode, en$year), ], file.path(outd, "local", "energy_production_country_year.csv"), row.names = FALSE, na = "")
 lg("Wrote local/energy_production_country_year.csv (not committed): oil production reported in %d of %d state-years", sum(!is.na(en$oil_prod_twh)), nrow(en))
 lg("Wrote covariates_year.csv (%d rows) and covariates_country_year.csv (%d rows)", nrow(covy), nrow(cy))
-lg("Not yet built: dollar-integration check measure (Q6), minerals endowment, US as target (Q15), trade channel")
+lg("Not yet built: minerals endowment, US as target (Q15), trade channel")

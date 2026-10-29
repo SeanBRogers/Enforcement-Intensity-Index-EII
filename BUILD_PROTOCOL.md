@@ -575,3 +575,23 @@ the repository.
   - Sean's note, same message, not yet design: the protection racket
     extends to leaders, who are "on the outs when they deviate" (Iran's
     revolution cited); a leader-level reading of proposition 5's "exit is punished".
+- 2026-10-29, decisions (Sean, 13:28–13:30):
+  - Proposition 5 test agreed: exit is punished. Leaders are in scope, in
+    Sean's words: "if you won't play ball, we'll ensure your successor
+    does." Implication to test: a leader who deviates faces a higher hazard
+    of US-backed removal, and the successor realigns (UNGA distance falls,
+    US exertion against the state falls). It fails if deviating leaders face
+    no higher hazard, or if installed successors do not realign.
+  - Dollar-integration check measure: dollar share of public external debt
+    (World Bank IDS, DT.CUR.USDL.ZS, 1970–2024, low- and middle-income
+    reporters only), added as `usd_debt_share`. It correlates weakly with
+    `usd_peg` (0.11–0.38 by decade): the two measure different things (the
+    regime versus the currency of liabilities) and are reported side by side.
+  - Minerals (Claude's reading of "critical", to confirm): the endowment
+    uses the US critical-minerals list.
+  - O'Rourke's data ends in 1989 (Sean: "insufficient BUT it opens a great
+    opportunity to fill the gap"): extending US covert regime-change coding
+    past 1989 is a candidate contribution, not yet design. Caution: records
+    of covert action surface with a declassification lag, so coverage falls
+    toward the present; this produces a spurious decline unless coverage is
+    modelled or graded.
