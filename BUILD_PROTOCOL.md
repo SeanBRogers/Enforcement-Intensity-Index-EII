@@ -474,4 +474,19 @@ the repository.
   the type split and location stay missing for 1994. Results are reported
   with and without the 1994 rows. A 1995 value was not used as a prior:
   1994 is dominated by the Haiti program, which ended in October 1994.
+- 2026-10-29, covert and proxy channel moved into v2.0 (Sean, 11:05:
+  "Absolutely ... Visibility is at the heart of EII, not recorded doesn't
+  mean non-existent"). Reason: the kinetic channel sees only overt,
+  UCDP-coded war; Cold War coercion was largely covert and post-1991 coercion
+  largely overt, so without this channel the expansion after 1991
+  (proposition 1) is confounded with coercion becoming visible. Sources
+  (OPEN, to verify before the first pull): O'Rourke, Covert Regime Change
+  (2018), US regime-change attempts 1947–1989; UCDP External Support Dataset
+  (1975–2017), US support to warring parties; SIPRI arms transfers. Coverage
+  breaks (1989, 2017) are flagged, never filled with zero. AC check: the AC
+  versions in Drive (May 2026 Google Doc; August 2026 .docx) do not discuss
+  the Eisenhower Doctrine, filibustering or the Contras; AC's Cold War
+  material is §8.3–8.4 (Truman Doctrine, Leffler 1992, Westad 2005) and the
+  post-Vietnam turn to "proxy mechanisms". Proposition 5 (the Handshake
+  priced in the current node's goods; test: relief after payment) is OPEN.
 
