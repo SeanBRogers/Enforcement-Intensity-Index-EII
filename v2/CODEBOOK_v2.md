@@ -9,8 +9,9 @@ yet built (`BUILD_PROTOCOL.md`, section 7).
 
 File: `v2/output/EII_v2_partial.csv`. Built by `v2/build/run_all.R`
 (`build_penalties.R`, `build_financial.R`, `estimate_sdn_1994.R`,
-`build_proxy.R`, `build_regime_change.R`, `build_v2_partial.R`, then
-`build_covariates.R`) from the
+`build_proxy.R`, `build_regime_change.R`, `build_gsdb_fs.R`,
+`build_v2_partial.R`, `build_covariates.R`, `build_multilateral.R`, then
+`build_controls.R`) from the
 sources in `v2/sources/MANIFEST.csv`, `v2/sources/MANIFEST_ofac.csv`,
 `v2/sources/MANIFEST_sdn.csv` and `v2/sources/MANIFEST_covariates.csv` (fetch
 and verify with `v2/build/fetch_sources.R`). The build needs a UTF-8 locale;
@@ -64,6 +65,20 @@ in COW.
 | `fin_program_count_nonindiv` | As `fin_program_count`, excluding individuals | as above | as above | Separates designations of firms, banks, state bodies, vessels and aircraft from designations of officials and other individuals |
 | `fin_thematic_location_count` | SDN additions in the year under non-country programs only (narcotics, terrorism, transnational crime, cyber, Global Magnitsky, nonproliferation, Western Balkans and others) whose address is in this country. An addition located in several countries counts once for each | as above | 1994–2025 (1994 is 0: no non-country program existed before 1995) | Makes the drug war and counterterrorism visible: these additions have no program country and do not enter `fin_program_count` (Colombia's program count is 0 in every year; 2,058 narcotics additions are located there). Disjoint from `fin_program_count` by addition. Same address limits as `fin_location_count` |
 | `fin_location_count` | SDN additions in the year whose address is in this country, whatever the program (the second attribution, Q8): e.g., a UAE company designated under the Iran program counts for the UAE | as above | as above | An address is found for 84% of additions; vessels, aircraft and individuals listed without an address have none, so 0 means none of the located additions, not none at all. Additions located in the United States (code 2) are outside the frame |
+| `fin_gsdb_cases` | Number of GSDB financial sanction cases naming the United States among their senders in force against the state in the year | GSDB-FS v1.0 (financial sanctions, September 2026), case list and dyadic file (`build_gsdb_fs.R`) | 1950–2025 | One case per sender, target and objective: adding names to an existing list is not a new case, so this measures whether a US financial regime is in force (the extensive margin), not designation intensity. The one financial series on a single method across 1950–2025; see the calibration below before using it for 1950–1993 |
+| `fin_gsdb_cases_single` | As `fin_gsdb_cases`, single-target cases only (GSDB-R5 `target_mult` = 0) | as above | 1950–2025 | Drops multi-country designation cases (Global Magnitsky and the like), which flag many states at once |
+| `fin_gsdb_asset_freeze`, `fin_gsdb_services`, `fin_gsdb_aid`, `fin_gsdb_investment`, `fin_gsdb_payment_infra`, `fin_gsdb_other` | 1 if a US-named case in force that year includes the subtype: asset freeze; ban on financial services; withdrawal of aid; investment restrictions; cut-off from payment infrastructure; other | as above | 1950–2025 | Subtypes from the case list (GSDB's dyadic file merges every case in force for a dyad, including UN cases spread to each member). Payment infrastructure appears only from the 2020s (12 state-years) |
+
+Calibration of the GSDB-FS case series against the SDN counts, 1995–2025
+(`financial_gsdb_log.txt`). Of the 197 state-years with SDN program
+additions, 94.9% also have a US asset-freeze or financial-services case in
+force; of the 1,106 state-years with such a case, only 16.9% have SDN
+program additions. Year totals move together (correlation 0.89), but at the
+state-year level the rank correlation is 0.33. The case series nests the
+designation activity but is a different measure: it records that a regime is
+in force, not how hard it is used. Before 1994 it can stand in for whether a
+US financial sanction was in force against a state, not for how many
+designations were made; no designation counts are imputed from it.
 
 `kin_vs_state` and `kin_in_state` are kept separate and never summed: the first
 is force against a state, the second is force spent in a state alongside its
@@ -250,6 +265,46 @@ characters of the entry. Year totals: `v2/output/financial_year_totals.csv`.
   (130), Turkey 122 (109), Mexico 106 (102), Belarus 67 (55), Venezuela 38
   (37), North Korea 12 (29). North Korea is low because many North Korean
   individuals are listed with a nationality but no address.
+
+## Multilateral block (`build_multilateral.R`)
+
+Outside the index (`BUILD_PROTOCOL.md`, D4). File:
+`v2/output/multilateral_country_year.csv`, same frame; log
+`multilateral_log.txt`. Source: GSDB release 5, cases classed by sender from
+the case list, targets and years from the dyadic file.
+
+| Variable | Definition | Coverage | Notes |
+|---|---|---|---|
+| `un_sanctions` | 1 if a UN sanctions case (GSDB sender "UN") is in force against the state | 1950–2025 | 88 cases; 591 state-years. Whether the US drafted or sponsored the measure (tier 2) or not (tier 3) is not yet coded: it needs case evidence, OPEN |
+| `un_sanction_cases` | Number of UN cases in force | as above | |
+| `un_sanctions_financial` | 1 if a UN case in force includes financial measures (GSDB-R5 case list) | as above | 316 state-years |
+| `eu_sanctions` | 1 if a case naming the EU among its senders is in force | as above | 190 cases (3 also name the US); 978 state-years, from the 1990s on |
+| `eu_sanctions_no_us` | As `eu_sanctions`, counting only EU cases that do not name the US | as above | |
+| `regional_sanctions` | 1 if a case by another organization (African Union, Commonwealth, ECCAS, ECOWAS, Arab League, NATO, OAU, OAS, SADC) is in force | as above | 81 cases; 755 state-years. The Arab League boycott of Israel and the OAU measures against South Africa and Portugal dominate before 1990 |
+
+Not yet built: UN Security Council listings with their original dates (the
+current consolidated list drops delisted names), tier coding of UN cases,
+and Security Council vetoes as denied cover.
+
+## Controls and the kill test (`build_controls.R`)
+
+File: `v2/output/controls_country_year.csv`, same frame; log
+`controls_log.txt`.
+
+| Variable | Definition | Source | Coverage | Notes |
+|---|---|---|---|---|
+| `mid_vs_us` | 1 if the state is on the side opposing the US in a militarized interstate dispute in the year (Q15) | COW MID 5.0, participant file | 1950–2014; blank after | 340 disputes with the US; 327 state-years. MIDs include threats and displays as well as force |
+| `mid_vs_us_initiator` | As above, the state on the initiating side (side A) | as above | as above | 202 state-years |
+| `mid_vs_us_force` | As above, the state's own highest action was a use of force or war (hostility level 4–5) | as above | as above | 220 state-years. Use of force in MID terms includes seizures of vessels and personnel, not only attacks |
+| `mid_vs_us_attack` | Initiated and used force against the US | as above | as above | 154 state-years; the closest MID reading of "someone attacks us" |
+| `sanctions_on_us` | 1 if the state is a sender in a sanctions case against the US in force (Q15) | GSDB release 5, dyadic file | 1950–2025 | 106 state-years; the 1973–74 Arab oil embargo is the largest episode (37 state-years). EU and UN cases count for every member state, as GSDB spreads them |
+| `conflict_nonus` | 1 if a UCDP armed conflict in which the US is not a party is located in the state, or the state is a party to one (Q14) | UCDP/PRIO ACD v26.1 | 1950–2025 | 1,830 state-years. Disjoint from the kinetic channel by construction |
+| `conflict_nonus_intensity` | Highest intensity of those conflicts (0, 1 = 25–999 battle deaths, 2 = 1,000+) | as above | as above | 549 state-years at 1,000+ |
+| `conflict_nonus_us_backed` | 1 if such a conflict-year also has US support short of troops to a side (ESD) | UCDP ACD and ESD | 1975–2017; blank outside | 464 of 1,229 conflict state-years in 1975–2017 (38%). Those years are US pressure, not a control: drop them when conflict is used as a control (protocol, 2026-10-27) |
+
+Not yet built for Q15: terrorism against US targets (Global Terrorism
+Database, by request), state cyber operations against the US, and state
+attacks on US forces after 2014 (MID ends in 2014).
 
 ## Covariates (`build_covariates.R`)
 

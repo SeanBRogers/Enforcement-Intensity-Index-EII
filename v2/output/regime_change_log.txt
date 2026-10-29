@@ -1,4 +1,4 @@
-EII v2 regime change build, 2026-10-29 14:22 EDT; R 4.3.3
+EII v2 regime change build, 2026-10-29 16:54 EDT; R 4.3.3
 Cases: 64 covert attempts (25 achieved their objective), 2 covert plans aborted, 6 overt operations
 Not assigned (no COW state): Angola; Mozambique
 Case-years from 1950 outside the frame (state not a system member): 9 (265 1950, 265 1951, 265 1952, 265 1953, 110 1961, 110 1962, 110 1963, 110 1964, 110 1965)

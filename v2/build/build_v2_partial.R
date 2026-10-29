@@ -210,6 +210,13 @@ for (v in c("fin_program_count", "fin_location_count")) {
      if (length(off)) paste0(" (", paste(off, collapse = "; "), "; code 2 is the United States, excluded as a target)") else "")
 }
 
+# ------------------------------------- 6b. Financial case series 1950-2025 (build_gsdb_fs.R, GSDB-FS)
+gf <- read.csv(file.path(out, "financial_gsdb_country_year.csv"), stringsAsFactors = FALSE)
+gv <- setdiff(names(gf), c("ccode", "year"))
+stopifnot(setequal(paste(gf$ccode, gf$year), paste(fr$ccode, fr$year)))
+fr <- merge(fr, gf, by = c("ccode", "year"), all.x = TRUE)
+lg("Financial cases (GSDB-FS, US-named): ", sum(fr$fin_gsdb_cases > 0), " state-years with a case in force, 1950-2025")
+
 # ------------------------------------------------------------------ 7. Write
 fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "under_sanctions_us", "under_sanctions_us_single", "us_sanction_cases",
@@ -219,7 +226,9 @@ fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "rc_covert", "rc_covert_planned", "rc_covert_type", "rc_covert_leader_removal", "rc_covert_succeeded", "rc_overt",
         "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms",
         "fin_program_count", "fin_program_count_low", "fin_program_count_high", "fin_estimated",
-        "fin_program_count_nonindiv", "fin_location_count", "fin_thematic_location_count")]
+        "fin_program_count_nonindiv", "fin_location_count", "fin_thematic_location_count",
+        "fin_gsdb_cases", "fin_gsdb_cases_single", "fin_gsdb_asset_freeze", "fin_gsdb_services", "fin_gsdb_aid",
+        "fin_gsdb_investment", "fin_gsdb_payment_infra", "fin_gsdb_other")]
 write.csv(fr, file.path(out, "EII_v2_partial.csv"), row.names = FALSE, na = "")
 lg("Wrote EII_v2_partial.csv: ", nrow(fr), " rows, ", ncol(fr), " columns")
 lg("Not yet built here: multilateral block, target burden block (covariates: build_covariates.R)")

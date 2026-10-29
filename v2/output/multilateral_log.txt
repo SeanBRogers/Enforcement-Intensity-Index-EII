@@ -1,0 +1,11 @@
+EII v2 multilateral block build, 2026-10-29 16:54 EDT; R 4.3.3; countrycode 1.9.0
+GSDB-R5 cases: UN 88; EU among senders 190 (3 also naming the US); other organizations 81
+Other-organization senders: African Union; Commonwealth; ECCAS; ECOWAS; League of Arab States; NATO; Organisation of African Unity; Organization of American States; SADC
+Targets without a COW state (not assigned): Hong Kong; ISIL/Al-Qaeda; Palestine; Terrorist Organizations (Al-Qaeda); Terrorist Organizations (ISIL and ANF); Terrorist Organizations (Taliban and Al-Qaeda); Terrorist Organizations (Taliban)
+Target-years outside the frame: 22 (346 1991; 344 1991; 343 1991; 343 1992; 341 1991; 341 1992; 341 1993; 341 1994; 341 1995; 341 1996; 341 1998; 341 1999; 341 2000; 341 2001; 349 1991; 2 1973; 2 1974; 341 1997; 341 2002; 341 2003; 341 2004; 341 2005)
+un_sanctions: 591 state-years; by decade 1950s 12, 1960s 35, 1970s 47, 1980s 20, 1990s 112, 2000s 120, 2010s 151, 2020s 94
+un_sanction_cases: 591 state-years; by decade 1950s 12, 1960s 35, 1970s 47, 1980s 20, 1990s 112, 2000s 120, 2010s 151, 2020s 94
+un_sanctions_financial: 316 state-years; by decade 1950s 3, 1960s 2, 1970s 10, 1980s 0, 1990s 48, 2000s 66, 2010s 118, 2020s 69
+eu_sanctions: 978 state-years; by decade 1950s 0, 1960s 0, 1970s 2, 1980s 0, 1990s 157, 2000s 242, 2010s 331, 2020s 246
+eu_sanctions_no_us: 951 state-years; by decade 1950s 0, 1960s 0, 1970s 2, 1980s 0, 1990s 157, 2000s 231, 2010s 321, 2020s 240
+regional_sanctions: 755 state-years; by decade 1950s 20, 1960s 48, 1970s 62, 1980s 48, 1990s 84, 2000s 195, 2010s 194, 2020s 104

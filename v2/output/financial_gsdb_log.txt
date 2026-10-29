@@ -1,0 +1,18 @@
+EII v2 GSDB-FS financial case series, 2026-10-29 16:54 EDT; R 4.3.3
+GSDB-FS US-named financial cases: 466 (22 also naming other senders); subtypes: asset_freeze 316, services 260, aid 134, investment 36, payment_infra 3, other 3
+US case-target-years: 4625; targets without a COW state: Hong Kong; Palestine
+Target-years outside the frame: 28 (541 1970; 541 1971; 341 1991; 344 1991; 349 1991; 343 1991; 346 1991; 341 1993; 341 1995; 341 1996; 341 1992; 343 1992; 341 1994; 341 1999; 341 2000; 341 2001; 341 1998; 347 2002; 347 2003; 347 2006; 347 2007; 347 2004; 347 2001; 347 2005; 341 2002; 341 2005; 341 2003; 341 2004)
+fin_gsdb_cases: 2699 state-years; states flagged in 1950 3, 1970 8, 1990 37, 2010 45, 2025 118
+fin_gsdb_cases_single: 1613 state-years; states flagged in 1950 3, 1970 8, 1990 24, 2010 21, 2025 83
+fin_gsdb_asset_freeze: 1338 state-years; states flagged in 1950 3, 1970 5, 1990 9, 2010 24, 2025 102
+fin_gsdb_services: 957 state-years; states flagged in 1950 2, 1970 3, 1990 4, 2010 16, 2025 96
+fin_gsdb_aid: 780 state-years; states flagged in 1950 1, 1970 4, 1990 19, 2010 8, 2025 16
+fin_gsdb_investment: 1264 state-years; states flagged in 1950 1, 1970 3, 1990 23, 2010 24, 2025 27
+fin_gsdb_payment_infra: 12 state-years; states flagged in 1950 0, 1970 0, 1990 0, 2010 0, 2025 3
+fin_gsdb_other: 18 state-years; states flagged in 1950 0, 1970 0, 1990 0, 2010 0, 2025 2
+Calibration 1995-2025 (5950 state-years): SDN program additions > 0 in 197; GSDB-FS US asset-freeze or financial-services case in 1106
+  Of state-years with SDN program additions, 94.9% have such a GSDB-FS case; of state-years with such a case, 16.9% have SDN program additions
+  Spearman correlation, GSDB-FS US case count with SDN program additions: 0.33 (all state-years); 0.26 (state-years with either)
+  Yearly totals (year: GSDB-FS US cases in force / SDN program additions): 1995: 55/239; 1996: 58/0; 1997: 55/3; 1998: 59/811; 1999: 57/150; 2000: 54/7; 2001: 60/51; 2002: 54/9; 2003: 54/81; 2004: 53/90; 2005: 51/125; 2006: 58/26; 2007: 59/99; 2008: 62/108; 2009: 66/33; 2010: 67/82; 2011: 75/130; 2012: 82/115; 2013: 88/284; 2014: 90/275; 2015: 87/175; 2016: 87/233; 2017: 86/582; 2018: 101/1139; 2019: 121/453; 2020: 142/651; 2021: 177/410; 2022: 234/2064; 2023: 322/2107; 2024: 395/2757; 2025: 432/1617
+  Year-level correlation of the two totals: 0.89
+  Single-target cases only: of state-years with SDN program additions, 94.9% have one; of state-years with one, 17.5% have SDN program additions

@@ -17,6 +17,7 @@ against other states, 1950–2025, for every state in the international system.
 |---|---|
 | [`v2/output/EII_v2_partial.csv`](v2/output/EII_v2_partial.csv) | The panel: one row per state per year, 1950–2025 (201 states, 11,916 rows) |
 | [`v2/output/covariates_country_year.csv`](v2/output/covariates_country_year.csv), [`covariates_year.csv`](v2/output/covariates_year.csv) | Covariates, kept apart from the panel: alliance, UN voting, dollar peg, oil and gas endowment, economic complexity (by state-year); US fiscal burden and rivals' share of world GDP (by year) |
+| [`v2/output/multilateral_country_year.csv`](v2/output/multilateral_country_year.csv), [`controls_country_year.csv`](v2/output/controls_country_year.csv) | Outside the index: UN, EU and regional sanctions; the US as a target (disputes, sanctions on the US) and conflict without the US |
 | [`v2/CODEBOOK_v2.md`](v2/CODEBOOK_v2.md) | Every variable: definition, source, coverage, and the direction in which its source misreports |
 | [`BUILD_PROTOCOL.md`](BUILD_PROTOCOL.md) | The design decisions made before the build, and every change since, with reasons |
 | [`v2/build/`](v2/build/) | The R code that fetches, verifies and builds everything, with the fixed attribution tables it uses |

@@ -1,4 +1,4 @@
-EII v2 proxy channel build, 2026-10-29 14:22 EDT; R 4.3.3; haven 2.5.5; countrycode 1.9.0
+EII v2 proxy channel build, 2026-10-29 16:54 EDT; R 4.3.3; haven 2.5.5; countrycode 1.9.0
 ESD 18.1 triad-years: 10852; with US government support: 869 (1975-2017); alleged only: 27
 Triad-years with US troop support only (already in the kinetic channel): 4, not counted here
 GW codes without a COW code: 0

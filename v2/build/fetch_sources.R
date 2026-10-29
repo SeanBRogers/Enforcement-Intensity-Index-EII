@@ -26,6 +26,7 @@ for (i in seq_len(nrow(man))) {
 }
 for (z in c("States2024.zip", "System2024.zip")) unzip(file.path(raw, z), exdir = raw)
 unzip(file.path(raw, "ucdp-prio-acd-261-csv.zip"), exdir = file.path(raw, "ucdp_acd_261"))
+unzip(file.path(raw, "mid/MID-5-Data-and-Supporting-Materials.zip"), exdir = file.path(raw, "mid/mid5"))
 
 ok <- TRUE
 for (i in seq_len(nrow(man))) {

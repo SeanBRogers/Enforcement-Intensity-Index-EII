@@ -627,3 +627,27 @@ the repository.
   no BGS producer table scores 0, since BGS lists producers (an
   understatement for unrecorded artisanal output); a listed producer without
   figures is left out of the sum, not zeroed.
+- 2026-10-29, Sean (16:38): (1) financial before 1994, "Both, data type
+  permitting. The world changes so our data and method change"; (2) trade
+  channel unpaused; (3) "There is no attack on the US, EXCEPT cyber ... and
+  that's squishy." Claude disagreed on (3) in session: attacks on US forces
+  and citizens abroad (Pueblo 1968, Beirut 1983, Stark 1987, Pan Am 103,
+  the 1998 embassy bombings, Cole 2000, 9/11, Al Asad 2020, Tower 22 2024)
+  are what Q15's "someone attacks us" has to test against. Built:
+  - Financial case series 1950–2025 from GSDB-FS (`fin_gsdb_*`), calibrated
+    against SDN additions over 1995–2025 before any use for 1950–1993: it
+    nests SDN activity (94.9% of SDN state-years have a case) but measures a
+    regime in force, not intensity (16.9% of case-years have SDN additions;
+    state-year rank correlation 0.33). Used as an extensive-margin series;
+    no designation counts are imputed from it. A method change across the
+    1994 seam is bridged by the overlap years, never assumed away.
+  - Multilateral block (D4) from GSDB-R5: UN, EU and other-organization
+    cases (`multilateral_country_year.csv`). Tier coding of UN cases,
+    listing-date recovery and vetoes remain OPEN.
+  - Kill test (Q15), part 1: MID 5.0 opponents of the US (1950–2014) and
+    GSDB senders of sanctions on the US. Part 2 OPEN: terrorism against US
+    targets (GTD, by request, Sean), state cyber operations (CFR tracker),
+    state attacks on US forces after 2014 (hand-coded with sources).
+  - Q14 control: UCDP conflicts without the US, with the US-backed share
+    flagged (38% of conflict-years in 1975–2017 have US support to a side
+    in ESD, so they cannot serve as controls).
