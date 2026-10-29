@@ -617,3 +617,13 @@ the repository.
   primary-source citations, not needed for the coding. Post-1989 extension
   remains the open opportunity (see the entry above on the declassification
   lag).
+- 2026-10-29, critical-minerals endowment built (Sean, 13:29: "critical";
+  13:36: find a source now). BGS World Mineral Statistics, 31 mine-production
+  series covering 52 of the 60 minerals on the USGS 2025 list. Index: highest
+  share of world production in 1985–1994 per series, summed
+  (`crit_min_share_sum`), and the number of series with a share of 5% or
+  more (`crit_min_major_n`); territory as of 1995, as for oil and gas. Equal
+  weight per mineral; market pricing and era weighting remain OPEN. A state in
+  no BGS producer table scores 0, since BGS lists producers (an
+  understatement for unrecorded artisanal output); a listed producer without
+  figures is left out of the sum, not zeroed.

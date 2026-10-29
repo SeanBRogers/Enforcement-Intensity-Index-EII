@@ -70,10 +70,26 @@ for (f in ms$file[grepl("\\.pdf$", ms$file)]) {
 # Covariates: v2/sources/MANIFEST_covariates.csv (paths relative to v2/sources).
 # Files under raw/ are downloaded; the WDI API snapshots under snapshots/ are
 # committed to the repository (CC BY 4.0) because the live API changes.
+# BGS World Mineral Statistics is served page by page through an OGC API: the
+# pages are fetched in synthetic_id order and joined (header once).
+bgs_fetch <- function(dest, base, limit = 10000) {
+  hdr <- NULL; body <- character(); i <- 0
+  repeat {
+    tf <- tempfile(fileext = ".csv")
+    download.file(sprintf("%s&limit=%d&offset=%d", base, limit, i * limit), tf, mode = "wb", quiet = TRUE)
+    x <- readLines(tf, encoding = "UTF-8", warn = FALSE)
+    if (is.null(hdr)) hdr <- x[1] else stopifnot(identical(hdr, x[1]))
+    body <- c(body, x[-1]); i <- i + 1
+    if (length(x) - 1 < limit) break
+  }
+  stopifnot(!anyDuplicated(sub(",.*$", "", body)))
+  con <- file(dest, "wb"); writeLines(c(hdr, body), con, sep = "\n", useBytes = TRUE); close(con)
+}
 mc <- read.csv(file.path("v2", "sources", "MANIFEST_covariates.csv"), stringsAsFactors = FALSE)
 for (i in seq_len(nrow(mc))) {
   f <- file.path("v2", "sources", mc$file[i])
   dir.create(dirname(f), showWarnings = FALSE, recursive = TRUE)
+  if (!file.exists(f) && grepl("ogcapi.bgs.ac.uk", mc$source[i])) bgs_fetch(f, mc$source[i])
   if (!file.exists(f) && grepl("^raw/", mc$file[i])) download.file(mc$source[i], f, mode = "wb", quiet = TRUE)
   if (!file.exists(f)) { cat("MISSING  ", mc$file[i], "\n"); ok <- FALSE; next }
   if (!identical(digest(file = f, algo = "sha256"), mc$sha256[i])) { cat("MISMATCH ", mc$file[i], "\n"); ok <- FALSE }

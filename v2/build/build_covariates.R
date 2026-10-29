@@ -348,6 +348,101 @@ lg("  States with no data in 1985-1994 (first five years with data used): %s",
    paste(sprintf("%d (%s)", endow$ccode, sub(" .*", "", endow$endow_window))[grepl("first five", endow$endow_window)], collapse = ", "))
 endow$endow_mean <- NULL
 
+# ------------------------------------------------------- extractive value: critical-minerals endowment
+# British Geological Survey, World Mineral Statistics (production by country,
+# 1970-2024), for the minerals on the USGS 2025 critical-minerals list (60
+# minerals, Federal Register, 7 November 2025). 31 BGS mine-production series
+# cover 52 of the 60 (the 15 rare earths are one series, the platinum metals
+# one, tantalum and niobium are split). Not covered: cesium, rubidium,
+# hafnium, silicon (no BGS production series); gallium, indium, rhenium
+# (series start 2005-06, after the window); germanium and tellurium (refinery
+# output only); metallurgical coal (not separated from coal).
+# A state's share of world production is computed within each series and
+# year; the endowment is the state's highest share in 1985-1994 for the
+# territory it holds in 1995, as for oil and gas. BGS tables list producers,
+# so a state absent from a series did not report production; a listed state
+# whose figures are not available is not counted as zero.
+crit_series <- c(aluminum = "bauxite", antimony = "antimony, mine", arsenic = "arsenic, white", barite = "barytes",
+  beryllium = "beryl", bismuth = "bismuth, mine", boron = "borates", rare_earths = "rare earth minerals",
+  chromium = "chromium ores and concentrates", cobalt = "cobalt, mine", copper = "copper, mine", fluorspar = "fluorspar",
+  graphite = "graphite", platinum_group = "platinum group metals, mine", lead = "lead, mine", lithium = "lithium minerals",
+  magnesium = "magnesite", manganese = "manganese ore", nickel = "nickel, mine", tantalum = "tantalum and niobium minerals",
+  niobium = "tantalum and niobium minerals", phosphate = "phosphate rock", potash = "potash", silver = "silver, mine",
+  tin = "tin, mine", titanium = "titanium minerals", tungsten = "tungsten, mine", uranium = "uranium",
+  vanadium = "vanadium, mine", zinc = "zinc, mine", zirconium = "zirconium minerals")
+niobium_subs <- c("Pyrochlore", "Pyrochlore -Nb content", "Columbite", "Columbite- Nb content",
+                  "Columbite-tantalite-Nb content", "Tantalum & Niobium (Nb content)")
+bg <- read.csv(file.path(raw, "bgs/bgs_world_mineral_statistics_2026-10-29.csv"), stringsAsFactors = FALSE, encoding = "UTF-8")
+bg <- bg[bg$bgs_statistic_type_trans == "Production" & bg$bgs_commodity_trans %in% crit_series, ]
+bg$yr <- as.integer(substr(bg$year, 1, 4))
+bg$sub <- ifelse(is.na(bg$bgs_sub_commodity_trans), "", bg$bgs_sub_commodity_trans)
+bg$q <- ifelse(bg$data_precision_description == "Figures not available", NA_real_, bg$quantity)
+# Ta-Nb split: gross niobium minerals and Nb content to niobium; the rest
+# (tantalite, columbite-tantalite, microlite, struverite and Ta content) to tantalum.
+tn <- bg$bgs_commodity_trans == "tantalum and niobium minerals"
+bg$series <- names(crit_series)[match(bg$bgs_commodity_trans, crit_series)]
+bg$series[tn] <- ifelse(bg$sub[tn] %in% niobium_subs, "niobium", "tantalum")
+# Content and gross figures for the same mineral must not be added: in the
+# Ta-Nb series only gross-weight sub-series are used.
+bg <- bg[!(tn & grepl("content", bg$sub)), ]
+# BGS entities to COW (by name where one ISO code covers two states)
+bg$ccode <- suppressWarnings(countrycode(bg$country_iso3_code, "iso3c", "cown", warn = FALSE,
+              custom_match = c(SUN = 365, CSK = 315, DDR = 265, YUG = 345, SCG = 345, SRB = 345, MNE = 341,
+                               `1A0` = 347, CZE = 316, RUS = 365, VNM = 816, TLS = 860, SSD = 626)))
+bg$ccode[bg$country_trans == "German Federal Republic"] <- 260
+bg$ccode[bg$country_trans == "Germany"] <- 255
+bg$ccode[bg$country_trans == "Yemen (PDR)"] <- 680
+bg$ccode[bg$country_trans == "Yemen Arab Republic"] <- 678
+bg$ccode[bg$country_trans == "Yemen, Republic of"] <- 679
+bg$ccode[bg$country_iso3_code == "VNM" & bg$yr <= 1975] <- NA
+# one figure per entity, series and year: a total row when BGS gives one,
+# otherwise the sum of its sub-series
+bg$ent <- paste(bg$country_trans, bg$country_iso3_code)
+has_tot <- ave(bg$sub == "", bg$ent, bg$series, bg$yr, FUN = any)
+both <- unique(paste(bg$ent, bg$series, bg$yr)[has_tot & bg$sub != ""])
+bg <- bg[!(has_tot & bg$sub != ""), ]
+sumna <- function(v) if (all(is.na(v))) NA_real_ else sum(v, na.rm = TRUE)
+ey <- aggregate(list(q = bg$q), list(ent = bg$ent, series = bg$series, yr = bg$yr), sumna)
+ey$ccode <- bg$ccode[match(paste(ey$ent, ey$yr), paste(bg$ent, bg$yr))]   # entities without a COW code still count in world totals
+# world production per series and year: all reporting entities
+wt <- aggregate(list(world = ey$q), list(series = ey$series, yr = ey$yr), function(v) sum(v, na.rm = TRUE))
+ey <- merge(ey, wt, by = c("series", "yr"))
+ey$share <- ifelse(ey$world > 0, ey$q / ey$world, NA_real_)
+lg("Critical minerals (BGS): %d series; entity-series-years %d; entity-years with both a total and sub-series (total used): %d; listed but figures not available: %d",
+   length(unique(ey$series)), nrow(ey), length(both), sum(is.na(ey$q)))
+# window: 1985-1994 for the state's 1995 territory; for states that ended
+# before 1995, their own years in the window; states formed after 1994 use
+# their first five years with data; a state that existed in the window but
+# reported no production in it scores zero
+ey <- ey[!is.na(ey$ccode), ]
+gone_states <- c(260, 265, 315, 678, 680)
+pre95_entities <- c("Soviet Union SUN", "Yugoslavia YUG", "German Federal Republic DEU")   # predecessors of 1995 states
+win <- ey[ey$yr %in% 1985:1994 & (ey$ccode %in% gone_states | !ey$ent %in% pre95_entities), ]
+win$ccode[win$ent == "Soviet Union SUN"] <- NA
+crit <- do.call(rbind, lapply(split(win, win$ccode), function(z) {
+  pk <- tapply(z$share, z$series, function(v) if (all(is.na(v))) NA_real_ else max(v, na.rm = TRUE))
+  data.frame(ccode = z$ccode[1], crit_min_share_sum = sum(pk, na.rm = TRUE), crit_min_major_n = sum(pk >= 0.05, na.rm = TRUE),
+             crit_min_series_n = sum(!is.na(pk)), crit_min_unavailable_n = sum(is.na(pk)),
+             crit_min_window = paste0(min(z$yr), "-", max(z$yr)))
+}))
+first_yr <- tapply(frame$year, frame$ccode, min)
+late <- setdiff(unique(ey$ccode[ey$yr > 1994]), c(crit$ccode, gone_states, 2))
+late <- late[first_yr[as.character(late)] > 1994 & !is.na(first_yr[as.character(late)])]   # states formed after 1994 only
+if (length(late)) crit <- rbind(crit, do.call(rbind, lapply(late, function(cc) {
+  z <- ey[ey$ccode == cc & !ey$ent %in% pre95_entities, ]; z <- z[z$yr <= min(z$yr) + 4, ]
+  pk <- tapply(z$share, z$series, function(v) if (all(is.na(v))) NA_real_ else max(v, na.rm = TRUE))
+  data.frame(ccode = cc, crit_min_share_sum = sum(pk, na.rm = TRUE), crit_min_major_n = sum(pk >= 0.05, na.rm = TRUE),
+             crit_min_series_n = sum(!is.na(pk)), crit_min_unavailable_n = sum(is.na(pk)),
+             crit_min_window = paste0(min(z$yr), "-", max(z$yr), " (no data 1985-1994; first five years with data)"))
+})))
+crit <- crit[crit$ccode != 2, ]
+stopifnot(!anyDuplicated(crit$ccode))
+top <- head(crit[order(-crit$crit_min_share_sum), ], 10)
+lg("  States reporting critical-mineral production: %d; top by summed peak world share (1985-1994): %s", nrow(crit),
+   paste(sprintf("%d %.2f (%d majors)", top$ccode, top$crit_min_share_sum, top$crit_min_major_n), collapse = "; "))
+lg("  Using first five years with data (no 1985-1994 data): %s",
+   paste(crit$ccode[grepl("first five", crit$crit_min_window)], collapse = ", "))
+
 # ------------------------------------------------------- production capability: economic complexity
 # Growth Lab (Harvard), Atlas of Economic Complexity, SITC Rev. 2 country-year
 # file (Dataverse doi:10.7910/DVN/H8SFD2, CC0). ECI is standardized within each
@@ -371,16 +466,21 @@ cy <- merge(cy, un, by = c("ccode", "year"), all.x = TRUE)       # not a UN memb
 cy <- merge(cy, rents, by = c("ccode", "year"), all.x = TRUE)    # outside WDI coverage: missing
 cy <- merge(cy, irr, by = c("ccode", "year"), all.x = TRUE)      # not classified by IRR: missing
 cy <- merge(cy, endow, by = "ccode", all.x = TRUE)               # time-invariant
+cy <- merge(cy, crit, by = "ccode", all.x = TRUE)                # time-invariant
+cm <- c("crit_min_share_sum", "crit_min_major_n", "crit_min_series_n", "crit_min_unavailable_n")
+none <- is.na(cy$crit_min_window)
+for (v in cm) cy[[v]][none] <- 0L                                 # in no BGS producer table: no recorded production
+cy$crit_min_window[none] <- "no production reported"
 cy <- merge(cy, ec, by = c("ccode", "year"), all.x = TRUE)       # not in the Atlas: missing
 cy <- merge(cy, idv, by = c("ccode", "year"), all.x = TRUE)      # not an IDS reporter: missing
 offs <- sapply(list(UNGA = un, rents = rents, IRR = irr, energy = energy, ECI = ec, IDS = idv), function(s)
   length(setdiff(paste(s$ccode, s$year), paste(frame$ccode, frame$year))))
 lg("Merged on the frame (%d state-years). Source rows outside the frame: %s (non-COW members or years before COW membership)",
    nrow(cy), paste(names(offs), offs, collapse = ", "))
-lg("Coverage in the frame (of %d): defense pact %d; UNGA %d; resource rents %d; USD anchor %d; regime %d; USD peg %d; USD debt share %d; endowment %d; ECI %d",
+lg("Coverage in the frame (of %d): defense pact %d; UNGA %d; resource rents %d; USD anchor %d; regime %d; USD peg %d; USD debt share %d; endowment %d; critical minerals listed %d; ECI %d",
    nrow(cy), sum(!is.na(cy$us_defense_pact)), sum(!is.na(cy$unga_dist_us)), sum(!is.na(cy$nat_res_rents_gdp)),
    sum(!is.na(cy$usd_anchor)), sum(!is.na(cy$fx_regime_coarse)), sum(!is.na(cy$usd_peg)), sum(!is.na(cy$usd_debt_share)),
-   sum(!is.na(cy$endow_oilgas_twh)), sum(!is.na(cy$eci_sitc)))
+   sum(!is.na(cy$endow_oilgas_twh)), sum(cy$crit_min_series_n > 0), sum(!is.na(cy$eci_sitc)))
 cy <- cy[order(cy$ccode, cy$year), ]
 write.csv(cy, file.path(outd, "covariates_country_year.csv"), row.names = FALSE, na = "")
 # Yearly production is the Energy Institute's data, whose terms require
@@ -392,4 +492,4 @@ dir.create(file.path(outd, "local"), showWarnings = FALSE)
 write.csv(en[order(en$ccode, en$year), ], file.path(outd, "local", "energy_production_country_year.csv"), row.names = FALSE, na = "")
 lg("Wrote local/energy_production_country_year.csv (not committed): oil production reported in %d of %d state-years", sum(!is.na(en$oil_prod_twh)), nrow(en))
 lg("Wrote covariates_year.csv (%d rows) and covariates_country_year.csv (%d rows)", nrow(covy), nrow(cy))
-lg("Not yet built: minerals endowment, US as target (Q15), trade channel")
+lg("Not yet built: US as target (Q15), trade channel")

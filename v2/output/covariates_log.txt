@@ -1,4 +1,4 @@
-EII v2 covariates build, 2026-10-29 13:53 EDT
+EII v2 covariates build, 2026-10-29 14:22 EDT
 R 4.3.3; readxl 1.6.0; countrycode 1.9.0; jsonlite 2.0.0
 US burden: 76 fiscal years, 1950-2025 (OMB Tables 1.2, 6.1, 7.1)
   1950: gross debt 92.2% of GDP; debt held by public 78.6%; net interest 1.7%; surplus -1.1%; outlays 15.3%; defense 4.9%
@@ -29,9 +29,12 @@ Energy production (OWID): 10023 state-years; states with oil data by year: 1950 
 Endowment (max annual oil+gas TWh, 1985-1994): 188 states; largest: 365, 670, 20, 630, 200, 70, 101, 710
   Peak exceeds the window mean most for (ccode: peak vs mean): 670: 5505 vs 4092; 365: 12085 vs 11039; 645: 1677 vs 901; 385: 1762 vs 1182; 20: 2670 vs 2135
   States with no data in 1985-1994 (first five years with data used): 341 (2006-2010), 626 (2012-2016), 860 (2003-2007)
+Critical minerals (BGS): 31 series; entity-series-years 37921; entity-years with both a total and sub-series (total used): 165; listed but figures not available: 137
+  States reporting critical-mineral production: 121; top by summed peak world share (1985-1994): 710 6.88 (21 majors); 900 3.65 (14 majors); 365 3.19 (16 majors); 20 3.02 (16 majors); 560 2.68 (9 majors); 140 2.37 (9 majors); 70 1.17 (9 majors); 820 1.00 (4 majors); 705 0.95 (5 majors); 135 0.94 (6 majors)
+  Using first five years with data (no 1985-1994 data): 341, 347
 Economic complexity (Atlas, SITC): 10853 state-years 1962-2024; Atlas economies not mapped to a COW state: 40 (territories)
 Merged on the frame (11916 state-years). Source rows outside the frame: UNGA 80, rents 330, IRR 674, energy 687, ECI 595, IDS 135 (non-COW members or years before COW membership)
-Coverage in the frame (of 11916): defense pact 11916; UNGA 11229; resource rents 8296; USD anchor 10515; regime 11176; USD peg 10638; USD debt share 5664; endowment 11508; ECI 10258
+Coverage in the frame (of 11916): defense pact 11916; UNGA 11229; resource rents 8296; USD anchor 10515; regime 11176; USD peg 10638; USD debt share 5664; endowment 11508; critical minerals listed 7775; ECI 10258
 Wrote local/energy_production_country_year.csv (not committed): oil production reported in 8742 of 11916 state-years
 Wrote covariates_year.csv (76 rows) and covariates_country_year.csv (11916 rows)
-Not yet built: minerals endowment, US as target (Q15), trade channel
+Not yet built: US as target (Q15), trade channel
