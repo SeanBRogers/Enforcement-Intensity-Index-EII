@@ -608,3 +608,12 @@ the repository.
     non-commercial academic use; giving the tables to third parties needs
     permission, so only derived indices are published and the yearly tables
     stay local, as with energy.
+- 2026-10-29, covert and proxy channel, part 2 (Sean supplied the book,
+  13:48): US regime change attempts 1947–1989 from O'Rourke, *Covert Regime
+  Change* (2018), Tables 1.1 and 5.1–5.3, hand-entered with their table of
+  origin (`v2/build/orourke_cases.csv`): 64 covert attempts (25 achieved),
+  2 aborted plans, 6 overt operations; six `rc_*` columns, blank from 1990.
+  The case list is in the book; O'Rourke's online appendixes hold the
+  primary-source citations, not needed for the coding. Post-1989 extension
+  remains the open opportunity (see the entry above on the declassification
+  lag).

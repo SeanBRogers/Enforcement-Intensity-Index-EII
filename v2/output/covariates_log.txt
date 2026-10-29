@@ -1,4 +1,4 @@
-EII v2 covariates build, 2026-10-29 13:31 EDT
+EII v2 covariates build, 2026-10-29 13:53 EDT
 R 4.3.3; readxl 1.6.0; countrycode 1.9.0; jsonlite 2.0.0
 US burden: 76 fiscal years, 1950-2025 (OMB Tables 1.2, 6.1, 7.1)
   1950: gross debt 92.2% of GDP; debt held by public 78.6%; net interest 1.7%; surplus -1.1%; outlays 15.3%; defense 4.9%

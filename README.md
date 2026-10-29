@@ -7,7 +7,7 @@ against other states, 1950–2025, for every state in the international system.
 
 > **Status (2026-10-29): partial release. Not for estimation.** The frame, a US
 > sanctions flag, five exertion channels (financial, penalties, kinetic, covert
-> and proxy support, posture) and the covariates are built. The multilateral
+> action, posture) and the covariates are built. The multilateral
 > block and the trade channel are not yet built, and the panel is not for
 > estimation until they are and every channel is validated.
 
@@ -30,8 +30,9 @@ against other states, 1950–2025, for every state in the international system.
   United States is excluded as a target.
 - **Channels, never summed.** Financial (additions to OFAC's SDN list),
   penalties (OFAC civil penalties), kinetic (armed conflicts with the US as a
-  party, against a state's government or alongside it), covert and proxy
-  support (US support short of troops to a side in a war, 1975–2017) and
+  party, against a state's government or alongside it), covert action
+  (US regime change attempts, 1950–1989; US support short of troops to a side
+  in a war, 1975–2017) and
   posture (US troops stationed in the country) are separate series. There is no composite score.
 - **Missing is not zero.** A zero means the source covers the country-year and
   records nothing; outside a source's coverage the cell is blank.

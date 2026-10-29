@@ -2,13 +2,15 @@
 
 **Status: PARTIAL. Not for estimation.** This release contains the frame, the
 US sanctions flag, and five exertion channels: financial, penalties,
-kinetic, covert and proxy support (1975–2017), and posture. Covariates are in
+kinetic, covert action (regime change attempts 1950–1989; proxy support
+1975–2017), and posture. Covariates are in
 separate files (below). The multilateral block and the trade channel are not
 yet built (`BUILD_PROTOCOL.md`, section 7).
 
 File: `v2/output/EII_v2_partial.csv`. Built by `v2/build/run_all.R`
 (`build_penalties.R`, `build_financial.R`, `estimate_sdn_1994.R`,
-`build_proxy.R`, `build_v2_partial.R`, then `build_covariates.R`) from the
+`build_proxy.R`, `build_regime_change.R`, `build_v2_partial.R`, then
+`build_covariates.R`) from the
 sources in `v2/sources/MANIFEST.csv`, `v2/sources/MANIFEST_ofac.csv`,
 `v2/sources/MANIFEST_sdn.csv` and `v2/sources/MANIFEST_covariates.csv` (fetch
 and verify with `v2/build/fetch_sources.R`). The build needs a UTF-8 locale;
@@ -46,6 +48,12 @@ in COW.
 | `proxy_for_state` | 1 if the US government gave this state's government support short of US troops in a war it fought that year (against rebels or another state). Confirmed support only | as above | as above | Support to a government is not exertion against it: the analog of `kin_in_state`, never summed with `proxy_vs_state`. 481 state-years in 53 states (Colombia 1990–2010 among them); 45 overlap `kin_in_state`. ESD also records US support to Russia against IS in 2017 |
 | `proxy_for_state_types` | As `proxy_vs_state_types`, for support to the government | as above | as above | |
 | `proxy_for_state_alleged` | As `proxy_vs_state_alleged`, for support to the government | as above | as above | 5 state-years |
+| `rc_covert` | 1 if a US covert regime change attempt against the state's government or ruling parties was under way in the year (O'Rourke's definition: US effort to replace, or keep from power, a foreign government or governing faction, by coup, assassination, arming dissidents, election interference or democracy promotion) | O'Rourke, *Covert Regime Change* (2018), Tables 5.1–5.3, hand-entered in `v2/build/orourke_cases.csv` (`build_regime_change.R`) | 1950–1989; blank from 1990 (the source ends in 1989) | O'Rourke requires three declassified primary documents per case, so the count is a floor: she judges unknown successes unlikely but possible. 64 attempts; 303 state-years in 44 states. Soviet republics (Baltic, Belarusian, Ukrainian, Russian SSRs) count for the USSR and Tibet for China. Angola 1964–72 and Mozambique 1964–68 (Portuguese colonies) are not assigned; East Germany 1950–53 and British Guiana 1961–65 fall outside the frame |
+| `rc_covert_planned` | 1 if the only covert operation in the year was a plan aborted before implementation (Syria 1955–57, Grenada 1979) | as above | as above | Kept apart from `rc_covert`, as O'Rourke does |
+| `rc_covert_type` | O'Rourke's motive class of the operations under way: offensive (against a rival or its alliance), preventive (to keep a state from becoming or joining a rival), hegemonic (to keep a state in the US sphere). Several joined with "; " | as above | as above | Preventive operations include support for incumbent parties in elections (Italy 1947–68, Japan 1952–68): interference in a state's politics, not always against its sitting government. Hegemonic is the class closest to proposition 5 |
+| `rc_covert_leader_removal` | 1 if an operation under way that year used a coup or assassination among its tactics | as above | as above | Operation-level: every year of a multi-year operation is flagged, not only the year of the attempt. The leader-level test of proposition 5 starts here |
+| `rc_covert_succeeded` | 1 if an operation under way that year eventually brought US-backed forces to power (O'Rourke's "objective achieved") | as above | as above | Outcome of the whole operation, known only after it ends: never use as a predictor of exertion in the same years. 25 of 64 attempts |
+| `rc_overt` | 1 if a US overt regime change operation took place in the year (North Korea 1950, Lebanon 1958, Dominican Republic 1965, Grenada 1983, Libya 1986, Panama 1989) | O'Rourke, Table 1.1 | 1950–1989; blank from 1990 | Overlaps the kinetic channel by design |
 | `posture_troops_ad` | US active-duty troops located in the country (sum of location rows) | `troopdata` 1.1.0 | 1950–2025; blank where the source has no row, and blank in US-party conflict country-years from 2018 | Official reports omit war-zone deployments from about 2018, and the source fills them with 0 (e.g., Syria 2022 = 0, Iraq 2025 = 0); those cells are set blank. Guard and reserve troops are excluded |
 | `posture_note` | Reason a posture cell is blank | build | — | — |
 | `pen_program_count` | OFAC civil penalties, settlements and findings of violation published in the year whose sanctions program targets this country. An entry naming several country programs counts once for each; OFAC's own count is used where one entry aggregates several penalties | OFAC enforcement information, 2003–2025 (`build_penalties.R`) | 2003–2025; blank before 2003 | Negotiated and discretionary, published only when resolved. Understates enforcement against US banks, most of which runs through anti-money-laundering law (FinCEN, OCC, Fed, DOJ). 59% of penalties (1,219 of 2,052) were against individuals, mostly Cuba travel cases in 2003–2005 |
@@ -67,6 +75,16 @@ attributed by UCDP's sides: in a civil conflict, support to the rebels counts
 against the government's state and support to the government counts for it;
 in an interstate conflict, support counts for the supported state and against
 its opponent. GW codes are mapped to COW as in the kinetic channel.
+
+The regime change variables and the proxy variables overlap only partly:
+of the 87 state-years with a covert regime change attempt in 1975–1989, 34
+also show US support against the government in ESD, and ESD shows support
+against 7 governments (El Salvador, Argentina, Nigeria, Chad, Ethiopia,
+Angola, Iran) in years O'Rourke records no regime change attempt. Chad
+1981–82 and the Philippines 1984–86 carry both a regime change attempt and
+US support to the government in the same years. Where O'Rourke's Table 1.1
+and her case tables give different years (Angola 1985–88 against 1986–88;
+Haiti 1986–88 against 1986–89), the case table is used.
 
 ## Mapping rules (all logged in `build_log.txt`)
 

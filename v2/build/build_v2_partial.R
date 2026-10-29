@@ -145,6 +145,14 @@ lg("Proxy support (ESD 1975-2017): US support short of troops against the state 
    " state-years (", sum(fr$proxy_vs_state_alleged, na.rm = TRUE), " alleged only); to the state in ",
    sum(fr$proxy_for_state, na.rm = TRUE), " (", sum(fr$proxy_for_state_alleged, na.rm = TRUE), " alleged only)")
 
+# ------------------------------------- 3c. Regime change attempts (build_regime_change.R, O'Rourke 2018)
+rc <- read.csv(file.path(out, "regime_change_country_year.csv"), stringsAsFactors = FALSE)
+rv <- c("rc_covert", "rc_covert_planned", "rc_covert_type", "rc_covert_leader_removal", "rc_covert_succeeded", "rc_overt")
+stopifnot(setequal(paste(rc$ccode, rc$year), paste(fr$ccode, fr$year)))
+fr <- merge(fr, rc[, c("ccode", "year", rv)], by = c("ccode", "year"), all.x = TRUE)    # missing from 1990 (source ends 1989)
+lg("Regime change (O'Rourke, 1947-1989): covert attempt underway in ", sum(fr$rc_covert, na.rm = TRUE),
+   " state-years; overt in ", sum(fr$rc_overt, na.rm = TRUE))
+
 # ------------------------------------------------------------ 4. Posture (troopdata)
 tp <- read.csv(file.path(raw, "troopdata_1.1.0_troops_ad.csv"), stringsAsFactors = FALSE)
 tp <- tp[tp$year >= 1950 & tp$year <= 2025, ]
@@ -208,6 +216,7 @@ fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "kin_vs_state", "kin_vs_state_intensity", "kin_in_state", "kin_in_state_intensity",
         "proxy_vs_state", "proxy_vs_state_types", "proxy_vs_state_alleged",
         "proxy_for_state", "proxy_for_state_types", "proxy_for_state_alleged",
+        "rc_covert", "rc_covert_planned", "rc_covert_type", "rc_covert_leader_removal", "rc_covert_succeeded", "rc_overt",
         "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms",
         "fin_program_count", "fin_program_count_low", "fin_program_count_high", "fin_estimated",
         "fin_program_count_nonindiv", "fin_location_count", "fin_thematic_location_count")]

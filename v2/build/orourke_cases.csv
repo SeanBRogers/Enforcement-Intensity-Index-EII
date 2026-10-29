@@ -1,0 +1,73 @@
+case,target,ccode,start,end,mode,type,tactics,achieved,target_government,source,note
+1,Albania,339,1949,1956,covert,offensive,Dissidents,no,Single-party: Hoxha,Table 5.1,
+2,Belarusian SSR,365,1949,1956,covert,offensive,Dissidents,no,Single-party: Stalin and Khrushchev,Table 5.1,Soviet republic: attributed to the USSR
+3,Bulgaria,355,1949,1956,covert,offensive,Dissidents,no,Single-party: Dimitrov and Chervenkov,Table 5.1,
+4,China,710,1949,1968,covert,offensive,Dissidents,no,Single-party: Mao,Table 5.1,
+5,Czechoslovakia,315,1949,1956,covert,offensive,Dissidents,no,Single-party: Gottwald and Zapotocky,Table 5.1,
+6,East Germany,265,1949,1956,covert,offensive,Dissidents,no,Single-party: Pieck,Table 5.1,COW membership from 1954: 1950-1953 outside the frame
+7,Estonian SSR,365,1949,1956,covert,offensive,Dissidents,no,Single-party: Stalin and Khrushchev,Table 5.1,Soviet republic: attributed to the USSR
+8,Hungary,310,1949,1956,covert,offensive,Dissidents,no,Single-party: Rakosi,Table 5.1,
+9,Latvian SSR,365,1949,1956,covert,offensive,Dissidents,no,Single-party: Stalin and Khrushchev,Table 5.1,Soviet republic: attributed to the USSR
+10,Lithuanian SSR,365,1949,1956,covert,offensive,Dissidents,no,Single-party: Stalin and Khrushchev,Table 5.1,Soviet republic: attributed to the USSR
+11,Poland,290,1949,1956,covert,offensive,Dissidents,no,Single-party: Bierut and Zawadzki,Table 5.1,
+12,Romania,360,1949,1956,covert,offensive,Dissidents,no,Single-party personal: Gheorghiu-Dej,Table 5.1,
+13,Soviet Union/Russian SSR,365,1949,1959,covert,offensive,Dissidents,no,Single-party: Stalin and Khrushchev,Table 5.1,
+14,Ukrainian SSR,365,1949,1956,covert,offensive,Dissidents,no,Single-party: Stalin and Khrushchev,Table 5.1,Soviet republic: attributed to the USSR
+15,North Korea,731,1950,1953,covert,offensive,Dissidents,no,Single-party personal: Kim,Table 5.1,
+16,Tibet,710,1958,1968,covert,offensive,Dissidents,no,Single-party: Mao,Table 5.1,Attributed to China
+17,North Vietnam,816,1961,1964,covert,offensive,Dissidents,no,Single-party: Ho,Table 5.1,
+18,Cuba,40,1961,1968,covert,offensive,Assassination; Dissidents,no,Single-party personal: Castro,Table 5.1,Hegemonic until 1961 (case 61)
+19,Afghanistan,700,1979,1989,covert,offensive,Dissidents,yes,Soviet-occupied: Karmal and Najibullah,Table 5.1,
+20,Nicaragua,93,1980,1989,covert,offensive,Democracy promotion; Dissidents,yes,Single-party: Ortega,Table 5.1,Hegemonic until 1980 (case 73)
+21,Poland,290,1981,1989,covert,offensive,Democracy promotion,yes,Single-party: Jaruzelski,Table 5.1,
+22,Cambodia,811,1982,1989,covert,offensive,Dissidents,no,Single-party: Samrin,Table 5.1,
+23,Libya,620,1982,1989,covert,offensive,Coup; Dissidents,no,Personal: Qaddafi,Table 5.1,
+24,France,220,1947,1952,covert,preventive,Election interference,yes,Democracy: leftist parties,Table 5.2,
+25,Italy,325,1947,1968,covert,preventive,Election interference,yes,Democracy: leftist parties,Table 5.2,
+26,Iran,630,1952,1953,covert,preventive,Coup,yes,Democracy/monarchy: Mossadegh,Table 5.2,
+27,Japan,740,1952,1968,covert,preventive,Election interference,yes,Democracy: leftist parties,Table 5.2,
+28,Indonesia,850,1954,1958,covert,preventive,Coup; Dissidents; Election interference,no,Democracy/personal: Sukarno and pro-Sukarno parties,Table 5.2,
+29,Syria,652,1955,1957,covert,preventive,Assassination; Coup,aborted,Democracy: multiple targets,Table 5.2,Aborted before implementation (US-UK plan)
+30,Lebanon,660,1957,1958,covert,preventive,Election interference,yes,Democracy: leftist and Arab parties,Table 5.2,
+31,Laos,812,1959,1973,covert,preventive,Dissidents; Election interference,no,Democracy/personal/warlord,Table 5.2,
+32,Congo,490,1960,1960,covert,preventive,Assassination; Coup,yes,Democracy: Lumumba,Table 5.2,
+33,South Vietnam,817,1963,1963,covert,preventive,Coup; (Inadvertent assassination),yes,Personal: Diem,Table 5.2,
+34,Angola,,1964,1972,covert,preventive,Dissidents,no,Leftist forces / colonial authorities,Table 5.2,Portuguese colony: no COW state; not assigned
+35,Mozambique,,1964,1968,covert,preventive,Dissidents,no,Leftist forces / colonial authorities,Table 5.2,Portuguese colony: no COW state; not assigned
+36,Somalia,520,1964,1967,covert,preventive,Election interference,no,Democracy: leftist parties,Table 5.2,
+37,Thailand,800,1965,1969,covert,preventive,Election interference,no,Military-personal: leftist parties,Table 5.2,
+38,South Vietnam,817,1967,1971,covert,preventive,Election interference,yes,Military: leftist parties,Table 5.2,
+39,Iraq,645,1972,1975,covert,preventive,Dissidents,no,Single-party personal: Hussein,Table 5.2,
+40,Italy,325,1972,1973,covert,preventive,Election interference,yes,Democracy: leftist parties,Table 5.2,
+41,Portugal,235,1974,1975,covert,preventive,Election interference,yes,Provisional: leftist parties,Table 5.2,
+42,Angola,540,1975,1976,covert,preventive,Dissidents,no,Single-party: Neto,Table 5.2,
+43,South Yemen,680,1979,1980,covert,preventive,Dissidents,no,Single-party: Ismail,Table 5.2,
+44,Chad,483,1981,1982,covert,preventive,Dissidents,yes,Warlord: Libyan-backed forces,Table 5.2,
+45,Ethiopia,530,1981,1983,covert,preventive,Dissidents,no,Military-personal: Mengistu,Table 5.2,
+46,Liberia,450,1983,1988,covert,preventive,Democracy promotion,no,Personal: Doe,Table 5.2,
+47,Philippines,840,1984,1986,covert,preventive,Democracy promotion,yes,Personal: Marcos,Table 5.2,
+48,Angola,540,1986,1988,covert,preventive,Dissidents,no,Single-party: Dos Santos,Table 5.2,Table 1.1 dates this case 1985-88; Table 5.2 1986-88 is used
+49,Guatemala,90,1952,1954,covert,hegemonic,Coup; Dissidents,yes,Democracy: Arbenz,Table 5.3,
+50,Cuba,40,1960,1961,covert,hegemonic,Assassination; Dissidents,no,Single-party personal: Castro,Table 5.3,Offensive from 1961 (case 18)
+51,Dominican Republic,42,1960,1961,covert,hegemonic,(Inadvertent assassination); Coup,yes,Personal: Trujillo,Table 5.3,
+52,British Guiana/Guyana,110,1961,1971,covert,hegemonic,Coup; Election interference,yes,Colonial/democracy: leftist parties,Table 5.3,British colony until 1966: 1961-1965 outside the frame
+53,Dominican Republic,42,1961,1962,covert,hegemonic,Election interference,yes,Democracy: leftist parties,Table 5.3,
+54,Chile,155,1962,1973,covert,hegemonic,Coup; Election interference,yes,Democracy: Allende and leftist parties,Table 5.3,
+55,Haiti,41,1963,1963,covert,hegemonic,Dissidents,no,Personal: Duvalier,Table 5.3,
+56,Bolivia,145,1963,1966,covert,hegemonic,Election interference,yes,Single-party: leftist parties,Table 5.3,
+57,Brazil,140,1964,1964,covert,hegemonic,Coup,yes,Democracy: Goulart,Table 5.3,
+58,Dominican Republic,42,1965,1968,covert,hegemonic,Election interference,yes,Foreign-occupied/personal: leftist parties,Table 5.3,
+59,Haiti,41,1965,1969,covert,hegemonic,Dissidents,no,Personal: Duvalier,Table 5.3,
+60,Bolivia,145,1971,1971,covert,hegemonic,Coup,yes,Military: Torres,Table 5.3,
+61,Grenada,55,1979,1979,covert,hegemonic,Democracy promotion,aborted,Personal: Bishop,Table 5.3,Aborted before implementation (Senate Intelligence Committee objected)
+62,Nicaragua,93,1979,1980,covert,hegemonic,Democracy promotion; Dissidents,no,Single-party: Ortega,Table 5.3,
+63,Suriname,115,1982,1985,covert,hegemonic,Democracy promotion,no,Military: Bouterse,Table 5.3,
+64,Chile,155,1984,1989,covert,hegemonic,Democracy promotion,yes,Military-personal: Pinochet,Table 5.3,
+65,Haiti,41,1986,1989,covert,hegemonic,Democracy promotion,no,Multiple: military/military-personal,Table 5.3,Table 1.1 dates this case 1986-88; Table 5.3 1986-89 is used
+66,Panama,95,1987,1989,covert,hegemonic,Coup,no,Military-personal: Noriega,Table 5.3,
+67,North Korea,731,1950,1950,overt,offensive,,no,,Table 1.1,
+68,Libya,620,1986,1986,overt,offensive,,no,,Table 1.1,
+69,Lebanon,660,1958,1958,overt,preventive,,yes,,Table 1.1,
+70,Dominican Republic,42,1965,1965,overt,hegemonic,,yes,,Table 1.1,
+71,Grenada,55,1983,1983,overt,hegemonic,,yes,,Table 1.1,
+72,Panama,95,1989,1989,overt,hegemonic,,yes,,Table 1.1,
