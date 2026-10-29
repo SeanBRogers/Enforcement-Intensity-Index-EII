@@ -595,3 +595,16 @@ the repository.
     of covert action surface with a declassification lag, so coverage falls
     toward the present; this produces a spurious decline unless coverage is
     modelled or graded.
+- 2026-10-29, Bretton Woods and the dollar peg (Sean, 13:36: "3, yes"):
+  1971–73 is treated as a break and tested directly (candidate proposition
+  (a)), not dropped and not absorbed into a post-1973 interaction. Sean's
+  standing rule restated, same message: missing, blocked or incomplete data
+  can be estimated, with the estimate flagged (Rule 3 still applies: never
+  filled with zero).
+  - Minerals source (Claude, to confirm): BGS World Mineral Statistics
+    (production by country, 1970–2024, nil distinguished from not
+    available), mapped to the USGS 2025 critical-minerals list (60
+    minerals, Federal Register 7 November 2025). BGS terms allow
+    non-commercial academic use; giving the tables to third parties needs
+    permission, so only derived indices are published and the yearly tables
+    stay local, as with energy.
