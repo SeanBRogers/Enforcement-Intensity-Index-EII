@@ -1,10 +1,14 @@
-EII v2 controls build, 2026-10-29 16:54 EDT; R 4.3.3; countrycode 1.9.0
+EII v2 controls build, 2026-10-29 17:25 EDT; R 4.3.3; countrycode 1.9.0
 MID 5.0: 340 disputes with the US; 277 opponent participations ending 1950 or later
 MID opponents of the US: state-years outside the frame 0
 mid_vs_us 327, initiator 202, used force 220, initiated and used force 154 state-years (1950-2014)
 GSDB-R5: 111 sender-years against the US; senders without a COW state: Hong Kong
 Senders of sanctions on the US: state-years outside the frame 0
 sanctions_on_us: 106 state-years; senders by decade: 1950s 0, 1960s 1, 1970s 20, 1980s 1, 1990s 0, 2000s 3, 2010s 3, 2020s 4
+EuRepoC 1.3: 762 incidents with the US as receiver; 188 with a state or state-affiliated initiator; not attributed or unknown initiator: 491
+  Joint attributions split into states: 1 incidents; still not mapped: 
+Cyber initiators against the US: state-years outside the frame 0
+cyber_vs_us: 69 state-years, 178 incidents (2000-2024); by state: 710, 365, 630, 731, 652, 200
 Conflicts without the US: state-years outside the frame 85 (811 1950; 811 1951; 811 1952; 812 1950; 812 1951; 812 1952; 820 1950; 820 1951; 820 1952; 820 1953; 820 1954; 820 1955; 820 1956; 501 1952; 501 1953; 501 1954; 501 1955; 501 1956; 600 1953; 600 1954; 600 1955; 616 1953; 616 1954; 616 1955; 615 1954; 615 1955; 615 1956; 615 1957; 615 1958; 615 1959)
 conflict_nonus: 1830 state-years (549 with 1,000+ battle deaths)
 conflict_nonus_us_backed: 464 of 1229 conflict state-years in 1975-2017 have US support short of troops to a side (ESD)

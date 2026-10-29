@@ -673,3 +673,15 @@ the repository.
     blank before 1975.
   - For Sean: whether investigations count as events or only retaliation;
     whether EU cases go to members or stay EU-level.
+- 2026-10-29, decisions (Sean, 17:11): the kill test is attacks on US soil
+  ("Attack in country are picking splinters"); Claude's objection logged: 9/11
+  and the 1993 World Trade Center bombing are attacks on US soil, and a
+  soil-only test has one or two events, so attacks abroad are kept as
+  robustness. Investigations count as trade events (threats; dropping a case
+  or finding nothing is a US choice). Actions defined against the EU count for
+  every member. Open: whether an action against a single member (France's
+  digital services tax, 2019–20) counts for all members; coded to the member
+  only. Built: trade channel (`trade_*`, `build_trade.R`); state cyber
+  operations against the US from EuRepoC 1.3 (the CFR tracker has no
+  download). Pre-1995 Section 301 outcomes and the 1986 machine-tool 232
+  restraints remain OPEN.

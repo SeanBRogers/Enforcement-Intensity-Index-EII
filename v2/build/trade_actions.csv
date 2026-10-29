@@ -1,0 +1,173 @@
+year,economy,instrument,citation,note
+1979,Iran,s232_named,Proclamation 4702 (12 Nov 1979),Imports of petroleum from Iran halted under Section 232
+1982,Libya,s232_named,Proclamation 4907 (10 Mar 1982),Imports of crude oil from Libya halted under Section 232
+1985,Libya,s232_named,Executive Order 12538 (15 Nov 1985),Imports of refined petroleum products from Libya prohibited under Section 232
+1998,Honduras,s301_action,63 FR 16607,Suspension of GSP and CBI benefits (intellectual property)
+1999,European Union,s301_action,64 FR 19209,WTO-authorized retaliation implemented under Section 301 (bananas)
+1999,European Union,s301_action,64 FR 40638,WTO-authorized retaliation implemented under Section 301 (hormones)
+2001,Ukraine,s301_action,66 FR 42246,Suspension of GSP benefits (intellectual property)
+2002,Ukraine,s301_action,67 FR 120,100% duties on Ukrainian products (intellectual property)
+2009,Canada,s301_action,74 FR 17276,10% duties on softwood lumber from four provinces
+2018,China,s301_action,83 FR 28710,Action on $34 billion of imports (technology transfer and IP)
+2018,China,s301_action,83 FR 40823,Action on $16 billion of imports
+2018,China,s301_action,83 FR 47974,Action on $200 billion of imports
+2018,Canada,s232_named,83 FR 25849; 83 FR 25857,Exemption from steel and aluminum tariffs ended (1 June 2018)
+2018,Mexico,s232_named,83 FR 25849; 83 FR 25857,Exemption from steel and aluminum tariffs ended (1 June 2018)
+2018,European Union,s232_named,83 FR 25849; 83 FR 25857,Exemption from steel and aluminum tariffs ended (1 June 2018)
+2018,Turkey,s232_named,83 FR 40429,Steel tariff doubled to 50% for Turkey
+2019,China,s301_action,84 FR 20459,Tariff on the $200 billion list raised to 25%
+2019,China,s301_action,84 FR 43304,Action on a further $300 billion of imports (List 4)
+2019,European Union,s301_action,84 FR 54245,WTO-authorized retaliation in the large civil aircraft dispute
+2020,European Union,s301_action,85 FR 10204,Aircraft dispute: tariff on aircraft raised from 10% to 15%
+2020,France,s301_action,85 FR 43292,25% duties on French products (digital services tax); suspended on imposition
+2020,Canada,s232_named,85 FR 49921,10% tariff on Canadian non-alloyed unwrought aluminum reimposed
+2020,Brazil,s232_named,85 FR 54877,Quota on Brazilian semi-finished steel reduced
+2021,Austria,s301_action,86 FR 30361,Digital services tax: duties determined and suspended
+2021,India,s301_action,86 FR 30356,Digital services tax: duties determined and suspended
+2021,Italy,s301_action,86 FR 30350,Digital services tax: duties determined and suspended
+2021,Turkey,s301_action,86 FR 30353,Digital services tax: duties determined and suspended
+2021,United Kingdom,s301_action,86 FR 30364,Digital services tax: duties determined and suspended
+2021,Spain,s301_action,86 FR 30358,Digital services tax: duties determined and suspended
+2023,Russia,s232_named,88 FR 13267,200% tariff on Russian aluminum
+2024,China,s301_action,89 FR 76581,Four-year review: tariffs raised on electric vehicles and other products
+2025,China,s301_action,90 FR 17114,Port fees and actions on maritime and shipbuilding
+2025,Nicaragua,s301_action,90 FR 57807,Tariff action (labor and human rights)
+2025,China,s301_action,90 FR 60848,Tariff action on semiconductors (rate deferred)
+2025,Argentina,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated (from 12 March 2025)
+2025,Australia,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated
+2025,Brazil,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated
+2025,Canada,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated
+2025,European Union,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated
+2025,Japan,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated
+2025,Mexico,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated
+2025,South Korea,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated
+2025,Ukraine,s232_named,90 FR 9817,Temporary steel exemption terminated
+2025,United Kingdom,s232_named,90 FR 9807; 90 FR 9817,Steel and aluminum arrangement terminated
+2025,Canada,ieepa_named,90 FR 9113,Executive Order 14193 (illicit drugs)
+2025,Mexico,ieepa_named,90 FR 9117,Executive Order 14194 (border)
+2025,China,ieepa_named,90 FR 9121,Executive Order 14195 (synthetic opioids)
+2025,Brazil,ieepa_named,90 FR 37739,Executive Order 14323: 40% additional duty (Government of Brazil)
+2025,India,ieepa_named,90 FR 38701,Executive Order 14329: 25% additional duty (imports of Russian oil)
+2025,Algeria,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 30% (in force 9 April 2025, paused the next day except China)"
+2025,Angola,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 32% (in force 9 April 2025, paused the next day except China)"
+2025,Bangladesh,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 37% (in force 9 April 2025, paused the next day except China)"
+2025,Bosnia and Herzegovina,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 35% (in force 9 April 2025, paused the next day except China)"
+2025,Botswana,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 37% (in force 9 April 2025, paused the next day except China)"
+2025,Brunei,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 24% (in force 9 April 2025, paused the next day except China)"
+2025,Cambodia,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 49% (in force 9 April 2025, paused the next day except China)"
+2025,Cameroon,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 11% (in force 9 April 2025, paused the next day except China)"
+2025,Chad,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 13% (in force 9 April 2025, paused the next day except China)"
+2025,China,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 34% (in force 9 April 2025, paused the next day except China)"
+2025,Cote d'Ivoire,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 21% (in force 9 April 2025, paused the next day except China)"
+2025,Democratic Republic of the Congo,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 11% (in force 9 April 2025, paused the next day except China)"
+2025,Equatorial Guinea,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 13% (in force 9 April 2025, paused the next day except China)"
+2025,European Union,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 20% (in force 9 April 2025, paused the next day except China)"
+2025,Falkland Islands,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 41% (in force 9 April 2025, paused the next day except China)"
+2025,Fiji,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 32% (in force 9 April 2025, paused the next day except China)"
+2025,Guyana,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 38% (in force 9 April 2025, paused the next day except China)"
+2025,India,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 26% (in force 9 April 2025, paused the next day except China)"
+2025,Indonesia,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 32% (in force 9 April 2025, paused the next day except China)"
+2025,Iraq,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 39% (in force 9 April 2025, paused the next day except China)"
+2025,Israel,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 17% (in force 9 April 2025, paused the next day except China)"
+2025,Japan,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 24% (in force 9 April 2025, paused the next day except China)"
+2025,Jordan,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 20% (in force 9 April 2025, paused the next day except China)"
+2025,Kazakhstan,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 27% (in force 9 April 2025, paused the next day except China)"
+2025,Laos,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 48% (in force 9 April 2025, paused the next day except China)"
+2025,Lesotho,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 50% (in force 9 April 2025, paused the next day except China)"
+2025,Libya,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 31% (in force 9 April 2025, paused the next day except China)"
+2025,Liechtenstein,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 37% (in force 9 April 2025, paused the next day except China)"
+2025,Madagascar,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 47% (in force 9 April 2025, paused the next day except China)"
+2025,Malawi,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 17% (in force 9 April 2025, paused the next day except China)"
+2025,Malaysia,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 24% (in force 9 April 2025, paused the next day except China)"
+2025,Mauritius,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 40% (in force 9 April 2025, paused the next day except China)"
+2025,Moldova,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 31% (in force 9 April 2025, paused the next day except China)"
+2025,Mozambique,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 16% (in force 9 April 2025, paused the next day except China)"
+2025,Myanmar (Burma),ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 44% (in force 9 April 2025, paused the next day except China)"
+2025,Namibia,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 21% (in force 9 April 2025, paused the next day except China)"
+2025,Nauru,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 30% (in force 9 April 2025, paused the next day except China)"
+2025,Nicaragua,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 18% (in force 9 April 2025, paused the next day except China)"
+2025,Nigeria,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 14% (in force 9 April 2025, paused the next day except China)"
+2025,North Macedonia,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 33% (in force 9 April 2025, paused the next day except China)"
+2025,Norway,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 15% (in force 9 April 2025, paused the next day except China)"
+2025,Pakistan,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 29% (in force 9 April 2025, paused the next day except China)"
+2025,Philippines,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 17% (in force 9 April 2025, paused the next day except China)"
+2025,Serbia,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 37% (in force 9 April 2025, paused the next day except China)"
+2025,South Africa,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 30% (in force 9 April 2025, paused the next day except China)"
+2025,South Korea,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 25% (in force 9 April 2025, paused the next day except China)"
+2025,Sri Lanka,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 44% (in force 9 April 2025, paused the next day except China)"
+2025,Switzerland,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 31% (in force 9 April 2025, paused the next day except China)"
+2025,Syria,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 41% (in force 9 April 2025, paused the next day except China)"
+2025,Taiwan,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 32% (in force 9 April 2025, paused the next day except China)"
+2025,Thailand,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 36% (in force 9 April 2025, paused the next day except China)"
+2025,Tunisia,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 28% (in force 9 April 2025, paused the next day except China)"
+2025,Vanuatu,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 22% (in force 9 April 2025, paused the next day except China)"
+2025,Venezuela,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 15% (in force 9 April 2025, paused the next day except China)"
+2025,Vietnam,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 46% (in force 9 April 2025, paused the next day except China)"
+2025,Zambia,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 17% (in force 9 April 2025, paused the next day except China)"
+2025,Zimbabwe,ieepa_named,90 FR 15041,"Executive Order 14257 Annex I: reciprocal rate 18% (in force 9 April 2025, paused the next day except China)"
+2025,Afghanistan,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Algeria,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 30% from 7 August 2025"
+2025,Angola,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Bangladesh,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 20% from 7 August 2025"
+2025,Bolivia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Bosnia and Herzegovina,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 30% from 7 August 2025"
+2025,Botswana,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Brunei,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 25% from 7 August 2025"
+2025,Cambodia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 19% from 7 August 2025"
+2025,Cameroon,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Chad,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Costa Rica,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Cote d'Ivoire,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Democratic Republic of the Congo,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Ecuador,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Equatorial Guinea,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,European Union,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: 15% all-in ceiling for the EU from 7 August 2025"
+2025,Fiji,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Ghana,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Guyana,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Iceland,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,India,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 25% from 7 August 2025"
+2025,Indonesia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 19% from 7 August 2025"
+2025,Iraq,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 35% from 7 August 2025"
+2025,Israel,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Japan,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Jordan,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Kazakhstan,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 25% from 7 August 2025"
+2025,Laos,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 40% from 7 August 2025"
+2025,Lesotho,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Libya,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 30% from 7 August 2025"
+2025,Liechtenstein,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Madagascar,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Malawi,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Malaysia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 19% from 7 August 2025"
+2025,Mauritius,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Moldova,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 25% from 7 August 2025"
+2025,Mozambique,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Myanmar (Burma),ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 40% from 7 August 2025"
+2025,Namibia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Nauru,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,New Zealand,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Nicaragua,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 18% from 7 August 2025"
+2025,Nigeria,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,North Macedonia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Norway,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Pakistan,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 19% from 7 August 2025"
+2025,Papua New Guinea,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Philippines,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 19% from 7 August 2025"
+2025,Serbia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 35% from 7 August 2025"
+2025,South Africa,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 30% from 7 August 2025"
+2025,South Korea,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Sri Lanka,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 20% from 7 August 2025"
+2025,Switzerland,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 39% from 7 August 2025"
+2025,Syria,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 41% from 7 August 2025"
+2025,Taiwan,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 20% from 7 August 2025"
+2025,Thailand,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 19% from 7 August 2025"
+2025,Trinidad and Tobago,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Tunisia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 25% from 7 August 2025"
+2025,Turkey,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Uganda,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Vanuatu,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Venezuela,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Vietnam,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 20% from 7 August 2025"
+2025,Zambia,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"
+2025,Zimbabwe,ieepa_named,90 FR 37963,"Executive Order 14326 Annex I: reciprocal rate 15% from 7 August 2025"

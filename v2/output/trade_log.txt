@@ -1,0 +1,11 @@
+EII v2 trade channel build, 2026-10-29 17:25 EDT; R 4.3.3; countrycode 1.9.0
+Section 301 investigations: 147 case-economy rows (135 cases), 1975-2025
+Hand-coded actions: ieepa_named 128, s232_named 20, s301_action 24
+Economies without a COW state (not assigned): Falkland Islands
+investigations: state-years outside the frame 0
+actions: state-years outside the frame 0
+trade_301_investigation: 314 state-years, 482 events; by decade 1970s 41, 1980s 103, 1990s 99, 2000s 3, 2010s 31, 2020s 37
+trade_301_action: 85 state-years, 105 events; by decade 1970s 0, 1980s 0, 1990s 16, 2000s 3, 2010s 30, 2020s 36
+trade_232_named: 73 state-years, 73 events; by decade 1970s 1, 1980s 2, 1990s 0, 2000s 0, 2010s 31, 2020s 39
+trade_ieepa_named: 96 state-years, 179 events; by decade 1970s 0, 1980s 0, 1990s 0, 2000s 0, 2010s 0, 2020s 96
+trade_via_eu: 287 state-years, 287 events; by decade 1970s 27, 1980s 68, 1990s 82, 2000s 0, 2010s 56, 2020s 54

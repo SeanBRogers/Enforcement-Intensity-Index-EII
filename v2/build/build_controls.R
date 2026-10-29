@@ -68,6 +68,41 @@ out$sanctions_on_us <- as.integer(key %in% sk)
 lg("sanctions_on_us: %d state-years; senders by decade: %s", sum(out$sanctions_on_us),
    paste(sapply(seq(1950, 2020, 10), function(d) paste0(d, "s ", length(unique(out$ccode[out$sanctions_on_us == 1 & out$year %in% d:(d + 9)])))), collapse = ", "))
 
+# ---------------------------------------------------------------- Q15: state cyber operations against the US
+# EuRepoC Global Dataset of Cyber Incidents 1.3 (Zenodo 14965395, CC BY-NC 4.0),
+# dyadic file: incidents with the US as receiver, initiator country, and the
+# settled attribution's initiator category. State or state-affiliated
+# initiators only. Collection grew sharply from 2022, so counts rise with
+# visibility as well as activity.
+cy_ <- read.csv(file.path(raw, "cyber/eurepoc_dyadic_dataset_0_1.csv"), stringsAsFactors = FALSE)
+cy_ <- cy_[cy_$receiver_country == "United States", ]
+cy_$year <- suppressWarnings(as.integer(substr(cy_$start_date, 1, 4)))
+st <- cy_$initiator_category %in% c("State", "State affiliated actor")
+lg("EuRepoC 1.3: %d incidents with the US as receiver; %d with a state or state-affiliated initiator; not attributed or unknown initiator: %d",
+   length(unique(cy_$incident_id)), length(unique(cy_$incident_id[st])),
+   length(unique(cy_$incident_id[cy_$initiator_country %in% c("Not attributed", "Unknown")])))
+cs <- cy_[st & !cy_$initiator_country %in% c("Not attributed", "Unknown", "United States") & !is.na(cy_$year), ]
+cs$ccode <- suppressWarnings(countrycode(cs$initiator_country, "country.name", "cown", warn = FALSE))
+multi <- is.na(cs$ccode)                                           # joint attributions ("Russia, China"): one row per state
+if (any(multi)) {
+  sp <- do.call(rbind, lapply(which(multi), function(i) {
+    p <- trimws(strsplit(cs$initiator_country[i], ",")[[1]])
+    r <- cs[rep(i, length(p)), ]; r$ccode <- suppressWarnings(countrycode(p, "country.name", "cown", warn = FALSE)); r }))
+  cs <- rbind(cs[!multi, ], sp)
+}
+lg("  Joint attributions split into states: %d incidents; still not mapped: %s", sum(multi),
+   paste(unique(cs$initiator_country[is.na(cs$ccode)]), collapse = "; "))
+cs <- cs[!is.na(cs$ccode), ]
+ck_ <- paste(cs$ccode, cs$year)
+outside(ck_, "Cyber initiators against the US")
+ncy <- tapply(cs$incident_id, ck_, function(v) length(unique(v)))
+out$cyber_vs_us_n <- ifelse(is.na(ncy[key]), 0L, as.integer(ncy[key]))
+out$cyber_vs_us <- as.integer(out$cyber_vs_us_n > 0)
+out$cyber_vs_us_state <- as.integer(key %in% ck_[cs$initiator_category == "State"])
+for (v in c("cyber_vs_us_n", "cyber_vs_us", "cyber_vs_us_state")) out[[v]][out$year < 2000 | out$year > 2024] <- NA   # EuRepoC from 2000; 2025 partial
+lg("cyber_vs_us: %d state-years, %d incidents (2000-2024); by state: %s", sum(out$cyber_vs_us, na.rm = TRUE), sum(out$cyber_vs_us_n, na.rm = TRUE),
+   paste(names(sort(-tapply(out$cyber_vs_us_n, out$ccode, sum, na.rm = TRUE)))[1:6], collapse = ", "))
+
 # ---------------------------------------------------------------- Q14: conflict without the US
 a <- read.csv(file.path(raw, "ucdp_acd_261/UcdpPrioConflict_v26_1.csv"), stringsAsFactors = FALSE, colClasses = "character")
 codes <- function(s) { x <- trimws(strsplit(s, ",", fixed = TRUE)[[1]]); x <- x[x != ""]; suppressWarnings(as.integer(x)) }
@@ -102,5 +137,5 @@ lg("conflict_nonus_us_backed: %d of %d conflict state-years in 1975-2017 have US
    sum(out$conflict_nonus_us_backed, na.rm = TRUE), sum(out$conflict_nonus[out$year %in% 1975:2017]))
 
 out <- out[order(out$ccode, out$year), c("ccode", "year", "mid_vs_us", "mid_vs_us_initiator", "mid_vs_us_force", "mid_vs_us_attack",
-                                         "sanctions_on_us", "conflict_nonus", "conflict_nonus_intensity", "conflict_nonus_us_backed")]
+                                         "sanctions_on_us", "cyber_vs_us", "cyber_vs_us_n", "cyber_vs_us_state", "conflict_nonus", "conflict_nonus_intensity", "conflict_nonus_us_backed")]
 write.csv(out, file.path(outd, "controls_country_year.csv"), row.names = FALSE, na = "")

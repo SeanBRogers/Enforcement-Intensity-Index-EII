@@ -1,4 +1,4 @@
-EII v2 GSDB-FS financial case series, 2026-10-29 16:54 EDT; R 4.3.3
+EII v2 GSDB-FS financial case series, 2026-10-29 17:25 EDT; R 4.3.3
 GSDB-FS US-named financial cases: 466 (22 also naming other senders); subtypes: asset_freeze 316, services 260, aid 134, investment 36, payment_infra 3, other 3
 US case-target-years: 4625; targets without a COW state: Hong Kong; Palestine
 Target-years outside the frame: 28 (541 1970; 541 1971; 341 1991; 344 1991; 349 1991; 343 1991; 346 1991; 341 1993; 341 1995; 341 1996; 341 1992; 343 1992; 341 1994; 341 1999; 341 2000; 341 2001; 341 1998; 347 2002; 347 2003; 347 2006; 347 2007; 347 2004; 347 2001; 347 2005; 341 2002; 341 2005; 341 2003; 341 2004)

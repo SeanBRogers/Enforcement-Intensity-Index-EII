@@ -6,10 +6,10 @@ against other states, 1950–2025, for every state in the international system.
 **Sean Rogers** | University of South Carolina | Department of Political Science
 
 > **Status (2026-10-29): partial release. Not for estimation.** The frame, a US
-> sanctions flag, five exertion channels (financial, penalties, kinetic, covert
-> action, posture) and the covariates are built. The multilateral
-> block and the trade channel are not yet built, and the panel is not for
-> estimation until they are and every channel is validated.
+> sanctions flag, six exertion channels (financial, penalties, kinetic, covert
+> action, posture, trade), the covariates, the multilateral block and the
+> kill-test controls are built. Validation is not yet done, and the panel is
+> not for estimation until every channel is validated.
 
 ## What is here
 
@@ -33,7 +33,8 @@ against other states, 1950–2025, for every state in the international system.
   penalties (OFAC civil penalties), kinetic (armed conflicts with the US as a
   party, against a state's government or alongside it), covert action
   (US regime change attempts, 1950–1989; US support short of troops to a side
-  in a war, 1975–2017) and
+  in a war, 1975–2017), trade (Section 301 investigations and actions, and
+  Section 232 and emergency tariffs that name the state) and
   posture (US troops stationed in the country) are separate series. There is no composite score.
 - **Missing is not zero.** A zero means the source covers the country-year and
   records nothing; outside a source's coverage the cell is blank.

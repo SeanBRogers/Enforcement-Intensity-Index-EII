@@ -217,6 +217,14 @@ stopifnot(setequal(paste(gf$ccode, gf$year), paste(fr$ccode, fr$year)))
 fr <- merge(fr, gf, by = c("ccode", "year"), all.x = TRUE)
 lg("Financial cases (GSDB-FS, US-named): ", sum(fr$fin_gsdb_cases > 0), " state-years with a case in force, 1950-2025")
 
+# ------------------------------------------------------------- 6c. Trade channel (build_trade.R)
+tr <- read.csv(file.path(out, "trade_country_year.csv"), stringsAsFactors = FALSE)
+stopifnot(setequal(paste(tr$ccode, tr$year), paste(fr$ccode, fr$year)))
+fr <- merge(fr, tr, by = c("ccode", "year"), all.x = TRUE)
+lg("Trade (Section 301, 232, emergency tariffs): ", sum(fr$trade_301_investigation > 0, na.rm = TRUE), " state-years with a 301 investigation; ",
+   sum(fr$trade_301_action > 0, na.rm = TRUE), " with a 301 action (1995-); ", sum(fr$trade_232_named > 0), " with a named 232 measure; ",
+   sum(fr$trade_ieepa_named > 0), " with named emergency tariffs")
+
 # ------------------------------------------------------------------ 7. Write
 fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "under_sanctions_us", "under_sanctions_us_single", "us_sanction_cases",
@@ -228,7 +236,8 @@ fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "fin_program_count", "fin_program_count_low", "fin_program_count_high", "fin_estimated",
         "fin_program_count_nonindiv", "fin_location_count", "fin_thematic_location_count",
         "fin_gsdb_cases", "fin_gsdb_cases_single", "fin_gsdb_asset_freeze", "fin_gsdb_services", "fin_gsdb_aid",
-        "fin_gsdb_investment", "fin_gsdb_payment_infra", "fin_gsdb_other")]
+        "fin_gsdb_investment", "fin_gsdb_payment_infra", "fin_gsdb_other",
+        "trade_301_investigation", "trade_301_action", "trade_232_named", "trade_ieepa_named", "trade_via_eu")]
 write.csv(fr, file.path(out, "EII_v2_partial.csv"), row.names = FALSE, na = "")
 lg("Wrote EII_v2_partial.csv: ", nrow(fr), " rows, ", ncol(fr), " columns")
 lg("Not yet built here: multilateral block, target burden block (covariates: build_covariates.R)")

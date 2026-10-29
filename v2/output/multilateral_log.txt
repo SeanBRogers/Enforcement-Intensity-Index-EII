@@ -1,4 +1,4 @@
-EII v2 multilateral block build, 2026-10-29 16:54 EDT; R 4.3.3; countrycode 1.9.0
+EII v2 multilateral block build, 2026-10-29 17:25 EDT; R 4.3.3; countrycode 1.9.0
 GSDB-R5 cases: UN 88; EU among senders 190 (3 also naming the US); other organizations 81
 Other-organization senders: African Union; Commonwealth; ECCAS; ECOWAS; League of Arab States; NATO; Organisation of African Unity; Organization of American States; SADC
 Targets without a COW state (not assigned): Hong Kong; ISIL/Al-Qaeda; Palestine; Terrorist Organizations (Al-Qaeda); Terrorist Organizations (ISIL and ANF); Terrorist Organizations (Taliban and Al-Qaeda); Terrorist Organizations (Taliban)

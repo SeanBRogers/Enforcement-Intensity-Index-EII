@@ -3,13 +3,14 @@
 **Status: PARTIAL. Not for estimation.** This release contains the frame, the
 US sanctions flag, and five exertion channels: financial, penalties,
 kinetic, covert action (regime change attempts 1950–1989; proxy support
-1975–2017), and posture. Covariates are in
+1975–2017), posture, and trade (Section 301, Section 232 and emergency
+tariffs naming the state). Covariates are in
 separate files (below). The multilateral block and the trade channel are not
 yet built (`BUILD_PROTOCOL.md`, section 7).
 
 File: `v2/output/EII_v2_partial.csv`. Built by `v2/build/run_all.R`
 (`build_penalties.R`, `build_financial.R`, `estimate_sdn_1994.R`,
-`build_proxy.R`, `build_regime_change.R`, `build_gsdb_fs.R`,
+`build_proxy.R`, `build_regime_change.R`, `build_gsdb_fs.R`, `build_trade.R`,
 `build_v2_partial.R`, `build_covariates.R`, `build_multilateral.R`, then
 `build_controls.R`) from the
 sources in `v2/sources/MANIFEST.csv`, `v2/sources/MANIFEST_ofac.csv`,
@@ -68,6 +69,11 @@ in COW.
 | `fin_gsdb_cases` | Number of GSDB financial sanction cases naming the United States among their senders in force against the state in the year | GSDB-FS v1.0 (financial sanctions, September 2026), case list and dyadic file (`build_gsdb_fs.R`) | 1950–2025 | One case per sender, target and objective: adding names to an existing list is not a new case, so this measures whether a US financial regime is in force (the extensive margin), not designation intensity. The one financial series on a single method across 1950–2025; see the calibration below before using it for 1950–1993 |
 | `fin_gsdb_cases_single` | As `fin_gsdb_cases`, single-target cases only (GSDB-R5 `target_mult` = 0) | as above | 1950–2025 | Drops multi-country designation cases (Global Magnitsky and the like), which flag many states at once |
 | `fin_gsdb_asset_freeze`, `fin_gsdb_services`, `fin_gsdb_aid`, `fin_gsdb_investment`, `fin_gsdb_payment_infra`, `fin_gsdb_other` | 1 if a US-named case in force that year includes the subtype: asset freeze; ban on financial services; withdrawal of aid; investment restrictions; cut-off from payment infrastructure; other | as above | 1950–2025 | Subtypes from the case list (GSDB's dyadic file merges every case in force for a dyad, including UN cases spread to each member). Payment infrastructure appears only from the 2020s (12 state-years) |
+| `trade_301_investigation` | Number of Section 301 investigations the USTR opened against the state in the year (Sean: investigations are threats; dropping a case or finding nothing is a US choice) | CRS R46604 (2020) Table A-2, 1975–2020; Federal Register from 2021 (`v2/build/s301_investigations.csv`, `build_trade.R`) | 1975–2025; blank before 1975 (Section 301 dates from the Trade Act of 1974) | 135 investigations. Cases against the European Communities or EU count for every member that year (`trade_via_eu`). CRS lists "China" in a 1977 case that may be the Republic of China (Taiwan); coded as listed |
+| `trade_301_action` | Number of Section 301 actions or escalations published against the state: determinations of action, WTO-authorized retaliation implemented under Section 301, tariff increases | Federal Register notices, hand-coded with citations (`v2/build/trade_actions.csv`) | 1995–2025; blank before 1995 (outcomes not yet coded) | Counts determinations even when the duties were suspended on imposition (France 2020, the six digital services tax cases of 2021). China: three actions in 2018, two escalations in 2019, one in 2024 |
+| `trade_232_named` | Number of Section 232 (national security) import measures naming the state: embargoes, country-specific rates or quotas, ended exemptions | Presidential proclamations and executive orders, hand-coded with citations | 1950–2025 | Measures applying to all countries are not counted. Before 2018: Iran 1979, Libya 1982 and 1985 (oil). The 1986 machine-tool restraint agreements (Japan, Taiwan) are not yet verified and not coded |
+| `trade_ieepa_named` | Number of emergency-powers (IEEPA) tariff orders naming the state; for the 2025 country-rate orders, only rates above the 10% baseline | Executive Orders 14193–14195, 14257, 14323, 14326, 14329 | 1950–2025 (none before 2025) | The 9 April 2025 rates (EO 14257) were in force for one day before the pause, except for China; the 7 August rates (EO 14326) stayed. India 2025 includes the 25% duty over Russian oil |
+| `trade_via_eu` | 1 if any trade event that year reached the state as an EC/EU member | build | 1975–2025 | EU membership by accession year; the UK leaves in 2020 |
 
 Calibration of the GSDB-FS case series against the SDN counts, 1995–2025
 (`financial_gsdb_log.txt`). Of the 197 state-years with SDN program
@@ -298,13 +304,20 @@ File: `v2/output/controls_country_year.csv`, same frame; log
 | `mid_vs_us_force` | As above, the state's own highest action was a use of force or war (hostility level 4–5) | as above | as above | 220 state-years. Use of force in MID terms includes seizures of vessels and personnel, not only attacks |
 | `mid_vs_us_attack` | Initiated and used force against the US | as above | as above | 154 state-years; the closest MID reading of "someone attacks us" |
 | `sanctions_on_us` | 1 if the state is a sender in a sanctions case against the US in force (Q15) | GSDB release 5, dyadic file | 1950–2025 | 106 state-years; the 1973–74 Arab oil embargo is the largest episode (37 state-years). EU and UN cases count for every member state, as GSDB spreads them |
+| `cyber_vs_us` | 1 if a cyber operation against US targets that began in the year is attributed to the state or to an actor affiliated with it (settled attribution) | EuRepoC Global Dataset of Cyber Incidents 1.3, dyadic file (CC BY-NC 4.0) | 2000–2024; blank otherwise | 762 incidents against the US; 188 by a state or state-affiliated actor; 178 state-incident attributions to named states (joint attributions count for each). 64% of incidents have no named attacker, and collection grows sharply from 2022, so counts track visibility as well as activity. China, Russia, Iran and North Korea lead |
+| `cyber_vs_us_n` | Number of such incidents | as above | as above | Joint attributions count for each state named |
+| `cyber_vs_us_state` | 1 if at least one incident is attributed to the state itself (not an affiliated group) | as above | as above | |
 | `conflict_nonus` | 1 if a UCDP armed conflict in which the US is not a party is located in the state, or the state is a party to one (Q14) | UCDP/PRIO ACD v26.1 | 1950–2025 | 1,830 state-years. Disjoint from the kinetic channel by construction |
 | `conflict_nonus_intensity` | Highest intensity of those conflicts (0, 1 = 25–999 battle deaths, 2 = 1,000+) | as above | as above | 549 state-years at 1,000+ |
 | `conflict_nonus_us_backed` | 1 if such a conflict-year also has US support short of troops to a side (ESD) | UCDP ACD and ESD | 1975–2017; blank outside | 464 of 1,229 conflict state-years in 1975–2017 (38%). Those years are US pressure, not a control: drop them when conflict is used as a control (protocol, 2026-10-27) |
 
-Not yet built for Q15: terrorism against US targets (Global Terrorism
-Database, by request), state cyber operations against the US, and state
-attacks on US forces after 2014 (MID ends in 2014).
+Kill test, as Sean defines it (2026-10-29): attacks on US soil plus
+sanctions on the US; attacks on US forces and citizens abroad are reported as
+robustness (logged with Claude's objection that a soil-only test has one or
+two events). Not yet built: terrorism against US targets on and off US soil
+(Global Terrorism Database, by request), and state attacks on US forces after
+2014 (MID ends in 2014). The CFR Cyber Operations Tracker has no download;
+EuRepoC is used instead.
 
 ## Covariates (`build_covariates.R`)
 
