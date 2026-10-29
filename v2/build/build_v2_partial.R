@@ -1,4 +1,4 @@
-# EII v2 — partial build (frame, sanctioned flag, kinetic, posture)
+# EII v2 — partial build (frame, sanctioned flag, kinetic, proxy, posture, penalties, financial)
 # Governed by BUILD_PROTOCOL.md (committed 2026-10-27, before any download).
 # One code path for every year 1950–2025 (Rule 4). Missing is not zero (Rule 3).
 #
@@ -135,6 +135,16 @@ fr$kin_in_state <- as.integer(fr$kin_in_state_intensity > 0)
 offk <- setdiff(paste(k$ccode, k$year), paste(fr$ccode, fr$year))
 lg("Kinetic target-years outside the frame: ", length(offk), if (length(offk)) paste0(" (", paste(offk, collapse = "; "), ")") else "")
 
+# ------------------------------------------- 3b. Covert and proxy support (build_proxy.R, UCDP ESD 18.1)
+px <- read.csv(file.path(out, "proxy_country_year.csv"), stringsAsFactors = FALSE)
+pv <- c("proxy_vs_state", "proxy_vs_state_types", "proxy_vs_state_alleged",
+        "proxy_for_state", "proxy_for_state_types", "proxy_for_state_alleged")
+stopifnot(setequal(paste(px$ccode, px$year), paste(fr$ccode, fr$year)))
+fr <- merge(fr, px[, c("ccode", "year", pv)], by = c("ccode", "year"), all.x = TRUE)   # missing outside 1975-2017 (ESD coverage)
+lg("Proxy support (ESD 1975-2017): US support short of troops against the state in ", sum(fr$proxy_vs_state, na.rm = TRUE),
+   " state-years (", sum(fr$proxy_vs_state_alleged, na.rm = TRUE), " alleged only); to the state in ",
+   sum(fr$proxy_for_state, na.rm = TRUE), " (", sum(fr$proxy_for_state_alleged, na.rm = TRUE), " alleged only)")
+
 # ------------------------------------------------------------ 4. Posture (troopdata)
 tp <- read.csv(file.path(raw, "troopdata_1.1.0_troops_ad.csv"), stringsAsFactors = FALSE)
 tp <- tp[tp$year >= 1950 & tp$year <= 2025, ]
@@ -196,6 +206,8 @@ for (v in c("fin_program_count", "fin_location_count")) {
 fr <- fr[order(fr$ccode, fr$year), c("ccode", "stateabb", "statenme", "year",
         "under_sanctions_us", "under_sanctions_us_single", "us_sanction_cases",
         "kin_vs_state", "kin_vs_state_intensity", "kin_in_state", "kin_in_state_intensity",
+        "proxy_vs_state", "proxy_vs_state_types", "proxy_vs_state_alleged",
+        "proxy_for_state", "proxy_for_state_types", "proxy_for_state_alleged",
         "posture_troops_ad", "posture_note", "pen_program_count", "pen_program_count_firms",
         "fin_program_count", "fin_program_count_low", "fin_program_count_high", "fin_estimated",
         "fin_program_count_nonindiv", "fin_location_count", "fin_thematic_location_count")]

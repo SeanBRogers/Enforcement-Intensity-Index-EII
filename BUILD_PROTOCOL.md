@@ -541,3 +541,37 @@ the repository.
     evidence grade (official record, investigation, credible reporting) and
     reported by grade.
 
+- 2026-10-29, item 2 built (Sean, 11:37: "spin up the data and get it all
+  added to the panel with codebook entries"). Choices made in the build,
+  each open to Sean's review:
+  - Covert and proxy channel, part 1: `build_proxy.R`, UCDP ESD 18.1
+    (1975–2017), US government support short of US troops, split into
+    support against a state's government (`proxy_vs_state`: 64 state-years,
+    15 states) and support to it (`proxy_for_state`: 481, 53 states), with
+    alleged support kept apart. O'Rourke's 1947–1989 regime-change data is
+    not publicly downloadable (book appendix or author needed); SIPRI arms
+    transfers not yet pulled. Both OPEN.
+  - Dollar peg: the IRR anchor is a reference currency that floating
+    currencies also have, so `usd_peg` = dollar anchor and coarse regime 1–2.
+    IRR's site now posts monthly files to 2025 (beta, October 2026) beside
+    the stable 1946–2019 release; the beta is used and checked against the
+    stable release (99.6% agreement). Annual value = modal month. Before 1973
+    the peg mostly records Bretton Woods. Check measure still OPEN.
+  - Endowment: highest annual oil plus gas production in 1985–1994 (peak,
+    not mean, so the sanctioned or war years in the window do not lower it),
+    territory as of 1995, from OWID/Energy Institute. Coal is kept as a
+    yearly series only. Yearly production is written to a local, uncommitted
+    file: the Energy Institute requires permission for extensive
+    reproduction (EIA's public-domain series were checked as a substitute
+    and rejected: pre-2000 coverage is patchy and its petroleum energy
+    series is zero-filled for the USSR and others). Production misses reserves not yet developed in the
+    window (Sudan, Guyana). Minerals, the market-priced version and era
+    weighting remain OPEN.
+  - Production capability (Sean: "production capability!!"):
+    economic complexity, Atlas SITC 1962–2024 (`eci_sitc`, standardized
+    within year).
+  - Build hygiene: the text-processing scripts now require a UTF-8 locale
+    and set one where available; outputs are unchanged by this.
+  - Sean's note, same message, not yet design: the protection racket
+    extends to leaders, who are "on the outs when they deviate" (Iran's
+    revolution cited); a leader-level reading of proposition 5's "exit is punished".

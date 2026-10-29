@@ -1,16 +1,20 @@
 # EII v2 — Codebook (partial release, 2026-10-27)
 
 **Status: PARTIAL. Not for estimation.** This release contains the frame, the
-US sanctions flag, and the four exertion channels: financial, penalties,
-kinetic and posture. The multilateral block, the burden blocks and the
-covariates are not yet built (`BUILD_PROTOCOL.md`, section 7).
+US sanctions flag, and five exertion channels: financial, penalties,
+kinetic, covert and proxy support (1975–2017), and posture. Covariates are in
+separate files (below). The multilateral block and the trade channel are not
+yet built (`BUILD_PROTOCOL.md`, section 7).
 
 File: `v2/output/EII_v2_partial.csv`. Built by `v2/build/run_all.R`
-(`build_penalties.R`, `build_financial.R`, then `build_v2_partial.R`) from the
-sources in `v2/sources/MANIFEST.csv`, `v2/sources/MANIFEST_ofac.csv` and
-`v2/sources/MANIFEST_sdn.csv` (fetch and verify with
-`v2/build/fetch_sources.R`). Build logs: `v2/output/build_log.txt`,
-`v2/output/penalties_log.txt`, `v2/output/financial_log.txt`.
+(`build_penalties.R`, `build_financial.R`, `estimate_sdn_1994.R`,
+`build_proxy.R`, `build_v2_partial.R`, then `build_covariates.R`) from the
+sources in `v2/sources/MANIFEST.csv`, `v2/sources/MANIFEST_ofac.csv`,
+`v2/sources/MANIFEST_sdn.csv` and `v2/sources/MANIFEST_covariates.csv` (fetch
+and verify with `v2/build/fetch_sources.R`). The build needs a UTF-8 locale;
+the scripts set one where the system offers it. Build logs:
+`v2/output/build_log.txt`, `penalties_log.txt`, `financial_log.txt`,
+`proxy_log.txt`, `covariates_log.txt` (all in `v2/output/`).
 
 ## Unit and frame
 
@@ -32,10 +36,16 @@ in COW.
 | `under_sanctions_us` | 1 if a GSDB case naming the United States among its senders (alone or with named partners) is in force against the state in the year, else 0. UN- or coalition-only cases are excluded | GSDB release 5: US-named cases from the case list; targets and years from the dyadic file | 1950–2025 | Researcher-coded from public sources; covert measures absent. Multi-target cases (e.g., designations of individuals in many countries at once; the 2002–2009 case against International Criminal Court signatories) flag every named state. States flagged: 47 in 1990, 90 in 2020, 123 in 2025 |
 | `under_sanctions_us_single` | As `under_sanctions_us`, counting only cases with a single target (GSDB `target_mult` = 0) | as above | 1950–2025 | Separates sanctions aimed at a state from multi-country designation cases. States flagged: 31 in 1990, 69 in 2020, 95 in 2025 |
 | `us_sanction_cases` | Number of US-named GSDB cases in force against the state in the year | as above | 1950–2025 | The GSDB codebook warns that case counts are not intensity measures: an escalating regime can generate several cases and an equally severe embargo one |
-| `kin_vs_state` | 1 if the US is a party to an armed conflict against this state's government in the year: an interstate conflict with this state on the other side, or a conflict in which the US backs the side opposing this government | UCDP/PRIO ACD v26.1 | 1950–2025 | Understates: 25-battle-death threshold; misses covert and stand-off US action (Iraq no-fly-zone strikes 1992–2002; the 2011 Libya air campaign, where UCDP lists no US or NATO party) and US arming of one side (Ukraine against Russia from 2022). US force inside a state without its government (against IS in Syria, 2014–2024) is in neither kinetic variable |
+| `kin_vs_state` | 1 if the US is a party to an armed conflict against this state's government in the year: an interstate conflict with this state on the other side, or a conflict in which the US backs the side opposing this government | UCDP/PRIO ACD v26.1 | 1950–2025 | Understates: 25-battle-death threshold; misses covert and stand-off US action (Iraq no-fly-zone strikes 1992–2002; the 2011 Libya air campaign, where UCDP lists no US or NATO party) and US arming of one side (Ukraine against Russia from 2022; see the proxy variables for 1975–2017). US force inside a state without its government (against IS in Syria, 2014–2024) is in neither kinetic variable |
 | `kin_vs_state_intensity` | Highest UCDP intensity among those conflicts: 0 none, 1 = 25–999 battle deaths, 2 = 1,000 or more | UCDP/PRIO ACD v26.1 | 1950–2025 | as above |
 | `kin_in_state` | 1 if the US fights alongside this state's government, inside its territory, against non-state actors | UCDP/PRIO ACD v26.1 | 1950–2025 | as above; UCDP's episode coding starts the US-backed Afghanistan episode in 2003, so 2002 reads 0 |
 | `kin_in_state_intensity` | Highest UCDP intensity among those conflicts (0, 1, 2) | UCDP/PRIO ACD v26.1 | 1950–2025 | as above |
+| `proxy_vs_state` | 1 if the US government gave a warring party support short of US troops against this state's government in the year: rebels fighting it, or another government at war with it. Confirmed support only | UCDP External Support Dataset (ESD) 18.1, triad-year (`build_proxy.R`) | 1975–2017; blank outside | Understates: ESD covers only conflicts in UCDP (25 battle deaths a year), so support to groups below that threshold, coup support and payments that never entered the public record are absent (`BUILD_PROTOCOL.md`: not recorded is not non-existent). "Government" is UCDP's: in Libya 2014 the US-backed House of Representatives is coded as fighting the Tripoli government. 64 state-years in 15 states (Afghanistan 1980s, Nicaragua 1980s, Angola, Cambodia, Syria 2011–2017 among them); 4 overlap `kin_vs_state` |
+| `proxy_vs_state_types` | Number of kinds of support given that year, highest across the state's conflicts: weapons, materiel and logistics, training, funding, intelligence, access to infrastructure, access to territory, troops present but not a warring party, other, unknown | as above | as above | Counts kinds, not amounts or value |
+| `proxy_vs_state_alleged` | 1 if the only US support recorded against the state that year is alleged (ESD `ext_alleged`), else 0 | as above | as above | Evidence grade kept apart from confirmed support; 10 state-years |
+| `proxy_for_state` | 1 if the US government gave this state's government support short of US troops in a war it fought that year (against rebels or another state). Confirmed support only | as above | as above | Support to a government is not exertion against it: the analog of `kin_in_state`, never summed with `proxy_vs_state`. 481 state-years in 53 states (Colombia 1990–2010 among them); 45 overlap `kin_in_state`. ESD also records US support to Russia against IS in 2017 |
+| `proxy_for_state_types` | As `proxy_vs_state_types`, for support to the government | as above | as above | |
+| `proxy_for_state_alleged` | As `proxy_vs_state_alleged`, for support to the government | as above | as above | 5 state-years |
 | `posture_troops_ad` | US active-duty troops located in the country (sum of location rows) | `troopdata` 1.1.0 | 1950–2025; blank where the source has no row, and blank in US-party conflict country-years from 2018 | Official reports omit war-zone deployments from about 2018, and the source fills them with 0 (e.g., Syria 2022 = 0, Iraq 2025 = 0); those cells are set blank. Guard and reserve troops are excluded |
 | `posture_note` | Reason a posture cell is blank | build | — | — |
 | `pen_program_count` | OFAC civil penalties, settlements and findings of violation published in the year whose sanctions program targets this country. An entry naming several country programs counts once for each; OFAC's own count is used where one entry aggregates several penalties | OFAC enforcement information, 2003–2025 (`build_penalties.R`) | 2003–2025; blank before 2003 | Negotiated and discretionary, published only when resolved. Understates enforcement against US banks, most of which runs through anti-money-laundering law (FinCEN, OCC, Fed, DOJ). 59% of penalties (1,219 of 2,052) were against individuals, mostly Cuba travel cases in 2003–2005 |
@@ -49,7 +59,14 @@ in COW.
 
 `kin_vs_state` and `kin_in_state` are kept separate and never summed: the first
 is force against a state, the second is force spent in a state alongside its
-government (`BUILD_PROTOCOL.md`, Q8). Posture is never summed with either.
+government (`BUILD_PROTOCOL.md`, Q8). Posture is never summed with either. The
+proxy pair follows the same split. US troops fighting as a warring party are
+in the kinetic variables, so ESD triads in which US troops were the only
+support (4 triad-years) are not counted as proxy support. ESD support is
+attributed by UCDP's sides: in a civil conflict, support to the rebels counts
+against the government's state and support to the government counts for it;
+in an interstate conflict, support counts for the supported state and against
+its opponent. GW codes are mapped to COW as in the kinetic channel.
 
 ## Mapping rules (all logged in `build_log.txt`)
 
@@ -220,9 +237,9 @@ characters of the entry. Year totals: `v2/output/financial_year_totals.csv`.
 
 Kept in two files apart from the exertion panel, keyed the same way. Sources
 and checksums: `v2/sources/MANIFEST_covariates.csv`; build log:
-`v2/output/covariates_log.txt`. Not yet built: dollar integration (measure to
-be chosen and logged first, Q6), the US as a target (Q15), and the trade
-channel.
+`v2/output/covariates_log.txt`. Not yet built: a check measure for dollar
+integration (Q6), minerals in the endowment, the US as a target (Q15), and
+the trade channel.
 
 ### `v2/output/covariates_year.csv` (one row per year, 1950–2025)
 
@@ -258,7 +275,46 @@ dropped. Net interest matches the v1 series (`fiscal_indicators.csv`, tag
 | `unga_ideal` | UN General Assembly ideal point (higher = closer to the US and Western positions) | Bailey, Strezhnev & Voeten, 1946–2025 file (Voeten Dataverse, v39) | 1950–2025, UN members casting votes | Missing for non-members and years without votes |
 | `unga_dist_us` | Absolute distance between the state's and the US's ideal point in the year | as above | as above | The US ideal point moves sharply in 2025 (2.16 in 2024, 2.89 in 2025), so distances to every state change that year |
 | `unga_votes` | Roll-call votes behind the estimate | as above | as above | Few votes means a wide credible interval |
-| `nat_res_rents_gdp` | Total natural resource rents, % of GDP (extractive value, Q7) | WDI | 1970–2021 | Missing before 1970 and after 2021. WDI's Germany series is assigned to West Germany (260) through 1990 and Yemen's to North Yemen (678) before 1990 |
+| `nat_res_rents_gdp` | Total natural resource rents, % of GDP (extractive value, Q7) | WDI | 1970–2021 | Missing before 1970 and after 2021. WDI's Germany series is assigned to West Germany (260) through 1990 and Yemen's to North Yemen (678) before 1990. Kept for reference: the protocol replaced rents with physical endowment (change log 2026-10-29), because sanctions, war and price policy push rents down |
+| `fx_anchor` | Reference currency of the state's exchange rate arrangement in the year (USD, EUR, GBP, …, baskets such as USD-EUR) | Ilzetzki, Reinhart & Rogoff (IRR), monthly anchor file 1946–2025, beta of October 2026 | 1950–2025 | Blank where IRR reports none or the currency is freely falling. A reference currency is assigned to floating currencies too (South Korea, a managed float referenced to the dollar from 1998; Mexico, whose own peso is its reference from 2016), so the anchor alone is not a peg |
+| `usd_anchor` | 1 if `fx_anchor` is the US dollar alone, 0 if another currency or a basket, blank if `fx_anchor` is blank | as above | as above | Baskets that include the dollar (USD-EUR for Russia from 2004, USD-AUD) are 0 here; read `fx_anchor` for them |
+| `fx_regime_coarse` | IRR coarse de facto regime: 1 no separate legal tender, currency board, peg or band within ±2%; 2 crawling peg or crawling band within ±2%; 3 managed float or band within ±5%; 4 freely floating; 5 freely falling; 6 dual market with missing parallel-market data | IRR regime classification, monthly 1940–2025, beta (last update 5 October 2026) | 1950–2025 | Code 6 covers the Soviet bloc before 1991 and other states with parallel markets but no parallel-rate data (in 1985 also Afghanistan, Angola, Cambodia, Gambia, Guinea, Sudan, Vietnam) |
+| `fx_regime_fine` | IRR fine de facto regime, 1–15 (1 = no separate legal tender; 2 = currency board or pre-announced peg; 14 = freely falling; 15 = dual market, parallel data missing) | as above | as above | Dollarized states: `usd_anchor` = 1 and `fx_regime_fine` = 1 (12 in 2025: Ecuador, El Salvador, Panama, the Marshall Islands, Micronesia, Palau and six Eastern Caribbean currency-union members) |
+| `usd_peg` | Dollar peg (dollar integration, Q6, zero part): 1 if the anchor is the US dollar and the coarse regime is 1 or 2; 0 if the coarse regime is 3–5, or 1–2 with another anchor; blank if the regime is missing or 6, or 1–2 with no anchor reported | as above | 1950–2025 | Before 1973 most pegs are to the dollar because Bretton Woods made them so, so the variable's meaning shifts in 1971–73. Dollar pegs: 24 in 1950, 41 in 1970 and 1990, 73 in 2000, 83 in 2010, 56 in 2025. A further 12–26 states a year are dollar-referenced but float or are freely falling |
+| `endow_oilgas_twh` | Physical endowment (Q7, proposition 3): the highest annual oil plus gas production in 1985–1994, the decade before the financial channel's itemized record, for the territory the state holds in 1995. The same value in every year | as above | Time-invariant; 187 states (84 with zero) | Peak rather than mean, so a sanction or war year in the window (Iraq 1991–94) does not lower it. Production measures developed capacity, not reserves: fields developed after 1994 (Sudan from 1999, Equatorial Guinea, Guyana) are missed. For outcomes before 1995 the window is not prior. Minerals are not yet included; a market-priced version and era weighting are open (protocol) |
+| `endow_window` | Years behind `endow_oilgas_twh` | build | — | Russia, Serbia, Czechia and unified Germany use their own present-territory series (Serbia and Czechia from 1992 and 1993). Montenegro, South Sudan and Timor-Leste have no data in the window and use their first five years with data (flagged) |
+| `eci_sitc` | Economic Complexity Index (production capability), SITC Rev. 2 trade data | Growth Lab, Atlas of Economic Complexity, country-year file (Dataverse doi:10.7910/DVN/H8SFD2, v18) | 1962–2024 | Standardized within each year (mean about 0, s.d. about 1): it places a state against others that year and does not track a state's own change over time. Built from export data, so services and production for the home market are not counted |
+| `export_diversity` | Number of products exported with revealed comparative advantage | as above | as above | |
+
+Yearly oil, gas and coal production (`oil_prod_twh`, `gas_prod_twh`,
+`coal_prod_twh`, terawatt-hours of primary energy; Our World in Data energy
+dataset, mostly Energy Institute Statistical Review data, 1950–2024) is built
+to `v2/output/local/energy_production_country_year.csv`, which is not
+committed: the Energy Institute allows quotation with attribution but requires
+permission for extensive reproduction. Rebuild it locally with the scripts.
+Reported states: about 75 a year before 1965, 165–195 from 1985 to 2016, and
+only the 49–50 the Energy Institute lists from 2017 (Guyana has no row after
+2016). Sanctions and war push yearly production down; the endowment is the
+measure for the extractive-value test.
+
+Mapping of the 2026-10-29 sources. IRR reports months; the annual value is the
+modal month, and a tie goes to the value held later in the year. This rule
+reproduces the authors' own annual anchor file (1946–2016) in 99.0% of
+country-years, and the beta release agrees with the stable release
+(1946–2019) in 99.6% of country-months for both anchor and regime. IRR codes
+territories before independence; those years are dropped, except Czechia's
+column, which holds Czechoslovakia's koruna (assigned to 315 through 1992).
+Serbia (345) starts in 2006, because its column codes the territory, not
+Yugoslavia, before then; IRR's placeholder columns for the USSR, Yugoslavia
+and Czechoslovakia (ruble throughout) are not used. Vietnam before 1976 is
+left blank in all three sources because which Vietnam is meant is not stated.
+OWID energy: the USSR row goes to 365 through 1991 and Russia from 1992;
+Yugoslavia to 345 through 1991 and Serbia from 1992; Czechoslovakia to 315;
+Germany (reported for its present territory, so including East Germany) to
+260 through 1990 and 255 after; Yemen from 1990 only. Atlas: Russia's series
+before 1992 is the USSR (the other successor states start in 1992), and
+Germany before 1991 is West Germany (260); Czechoslovakia and Yugoslavia are
+not in the Atlas.
 
 The protocol named the July 2025 ideal-point release; the 1946–2025 file
 posted since adds the 2025 session and is used instead (logged in the

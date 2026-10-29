@@ -13,6 +13,7 @@ man <- read.csv(file.path("v2", "sources", "MANIFEST.csv"), stringsAsFactors = F
 for (i in seq_len(nrow(man))) {
   f <- file.path(raw, man$file[i]); src <- man$source[i]
   if (file.exists(f)) next
+  dir.create(dirname(f), showWarnings = FALSE, recursive = TRUE)
   if (grepl("^https://", src) && !grepl("by request", src)) {
     download.file(src, f, mode = "wb", quiet = TRUE)
   } else if (grepl("^R package troopdata", src)) {

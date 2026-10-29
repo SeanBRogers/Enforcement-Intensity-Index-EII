@@ -33,3 +33,7 @@ v2/sources/*.zip
 v2/sources/*.tar.gz
 v2/sources/*.tgz
 **/GSDB*
+
+# Build outputs drawn from third-party data whose terms restrict reproduction
+# (Energy Institute yearly production): rebuilt locally, never committed
+v2/output/local/

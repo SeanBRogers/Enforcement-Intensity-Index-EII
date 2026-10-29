@@ -4,6 +4,9 @@
 # and orders lines by page, then column, then vertical position.
 # Usage: Rscript sdn_pdf_to_text.R in.pdf out.txt
 
+# The OFAC texts and patterns are UTF-8: run in a UTF-8 locale (R 4.2+ on Windows already is).
+if (!isTRUE(l10n_info()[["UTF-8"]])) invisible(Sys.setlocale("LC_ALL", "C.UTF-8"))
+if (!isTRUE(l10n_info()[["UTF-8"]])) stop("A UTF-8 locale is required (set LC_ALL=C.UTF-8).")
 args <- commandArgs(trailingOnly = TRUE)
 pdf <- args[1]; out <- args[2]
 bbox <- tempfile(fileext = ".html")

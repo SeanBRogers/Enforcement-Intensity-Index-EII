@@ -10,6 +10,9 @@
 #
 # Usage: Rscript v2/build/build_financial.R [repo_root]
 
+# The OFAC texts and patterns are UTF-8: run in a UTF-8 locale (R 4.2+ on Windows already is).
+if (!isTRUE(l10n_info()[["UTF-8"]])) invisible(Sys.setlocale("LC_ALL", "C.UTF-8"))
+if (!isTRUE(l10n_info()[["UTF-8"]])) stop("A UTF-8 locale is required (set LC_ALL=C.UTF-8).")
 suppressMessages(library(countrycode))
 args <- commandArgs(trailingOnly = TRUE)
 root <- if (length(args)) args[1] else "."

@@ -175,19 +175,201 @@ un <- un[un$ccode != 2, c("ccode", "year", "unga_ideal", "unga_dist_us", "NVotes
 names(un)[5] <- "unga_votes"
 lg("UNGA ideal points (Bailey, Strezhnev & Voeten; 1946-2025 file): %d state-years 1950-2025", nrow(un))
 
+# ------------------------------------------------------- dollar integration: anchor currency and exchange rate regime
+# Ilzetzki, Reinhart & Rogoff (IRR), monthly files 1946-2025 ("Beta Version:
+# October 2026" on the authors' site; classification last updated 5 October
+# 2026). Annual value = the modal month; a tie goes to the value held later in
+# the year. Checked against the authors' annual file (1946-2016) and their
+# stable release (1946-2019); results in the log.
+# The anchor is IRR's reference currency, which is assigned to floating
+# currencies as well (Mexico and Korea are USD-anchored), so the anchor alone is
+# not a peg. usd_peg combines the anchor with the coarse regime (codes 1-2:
+# no separate legal tender, currency board, peg, crawling peg or band within 2%).
+irr_long <- function(f, sheet, key_rows, first_col) {
+  m <- as.data.frame(read_excel(f, sheet = sheet, col_names = FALSE, .name_repair = "minimal", col_types = "text"))
+  per_col <- first_col - 1
+  rows <- grep("^[0-9]{4}M[0-9]+$", m[, per_col]); per <- m[rows, per_col]
+  cols <- first_col:ncol(m)
+  key <- vapply(cols, function(j) trimws(paste(na.omit(unlist(m[key_rows, j])), collapse = " ")), "")
+  data.frame(key = rep(key, each = length(rows)), col = rep(cols, each = length(rows)),
+             year = as.integer(substr(per, 1, 4)), month = as.integer(sub(".*M", "", per)),
+             value = unlist(m[rows, cols]), stringsAsFactors = FALSE)
+}
+irr_annual <- function(x) {                                       # modal month; a tie goes to the value held latest
+  x <- x[!is.na(x$value), ]
+  g <- x[c("col", "key", "year", "value")]
+  a <- merge(aggregate(list(n = rep(1L, nrow(x))), g, sum), aggregate(list(last = x$month), g, max))
+  a <- a[order(a$col, a$year, -a$n, -a$last), ]
+  a <- a[!duplicated(a[c("col", "year")]), ]
+  data.frame(key = a$key, year = a$year, value = a$value, stringsAsFactors = FALSE)
+}
+irr_dir <- file.path(raw, "irr")
+anc_m <- as.data.frame(read_excel(file.path(irr_dir, "Anchor_monthly_1946-2025.xlsx"), sheet = "Master", col_names = FALSE,
+                                  .name_repair = "minimal", col_types = "text"))
+r_iso <- which(anc_m[, 1] == "ISO3 Code")
+anc_raw <- irr_annual(irr_long(file.path(irr_dir, "Anchor_monthly_1946-2025.xlsx"), "Master", r_iso, 2))
+anc <- setNames(anc_raw, c("iso3", "year", "fx_anchor"))
+cls_hdr <- function(f, sheet) {                                   # names span two header rows; independence year above them
+  m <- as.data.frame(read_excel(f, sheet = sheet, col_names = FALSE, .name_repair = "minimal", col_types = "text", n_max = 7))
+  data.frame(col = 3:ncol(m), indep = suppressWarnings(as.integer(unlist(m[2, -(1:2)]))),
+             name = trimws(paste(ifelse(is.na(unlist(m[5, -(1:2)])), "", unlist(m[5, -(1:2)])),
+                                 ifelse(is.na(unlist(m[6, -(1:2)])), "", unlist(m[6, -(1:2)])))))
+}
+fcls <- file.path(irr_dir, "ERA_Classification_Monthly_1940-2025.xlsx")
+hdr_c <- cls_hdr(fcls, "Coarse")
+crs <- irr_annual(irr_long(fcls, "Coarse", 5:6, 3)); names(crs) <- c("name", "year", "fx_regime_coarse")
+fin_r <- irr_annual(irr_long(fcls, "Fine", 5:6, 3)); names(fin_r) <- c("name", "year", "fx_regime_fine")
+cls <- merge(crs, fin_r, by = c("name", "year"), all = TRUE)
+cls$iso3 <- countrycode(cls$name, "country.name", "iso3c", warn = FALSE,
+                        custom_match = c(Liechtesntein = "LIE", Micronesia = "FSM", PNG = "PNG", `Netherlands Antilles` = "ANT"))
+nm_iso <- unique(cls[, c("name", "iso3")])
+stopifnot(!anyDuplicated(na.omit(nm_iso$iso3)))
+anc_nm <- setNames(unlist(anc_m[r_iso + 1, -1]), unlist(anc_m[r_iso, -1]))   # the anchor file's own country names
+lg("IRR classification: %d countries; names not mapped to ISO3: %s; mapped names differing from the anchor file's name for that code: %s",
+   nrow(nm_iso), paste(nm_iso$name[is.na(nm_iso$iso3)], collapse = "; "),
+   paste(with(nm_iso[!is.na(nm_iso$iso3) & nm_iso$name != anc_nm[nm_iso$iso3], ], paste0(name, "=", iso3, " (", anc_nm[iso3], ")")), collapse = "; "))
+cls$indep <- hdr_c$indep[match(cls$name, hdr_c$name)]
+for (v in c("fx_regime_coarse", "fx_regime_fine")) cls[[v]] <- suppressWarnings(as.integer(cls[[v]]))   # "MISSING", "n.a." -> NA
+irr <- merge(anc, cls[, c("iso3", "year", "indep", "fx_regime_coarse", "fx_regime_fine")], by = c("iso3", "year"), all = TRUE)
+irr$indep <- ave(irr$indep, irr$iso3, FUN = function(v) if (all(is.na(v))) NA_integer_ else max(v, na.rm = TRUE))
+irr$fx_anchor[irr$fx_anchor %in% c("n.a.", "Freely_falling")] <- NA   # no reference currency, or excluded while freely falling
+# Years before independence describe a territory, not a state (Serbia's column
+# codes "no separate legal tender" through 1996), so they are dropped, except
+# the Czech column, which carries Czechoslovakia's koruna before 1993.
+pre <- !is.na(irr$indep) & irr$year < irr$indep & irr$iso3 != "CZE"
+irr <- irr[!pre & !grepl("^X_", irr$iso3) & irr$year %in% yrs, ]   # X_SUN, X_YUG, X_CSK: RUB placeholders, not used
+irr$ccode <- iso_cow(irr$iso3, irr$year)
+irr$ccode[irr$iso3 == "CZE" & irr$year <= 1992] <- 315
+irr$ccode[irr$iso3 == "VNM" & irr$year <= 1975] <- NA              # which Vietnam is not stated
+irr <- irr[!is.na(irr$ccode), ]
+irr$usd_anchor <- ifelse(is.na(irr$fx_anchor), NA_integer_, as.integer(irr$fx_anchor == "USD"))
+irr$usd_peg <- with(irr, ifelse(is.na(fx_regime_coarse) | fx_regime_coarse == 6, NA_integer_,
+                         ifelse(fx_regime_coarse >= 3, 0L, ifelse(is.na(fx_anchor), NA_integer_, as.integer(fx_anchor == "USD")))))
+irr <- irr[, c("ccode", "year", "fx_anchor", "usd_anchor", "fx_regime_coarse", "fx_regime_fine", "usd_peg")]
+stopifnot(!anyDuplicated(paste(irr$ccode, irr$year)))
+lg("IRR anchor and regime (monthly to annual by modal month): %d state-years %d-%d; USD pegs: %s", nrow(irr), min(irr$year), max(irr$year),
+   paste(sapply(c(1950, 1970, 1990, 2010, 2025), function(y) paste0(y, " ", sum(irr$usd_peg[irr$year == y], na.rm = TRUE))), collapse = "; "))
+# checks: the authors' annual file (1946-2016) and stable monthly release (1946-2019)
+a16 <- as.data.frame(read_excel(file.path(irr_dir, "Anchor_annual_1946-2016.xlsx"), sheet = "Master", col_names = FALSE,
+                                .name_repair = "minimal", col_types = "text"))
+r16 <- which(a16[, 1] == "ISO3 Code"); yr16 <- grep("^[0-9]{4}$", a16[, 1])
+a16 <- data.frame(iso3 = rep(unlist(a16[r16, -1]), each = length(yr16)), year = as.integer(a16[yr16, 1]),
+                  v16 = unlist(a16[yr16, -1]), stringsAsFactors = FALSE)
+j <- merge(a16, setNames(anc_raw, c("iso3", "year", "v25")), by = c("iso3", "year"))
+lg("  Check: annualized anchor matches the authors' annual file (1946-2016) in %.1f%% of %d country-years",
+   100 * mean(j$v16 == j$v25, na.rm = TRUE), sum(!is.na(j$v16)))
+st <- irr_long(file.path(irr_dir, "Anchor_monthly_1946-2019.xlsx"), "Master", r_iso, 2)
+bt <- irr_long(file.path(irr_dir, "Anchor_monthly_1946-2025.xlsx"), "Master", r_iso, 2)
+k2 <- merge(st, bt, by = c("key", "year", "month"))
+lg("  Check: beta and stable releases agree on the monthly anchor in %.2f%% of %d country-months (1946-2019)",
+   100 * mean(k2$value.x == k2$value.y, na.rm = TRUE), sum(!is.na(k2$value.x)))
+cs <- irr_long(file.path(irr_dir, "ERA_Classification_Monthly_1940-2019.xlsx"), "Coarse", 5:6, 3)
+cb <- irr_long(fcls, "Coarse", 5:6, 3)
+k3 <- merge(cs, cb, by = c("key", "year", "month"))
+lg("  Check: beta and stable releases agree on the monthly coarse regime in %.2f%% of %d country-months (1946-2019)",
+   100 * mean(k3$value.x == k3$value.y, na.rm = TRUE), sum(!is.na(k3$value.x)))
+
+# ------------------------------------------------------- extractive value: physical endowment (oil, gas, coal production)
+# Our World in Data energy dataset (Energy Institute Statistical Review and
+# other sources), TWh of primary energy. Successor and predecessor series are
+# assigned by year: USSR to 365 through 1991, Russia from 1992; Yugoslavia to
+# 345 through 1991, Serbia from 1992; Czechoslovakia to 315 through 1992;
+# Germany (reported for its present territory) to 260 through 1990 and 255
+# after; Vietnam only from 1976.
+ow <- read.csv(file.path(raw, "owid/owid-energy-data.csv"), stringsAsFactors = FALSE)
+ow <- ow[ow$year %in% yrs, c("country", "iso_code", "year", "oil_production", "gas_production", "coal_production")]
+names(ow)[4:6] <- c("oil_prod_twh", "gas_prod_twh", "coal_prod_twh")
+ow$ccode <- NA_integer_
+hist <- c(USSR = 365, Yugoslavia = 345, Czechoslovakia = 315)
+h <- ow$country %in% names(hist)
+ow$ccode[h] <- hist[ow$country[h]]
+st_ <- nzchar(ow$iso_code) & !grepl("^OWID", ow$iso_code)
+ow$ccode[st_] <- iso_cow(ow$iso_code[st_], ow$year[st_])
+ow$ccode[ow$iso_code == "RUS" & ow$year <= 1991] <- NA            # reconstructed present-day territory; the USSR row holds the state
+ow$ccode[ow$iso_code == "SRB" & ow$year <= 1991] <- NA
+ow$ccode[ow$country == "Yugoslavia" & ow$year >= 1992] <- NA
+ow$ccode[ow$country == "Czechoslovakia" & ow$year >= 1993] <- NA
+ow$ccode[ow$iso_code == "VNM" & ow$year <= 1975] <- NA
+ow$ccode[ow$iso_code == "YEM" & ow$year < 1990] <- NA            # unified-territory series before unification
+energy <- ow[!is.na(ow$ccode) & rowSums(!is.na(ow[, 4:6])) > 0, c("ccode", "year", "oil_prod_twh", "gas_prod_twh", "coal_prod_twh")]
+stopifnot(!anyDuplicated(paste(energy$ccode, energy$year)))
+lg("Energy production (OWID): %d state-years; states with oil data by year: %s", nrow(energy),
+   paste(sapply(c(1950, 1965, 1985, 2016, 2017, 2024), function(y) paste0(y, " ", sum(energy$year == y & !is.na(energy$oil_prod_twh)))), collapse = "; "))
+# Fixed endowment: the highest annual oil plus gas production in 1985-1994,
+# before the financial channel's itemized record (1995-), for the territory
+# each state holds in 1995 (Russia, Serbia, Czechia and unified Germany use
+# their own present-territory series). States formed after 1994 use their
+# first five years of data, flagged.
+ow$og <- ow$oil_prod_twh + ow$gas_prod_twh
+terr <- ow[nzchar(ow$iso_code) & !grepl("^OWID", ow$iso_code) & !is.na(ow$og), ]
+terr$ccode95 <- iso_cow(terr$iso_code, pmax(terr$year, 1995))
+endow <- do.call(rbind, lapply(split(terr, terr$ccode95), function(z) {
+  w <- z[z$year %in% 1985:1994, ]
+  if (nrow(w)) return(data.frame(ccode = z$ccode95[1], endow_oilgas_twh = max(w$og), endow_mean = mean(w$og),
+                                 endow_window = paste0(min(w$year), "-", max(w$year))))
+  w <- head(z[order(z$year), ], 5)
+  data.frame(ccode = z$ccode95[1], endow_oilgas_twh = max(w$og), endow_mean = mean(w$og),
+             endow_window = paste0(min(w$year), "-", max(w$year), " (no data 1985-1994; first five years with data)"))
+}))
+# states that ended before 1995: their own series, 1985 to their last year
+gone <- do.call(rbind, lapply(list(c(315, "Czechoslovakia"), c(260, "Germany")), function(p) {
+  z <- ow[ow$country == p[2] & ow$year %in% 1985:1994 & ow$ccode %in% as.integer(p[1]), ]
+  data.frame(ccode = as.integer(p[1]), endow_oilgas_twh = max(z$og), endow_mean = mean(z$og),
+             endow_window = paste0(min(z$year), "-", max(z$year)))
+}))
+endow <- rbind(endow, gone)
+endow <- endow[!is.na(endow$ccode), ]
+stopifnot(!anyDuplicated(endow$ccode))
+big <- endow[endow$ccode != 2, ]; big <- big[order(-(big$endow_oilgas_twh - big$endow_mean)), ][1:5, ]
+lg("Endowment (max annual oil+gas TWh, 1985-1994): %d states; largest: %s", nrow(endow),
+   paste(head(setdiff(endow$ccode[order(-endow$endow_oilgas_twh)], 2), 8), collapse = ", "))
+lg("  Peak exceeds the window mean most for (ccode: peak vs mean): %s",
+   paste(sprintf("%d: %.0f vs %.0f", big$ccode, big$endow_oilgas_twh, big$endow_mean), collapse = "; "))
+lg("  States with no data in 1985-1994 (first five years with data used): %s",
+   paste(sprintf("%d (%s)", endow$ccode, sub(" .*", "", endow$endow_window))[grepl("first five", endow$endow_window)], collapse = ", "))
+endow$endow_mean <- NULL
+
+# ------------------------------------------------------- production capability: economic complexity
+# Growth Lab (Harvard), Atlas of Economic Complexity, SITC Rev. 2 country-year
+# file (Dataverse doi:10.7910/DVN/H8SFD2, CC0). ECI is standardized within each
+# year: it ranks a state against others that year, not against itself over time.
+ec <- read.csv(file.path(raw, "eci/sitc_country_year.csv"), stringsAsFactors = FALSE)
+ec <- ec[!is.na(ec$eci) & ec$year %in% yrs, ]
+ec$ccode <- iso_cow(ec$country_iso3_code, ec$year)
+ec$ccode[ec$country_iso3_code == "VNM" & ec$year <= 1975] <- NA
+nm_ec <- unique(ec$country_iso3_code[is.na(ec$ccode)])
+ec <- ec[!is.na(ec$ccode), c("ccode", "year", "eci", "diversity")]
+names(ec) <- c("ccode", "year", "eci_sitc", "export_diversity")
+stopifnot(!anyDuplicated(paste(ec$ccode, ec$year)))
+lg("Economic complexity (Atlas, SITC): %d state-years %d-%d; Atlas economies not mapped to a COW state: %d (territories)",
+   nrow(ec), min(ec$year), max(ec$year), length(nm_ec))
+
 # ------------------------------------------------------- assemble on the frame
 cy <- frame
 cy <- merge(cy, atop, by = c("ccode", "year"), all.x = TRUE)
 cy$us_defense_pact[is.na(cy$us_defense_pact)] <- 0L              # ATOP lists every alliance: no listing is no pact
 cy <- merge(cy, un, by = c("ccode", "year"), all.x = TRUE)       # not a UN member or no votes: missing
 cy <- merge(cy, rents, by = c("ccode", "year"), all.x = TRUE)    # outside WDI coverage: missing
-off_un <- setdiff(paste(un$ccode, un$year), paste(frame$ccode, frame$year))
-off_rt <- setdiff(paste(rents$ccode, rents$year), paste(frame$ccode, frame$year))
-lg("Merged on the frame (%d state-years). Source rows outside the frame: UNGA %d, rents %d (non-COW members or years before COW membership)",
-   nrow(cy), length(off_un), length(off_rt))
-lg("Coverage in the frame: defense pact %d of %d; UNGA %d; resource rents %d",
-   sum(!is.na(cy$us_defense_pact)), nrow(cy), sum(!is.na(cy$unga_dist_us)), sum(!is.na(cy$nat_res_rents_gdp)))
+cy <- merge(cy, irr, by = c("ccode", "year"), all.x = TRUE)      # not classified by IRR: missing
+cy <- merge(cy, endow, by = "ccode", all.x = TRUE)               # time-invariant
+cy <- merge(cy, ec, by = c("ccode", "year"), all.x = TRUE)       # not in the Atlas: missing
+offs <- sapply(list(UNGA = un, rents = rents, IRR = irr, energy = energy, ECI = ec), function(s)
+  length(setdiff(paste(s$ccode, s$year), paste(frame$ccode, frame$year))))
+lg("Merged on the frame (%d state-years). Source rows outside the frame: %s (non-COW members or years before COW membership)",
+   nrow(cy), paste(names(offs), offs, collapse = ", "))
+lg("Coverage in the frame (of %d): defense pact %d; UNGA %d; resource rents %d; USD anchor %d; regime %d; USD peg %d; endowment %d; ECI %d",
+   nrow(cy), sum(!is.na(cy$us_defense_pact)), sum(!is.na(cy$unga_dist_us)), sum(!is.na(cy$nat_res_rents_gdp)),
+   sum(!is.na(cy$usd_anchor)), sum(!is.na(cy$fx_regime_coarse)), sum(!is.na(cy$usd_peg)),
+   sum(!is.na(cy$endow_oilgas_twh)), sum(!is.na(cy$eci_sitc)))
 cy <- cy[order(cy$ccode, cy$year), ]
 write.csv(cy, file.path(outd, "covariates_country_year.csv"), row.names = FALSE, na = "")
+# Yearly production is the Energy Institute's data, whose terms require
+# permission for extensive reproduction: it is written to a local file that is
+# not committed (v2/output/local/), keyed on the same frame. The endowment above
+# is a derived statistic and is published.
+en <- merge(frame, energy, by = c("ccode", "year"), all.x = TRUE)
+dir.create(file.path(outd, "local"), showWarnings = FALSE)
+write.csv(en[order(en$ccode, en$year), ], file.path(outd, "local", "energy_production_country_year.csv"), row.names = FALSE, na = "")
+lg("Wrote local/energy_production_country_year.csv (not committed): oil production reported in %d of %d state-years", sum(!is.na(en$oil_prod_twh)), nrow(en))
 lg("Wrote covariates_year.csv (%d rows) and covariates_country_year.csv (%d rows)", nrow(covy), nrow(cy))
-lg("Not yet built: dollar integration (measure to be chosen, Q6), US as target (Q15), trade channel")
+lg("Not yet built: dollar-integration check measure (Q6), minerals endowment, US as target (Q15), trade channel")

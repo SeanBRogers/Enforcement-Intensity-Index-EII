@@ -11,6 +11,9 @@
 # point, low and high counts, and the basis of each).
 # Usage: Rscript v2/build/estimate_sdn_1994.R [repo_root]
 
+# The OFAC texts and patterns are UTF-8: run in a UTF-8 locale (R 4.2+ on Windows already is).
+if (!isTRUE(l10n_info()[["UTF-8"]])) invisible(Sys.setlocale("LC_ALL", "C.UTF-8"))
+if (!isTRUE(l10n_info()[["UTF-8"]])) stop("A UTF-8 locale is required (set LC_ALL=C.UTF-8).")
 args <- commandArgs(trailingOnly = TRUE)
 root <- if (length(args)) args[1] else "."
 f94 <- file.path(root, "v2/sources/raw/ofac_sdn/sdnew94.txt")

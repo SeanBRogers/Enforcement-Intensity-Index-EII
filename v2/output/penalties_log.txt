@@ -1,5 +1,5 @@
 EII v2 penalties build
-Run: 2026-10-29 10:08:25 EDT | R version 4.3.3 (2024-02-29) | pdftotext version 24.02.0 
+Run: 2026-10-29 11:59:18 EDT | R version 4.3.3 (2024-02-29) | pdftotext version 24.02.0 
 OFAC index: 1058 entries, 345 documents, 2003-2025; 23 year-total rows set aside 
 Check against OFAC's own year totals: count matches in 23/23 years; dollars in 22/23 
   2004: entries n=514 vs OFAC 514; $3,442,156 vs OFAC $3,387,156 

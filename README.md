@@ -5,17 +5,18 @@ against other states, 1950–2025, for every state in the international system.
 
 **Sean Rogers** | University of South Carolina | Department of Political Science
 
-> **Status (2026-10-27): partial release. Not for estimation.** The frame, a US
-> sanctions flag and the four exertion channels (financial, penalties, kinetic
-> and posture) are built. The multilateral block, the burden blocks and the
-> covariates are not yet built, and the panel is not for estimation until they
-> are and every channel is validated.
+> **Status (2026-10-29): partial release. Not for estimation.** The frame, a US
+> sanctions flag, five exertion channels (financial, penalties, kinetic, covert
+> and proxy support, posture) and the covariates are built. The multilateral
+> block and the trade channel are not yet built, and the panel is not for
+> estimation until they are and every channel is validated.
 
 ## What is here
 
 | Path | What it is |
 |---|---|
 | [`v2/output/EII_v2_partial.csv`](v2/output/EII_v2_partial.csv) | The panel: one row per state per year, 1950–2025 (201 states, 11,916 rows) |
+| [`v2/output/covariates_country_year.csv`](v2/output/covariates_country_year.csv), [`covariates_year.csv`](v2/output/covariates_year.csv) | Covariates, kept apart from the panel: alliance, UN voting, dollar peg, oil and gas endowment, economic complexity (by state-year); US fiscal burden and rivals' share of world GDP (by year) |
 | [`v2/CODEBOOK_v2.md`](v2/CODEBOOK_v2.md) | Every variable: definition, source, coverage, and the direction in which its source misreports |
 | [`BUILD_PROTOCOL.md`](BUILD_PROTOCOL.md) | The design decisions made before the build, and every change since, with reasons |
 | [`v2/build/`](v2/build/) | The R code that fetches, verifies and builds everything, with the fixed attribution tables it uses |
@@ -29,8 +30,9 @@ against other states, 1950–2025, for every state in the international system.
   United States is excluded as a target.
 - **Channels, never summed.** Financial (additions to OFAC's SDN list),
   penalties (OFAC civil penalties), kinetic (armed conflicts with the US as a
-  party, against a state's government or alongside it) and posture (US troops
-  stationed in the country) are separate series. There is no composite score.
+  party, against a state's government or alongside it), covert and proxy
+  support (US support short of troops to a side in a war, 1975–2017) and
+  posture (US troops stationed in the country) are separate series. There is no composite score.
 - **Missing is not zero.** A zero means the source covers the country-year and
   records nothing; outside a source's coverage the cell is blank.
 - **Two attributions.** Financial and penalty events are attributed to the
@@ -46,12 +48,17 @@ Rscript v2/build/fetch_sources.R   # download every public source and verify its
 Rscript v2/build/run_all.R         # build the panel
 ```
 
-Requires R with `countrycode`, `troopdata` (1.1.0), `haven` and
-`digest`, and poppler's `pdftotext`. The Global Sanctions Data Base (release 5)
+Requires R with `countrycode`, `troopdata` (1.1.0), `haven`, `readxl`,
+`jsonlite` and `digest`, poppler's `pdftotext`, and a UTF-8 locale. The Global Sanctions Data Base (release 5)
 is distributed by its authors on request and may not be redistributed; place
 its files in `v2/sources/raw/` as `fetch_sources.R` describes. Rebuilt from an
 empty folder on 2026-10-27 (every public source re-downloaded and verified),
-all eight output files matched the committed ones byte for byte.
+all eight output files matched the committed ones byte for byte. On
+2026-10-29, after the proxy channel and new covariates were added, a fresh
+clone was rebuilt: the new sources were downloaded and every source was
+verified against the manifests (the OFAC files were copied from the copy
+already verified on 2026-10-27, not re-downloaded), and all 14 committed
+output files matched byte for byte.
 
 ## Earlier version
 

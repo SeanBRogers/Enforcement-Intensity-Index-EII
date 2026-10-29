@@ -1,4 +1,4 @@
-EII v2 covariates build, 2026-10-29 10:10 EDT
+EII v2 covariates build, 2026-10-29 12:04 EDT
 R 4.3.3; readxl 1.6.0; countrycode 1.9.0; jsonlite 2.0.0
 US burden: 76 fiscal years, 1950-2025 (OMB Tables 1.2, 6.1, 7.1)
   1950: gross debt 92.2% of GDP; debt held by public 78.6%; net interest 1.7%; surplus -1.1%; outlays 15.3%; defense 4.9%
@@ -19,7 +19,18 @@ Natural resource rents (% of GDP, WDI): 1970-2021; WDI rows not mapped to a COW 
 ATOP 5.1 dyad-years with the US, 1950-2018: 5040; with a defense obligation: 3558
 US defense partners: 31 in 1950, 53 in 1990, 66 in 2018, 69 in 2025 (2019-2025 carried forward with logged accessions)
 UNGA ideal points (Bailey, Strezhnev & Voeten; 1946-2025 file): 11309 state-years 1950-2025
-Merged on the frame (11916 state-years). Source rows outside the frame: UNGA 80, rents 330 (non-COW members or years before COW membership)
-Coverage in the frame: defense pact 11916 of 11916; UNGA 11229; resource rents 8296
+IRR classification: 194 countries; names not mapped to ISO3: ; mapped names differing from the anchor file's name for that code: Azerbaijan Rep. of=AZE (Azerbaijan); Bahrain Kingdom of=BHR (Bahrain); Bosnia & Herzegovina=BIH (Bosnia and Herzegovina); Central African Rep.=CAF (Central African Republic); China, PR=CHN (China); Congo Dem. Rep. of=COD (Congo, Democratic Republic of); Congo Rep. of=COG (Congo, Republic of); Cote D"Ivoire=CIV (Cote d'Ivoire); Curacao=CUW (Curacao & St. Maarten); Czech Rep.=CZE (Czech Republic); Guinea Bissau=GNB (Guinea-Bissau); Korea=KOR (Korea, South); Kyrgyz Rep.=KGZ (Kyrgyzstan); Lao Dem. Rep.=LAO (Laos); Liechtesntein=LIE (Liechtenstein); Macedonia FYR=MKD (Macedonia, FYR); Micronesia=FSM (Micronesia, Federated States of); NA=NA (NA); NA=NA (NA); PNG=PNG (Papua New Guinea); Sao Tome & Principe=STP (Sao Tome and Principe); Serbia, Rep. of=SRB (Serbia); St Vincent & Grenadines=VCT (St. Vincent and the Grenadines); Syrian Arab Rep.=SYR (Syria); The Bahamas=BHS (Bahamas); The Gambia=GMB (Gambia); Trinidad Tobago=TTO (Trinidad and Tobago); UAE=ARE (United Arab Emirates); United States=USA (United States of America); NA=NA (NA); Yemen Rep. of=YEM (Yemen)
+IRR anchor and regime (monthly to annual by modal month): 11984 state-years 1950-2025; USD pegs: 1950 26; 1970 44; 1990 43; 2010 83; 2025 56
+  Check: annualized anchor matches the authors' annual file (1946-2016) in 99.0% of 14058 country-years
+  Check: beta and stable releases agree on the monthly anchor in 99.58% of 175824 country-months (1946-2019)
+  Check: beta and stable releases agree on the monthly coarse regime in 99.57% of 172272 country-months (1946-2019)
+Energy production (OWID): 10023 state-years; states with oil data by year: 1950 74; 1965 78; 1985 165; 2016 186; 2017 50; 2024 50
+Endowment (max annual oil+gas TWh, 1985-1994): 188 states; largest: 365, 670, 20, 630, 200, 70, 101, 710
+  Peak exceeds the window mean most for (ccode: peak vs mean): 670: 5505 vs 4092; 365: 12085 vs 11039; 645: 1677 vs 901; 385: 1762 vs 1182; 20: 2670 vs 2135
+  States with no data in 1985-1994 (first five years with data used): 341 (2006-2010), 626 (2012-2016), 860 (2003-2007)
+Economic complexity (Atlas, SITC): 10853 state-years 1962-2024; Atlas economies not mapped to a COW state: 40 (territories)
+Merged on the frame (11916 state-years). Source rows outside the frame: UNGA 80, rents 330, IRR 674, energy 687, ECI 595 (non-COW members or years before COW membership)
+Coverage in the frame (of 11916): defense pact 11916; UNGA 11229; resource rents 8296; USD anchor 10515; regime 11176; USD peg 10638; endowment 11508; ECI 10258
+Wrote local/energy_production_country_year.csv (not committed): oil production reported in 8742 of 11916 state-years
 Wrote covariates_year.csv (76 rows) and covariates_country_year.csv (11916 rows)
-Not yet built: dollar integration (measure to be chosen, Q6), US as target (Q15), trade channel
+Not yet built: dollar-integration check measure (Q6), minerals endowment, US as target (Q15), trade channel

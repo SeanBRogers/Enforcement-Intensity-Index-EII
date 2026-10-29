@@ -1,5 +1,5 @@
 EII v2 partial build
-Run: 2026-10-29 11:16:33 EDT | R version 4.3.3 (2024-02-29) | countrycode 1.9.0 
+Run: 2026-10-29 12:00:57 EDT | R version 4.3.3 (2024-02-29) | countrycode 1.9.0 
 Frame: 11916 country-years, 201 states, 1950-2025 (2025 = 2024 membership carried forward; US excluded) 
 GSDB-R5 case list: 1794 cases; 686 name the United States among senders (49 with several targets) 
 GSDB-R5 file check: cases with a blank end_year: 0; ending 2025: 828 (the codebook says ongoing cases have a blank end_year; this file codes them 2025, which leaves the flag unchanged) 
@@ -29,11 +29,12 @@ Kinetic unassigned (no foreign target): conflict 418 2019 United States of Ameri
 Kinetic GW codes with no countrycode match, taken as the identical COW code (valid COW member that year): 816 (South Vietnam, Vietnam (North Vietnam)); 55 (Grenada, United States of America) 
 Kinetic: 156 US-party conflict-target-years from 33 conflicts; GW codes without a COW code: 0 
 Kinetic target-years outside the frame: 0 
+Proxy support (ESD 1975-2017): US support short of troops against the state in 64 state-years (10 alleged only); to the state in 481 (5 alleged only) 
 Posture set missing in 45 US-party conflict country-years from 2018 (official reports omit war-zone deployments; zeros there are not observed zeros) 
 Posture: country-years with no troopdata row (missing): 134 
 Penalties: 2157 program-attributed penalty-country counts merged; program country-years outside the frame: 0 
 Financial 1994 (estimated from the narrative change file): 1047 additions (bounds 980-1069) in 4 program countries; type split and location missing for 1994 
 Financial fin_program_count: 15953 counts merged; country-years outside the frame: 0 
 Financial fin_location_count: 21441 counts merged; country-years outside the frame: 16 (2 1995; 2 1998; 2 2001; 2 2002; 2 2003; 2 2004; 2 2015; 2 2016; 2 2017; 2 2018; 2 2019; 2 2020; 2 2021; 2 2023; 2 2024; 2 2025; code 2 is the United States, excluded as a target) 
-Wrote EII_v2_partial.csv: 11916 rows, 22 columns 
+Wrote EII_v2_partial.csv: 11916 rows, 28 columns 
 Not yet built here: multilateral block, target burden block (covariates: build_covariates.R) 
